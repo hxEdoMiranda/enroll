@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { MenuSuperior } from "@/components/ms/menu-superior";
+import Link from 'next/link';
+import React, { ReactNode } from 'react';
+import { FaHome, FaUser, FaCog, FaInfoCircle, FaSignOutAlt, FaSun, FaMoon } from 'react-icons/fa';
+import { Label } from '@/components/ui/label';
+import { useTheme } from 'next-themes';
+import LateralMenu from '@/components/ms/menu-lateral'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,9 +34,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
+        style={{ background: 'var(--background-custom)', display: 'flex', flexDirection: 'column', height: '100%' }} >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className="flex h-auto min-h-screen">
+            {/* Menú lateral con tamaño fijo */}
+            <LateralMenu />
+            <div className="flex-1 flex flex-col">
+              {/* Menú superior */}
+              <MenuSuperior />
+              {/* Contenido dinámico */}
+              <div className="flex-grow" style={{ background: 'transparent' }}>
+                {children}
+              </div>
+            </div>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
