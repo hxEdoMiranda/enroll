@@ -28,38 +28,13 @@ import { cn, isActionError } from "@/lib/utils";
 import { es } from "date-fns/locale";
 import DashboardLayout from "@/app/(dashboard)/layout";
 
-export const NOM035ConfigurationForm = () => {
+export const NOM035ConfigurationForm = ({defaultValues}:{defaultValues:z.infer<typeof MainSchema>}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof MainSchema>>({
     resolver: zodResolver(MainSchema),
     mode: "onChange",
-    defaultValues: {
-      company_id: "",
-      nom035: {
-        RFC: "",
-        employee_count: 0,
-        trade_name: "",
-        postal_code: "",
-        comment_status: false,
-        configuration_status: false,
-        comment_data: {
-          email: "",
-          subject: "",
-          body: "",
-        },
-        periods: [
-          {
-            _id: "60f7c1e8c9d1e53a5cfa9b9f",
-            start_date: new Date().toISOString(),
-            end_date: new Date().toISOString(),
-            period_name: "Primer periodo 2025",
-            available_surveys: 100,
-          },
-        ],
-        configuration_data: [],
-      },
-    },
+    defaultValues: defaultValues
   });
 
   const onSubmit = async (data: z.infer<typeof MainSchema>) => {

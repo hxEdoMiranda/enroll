@@ -19,7 +19,7 @@ export default async function ConfiguracionNOM035Page({
   }
 
   console.log(configuration.data);
-
+  const configurationdata = configuration.data[0];
   return (
     <main className="w-full min-h-screen bg-white p-10">
       <div className="flex w-full gap-4 h-full">
@@ -31,7 +31,25 @@ export default async function ConfiguracionNOM035Page({
         </div>
 
         <div className="bg-[#FBFBFB] w-2/3 p-4 flex flex-col gap-4 rounded-lg h-full">
-          <NOM035ConfigurationForm />
+          <NOM035ConfigurationForm
+            defaultValues={{
+              company_id: companyId,
+              nom035: {
+                RFC: configurationdata.nom035.RFC,
+                comment_data: configurationdata.nom035.comment_data,
+                comment_status: configurationdata.nom035.comment_status,
+                employee_count: configurationdata.nom035.employee_count,
+                periods: configurationdata.nom035.periods,
+                postal_code: configurationdata.nom035.postal_code,
+                trade_name: configurationdata.nom035.trade_name,
+                configuration_data:
+                  configurationdata.nom035.configuration_data.map(
+                    ({ area, puesto }) => ({ area: area._id, puestos:puesto.map(({_id}) => (_id)) })
+                  ),
+                configuration_status:configurationdata.nom035.comment_status  
+              },
+            }}
+          />
         </div>
       </div>
     </main>

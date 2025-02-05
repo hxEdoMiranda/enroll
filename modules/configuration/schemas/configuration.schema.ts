@@ -23,7 +23,7 @@ const PeriodSchema = z.object({
 
 const ConfigurationDataSchema = z.object({
   area: ObjectId,
-  puesto: z.array(ObjectId),
+  puestos: z.array(ObjectId),
 });
 
 export const NOM035Schema = z.object({
