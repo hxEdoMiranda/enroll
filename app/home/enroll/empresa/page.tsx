@@ -10,11 +10,6 @@ import { CompanyTable } from "@/modules/companies/company-table";
 import EmpresaForm from '@/components/ms/enroll/form-empresa';
 
 const EmpresaPage = () => {
-  // const [searchTerm, setSearchTerm] = useState("");
-
-  // const handleSearch = (value: string) => {
-  //   setSearchTerm(value);
-  // };
 
   return (
     <main className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 w-full">
