@@ -1,14 +1,14 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+// import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';
 
 
 const EmpresaConfig = () => {
-    const form = useForm({
+    // const form = useForm({
 
-    });
+    // });
 
     const [isClicked, setIsClicked] = useState(false);
 

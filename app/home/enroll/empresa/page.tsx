@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 // import EmpresasTable from "@/components/ms/enroll/grid-empresa";
 // import Image from "next/image";
 // import { Label } from "@/components/ui/label";

@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/dialog";
 
 
-interface IAddQuestionButton {
-  questionnaireId: string;
-  currentQuestions: string[];
-}
+// interface IAddQuestionButton {
+//   questionnaireId: string;
+//   currentQuestions: string[];
+// }
 
 export const AddQuestionButton = () => {
   return (
