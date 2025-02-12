@@ -32,9 +32,16 @@ const CountryForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("Formulario enviado con los siguientes valores:", values); // Mensaje adicional
+    console.log("Formulario enviado con los siguientes valores:", values);
     try {
-      const result = await postCreatePais(values);
+      // Mapear los valores del formulario a los nombres de campos esperados por la API
+      const mappedValues = {
+        code: values.codigo,
+        name: values.nombre,
+        code_phone: values.codTelefono,
+      };
+
+      const result = await postCreatePais(mappedValues);
       console.log("Resultado de la API:", result);
       setMessage('País creado exitosamente.');
     } catch (error) {

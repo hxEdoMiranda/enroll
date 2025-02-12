@@ -1,11 +1,11 @@
-const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3/";
+const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 //https://api.medibuslive.com/dev/backoffice/enroll/v3/country
 
-interface IPais {
+export interface IPais {
   uid?: string; // Hacer que uid sea opcional
-  codigo: string;
-  nombre: string;
-  codTelefono: string;
+  code: string;
+  name: string;
+  code_phone: string;
 }
 
 export const postCreatePais = async (pais: IPais): Promise<any> => {
@@ -51,10 +51,11 @@ export const updatePais = async (pais: IPais): Promise<any> => {
 };
 export const getPais = async (uid: string): Promise<IPais> => {
   try {
-    const response = await fetch(`${BASE_API_URL}/country/${uid}`, {
+    const response = await fetch(`${BASE_API_URL}/country`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        
       },
     });
     if (!response.ok) {
@@ -69,4 +70,19 @@ export const getPais = async (uid: string): Promise<IPais> => {
     }
     throw new Error(`Error fetching data: ${errorMessage}`);
   }
+};
+export const getPaises = async (): Promise<IPais[]> => {
+  const response = await fetch(`${BASE_API_URL}/country`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener los países");
+  }
+
+  const data = await response.json();
+
+  // Si la API devuelve { data: [...] }, extraemos el array
+  return Array.isArray(data) ? data : data.data || [];
 };

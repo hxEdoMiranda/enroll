@@ -4,7 +4,7 @@ import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { CompanyTable } from "@/modules/companies/company-table";
-
+import PaisesTable  from "@/components/ms/enroll/grid-country"
 
 const CountryPage = () => {
 
@@ -26,21 +26,14 @@ const CountryPage = () => {
                 <DialogTitle>Agregar Pais</DialogTitle>
                 <DialogDescription>Complete los siguientes campos para agregar un pais.</DialogDescription>
               </DialogHeader>
-              <form>
                 <PaisForm></PaisForm>
-                <div className="mb-2">
-                  <label htmlFor="area" className="block text-sm font-medium text-gray-700">Área</label>
-                  <input type="text" id="area" name="area" className="mt-1 p-2 border rounded-md w-full" />
-                </div>
-                <Button type="submit" variant="secondary">Guardar</Button>
-              </form>
             </DialogContent>
           </Dialog>
 
         </div>
    
       </div>
-      <CompanyTable></CompanyTable>
+      <PaisesTable></PaisesTable>
       </main>
   );
 };
