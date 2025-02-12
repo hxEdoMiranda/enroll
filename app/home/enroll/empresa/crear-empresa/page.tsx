@@ -1,5 +1,5 @@
 import EmpresaForm from '@/components/ms/enroll/form-empresa'
-import EmpresaConfig from '@/components/ms/enroll/form-configuracion'
+// import EmpresaConfig from '@/components/ms/enroll/form-configuracion'
 import Stepper from '@/components/ms/enroll/stepper';
 
 

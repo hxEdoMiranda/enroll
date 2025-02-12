@@ -1,6 +1,5 @@
 "use client";
 
-import { useModal } from "@/components/modal/provider";
 import { Button } from "@/components/ui/button";
 import { AddQuestionForm } from "./AddQuestionForm";
 import {
@@ -10,8 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { AddGroupForm } from "../[id]/components/AddGroupForm";
-import { useQuestionnaire } from "../[id]/components/QuestionnaireProvider";
+
 
 interface IAddQuestionButton {
   questionnaireId: string;

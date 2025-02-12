@@ -64,7 +64,7 @@ const PuestoForm = () => {
           <FormField
             control={form.control}
             name="status"
-            render={({ field }) => (
+            render={({ }) => (
               <FormItem>
                 <span className="block mb-1 text-primary">Status</span>
                 <FormControl>

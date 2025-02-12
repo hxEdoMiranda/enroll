@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { FaSun, FaMoon } from 'react-icons/fa';
-import { Label } from '@/components/ui/label';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';

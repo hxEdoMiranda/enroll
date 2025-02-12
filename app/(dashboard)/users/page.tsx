@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+// import { useState } from "react";
 import { UsersIcon } from "@/modules/icons";
 
 
 export default function EmpresasPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <main className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 w-full">

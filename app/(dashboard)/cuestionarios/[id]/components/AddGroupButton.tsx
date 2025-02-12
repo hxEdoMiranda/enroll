@@ -1,6 +1,5 @@
 "use client";
 
-import { useModal } from "@/components/modal/provider";
 import { Button } from "@/components/ui/button";
 import { AddGroupForm } from "./AddGroupForm";
 import {
