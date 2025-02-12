@@ -1,0 +1,219 @@
+"use client";
+
+import * as React from "react";
+import { ChevronDown, Search } from "lucide-react";
+import Image from "next/image";
+
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import {
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+	Pagination,
+	PaginationContent,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/components/ui/pagination";
+import { User } from "@/modules/configuration/types/user-data.type";
+
+
+export default function UserTable({ users }: { users: User[] }) {
+	const [searchQuery, setSearchQuery] = React.useState("");
+	const [filteredUsers, setFilteredUsers] = React.useState(users);
+	const [currentPage, setCurrentPage] = React.useState(1);
+	const usersPerPage = 8;
+
+	const handleSearch = (query: string) => {
+		setSearchQuery(query);
+		const filtered = users.filter((user) =>
+			user.user.firstName.toLowerCase().includes(query.toLowerCase())
+		);
+		setFilteredUsers(filtered);
+		setCurrentPage(1);
+	};
+
+	const indexOfLastUser = currentPage * usersPerPage;
+	const indexOfFirstUser = indexOfLastUser - usersPerPage;
+	const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+	const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+	return (
+		<div className="w-full">
+			<div className="flex items-center justify-between mb-4">
+				<div className="flex items-center gap-2">
+					<Badge variant="secondary" className="gap-1">
+						Edad:20-24
+						<button className="ml-1 hover:bg-muted rounded-full">
+							×
+						</button>
+					</Badge>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="outline"
+								size="sm"
+								className="gap-2"
+							>
+								Filtros
+								<ChevronDown className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuCheckboxItem>
+								Edad
+							</DropdownMenuCheckboxItem>
+							<DropdownMenuCheckboxItem>
+								País
+							</DropdownMenuCheckboxItem>
+							<DropdownMenuCheckboxItem>
+								Empresa
+							</DropdownMenuCheckboxItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
+				<div className="relative w-72">
+					<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+					<Input
+						placeholder="Buscar usuario"
+						className="pl-8"
+						value={searchQuery}
+						onChange={(e) => handleSearch(e.target.value)}
+					/>
+				</div>
+			</div>
+
+			<div className="rounded-md border">
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead className="w-[250px]">Nombre</TableHead>
+							<TableHead>Empresa</TableHead>
+							<TableHead>País</TableHead>
+							<TableHead>Previsión</TableHead>
+							<TableHead>Tipo</TableHead>
+							<TableHead>Sexo</TableHead>
+							<TableHead>Inicio Contrato</TableHead>
+							<TableHead>Término Contrato</TableHead>
+							<TableHead>Edad</TableHead>
+							<TableHead>Datos paciente</TableHead>
+							<TableHead>Habilitado</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{currentUsers.map((user) => (
+							<TableRow key={user.user.id}>
+								<TableCell className="font-medium">
+									{user.user.firstName} {user.user.lastName}
+								</TableCell>
+								<TableCell>
+									<div className="flex items-center gap-2">
+										<Image
+											src={
+												user.organization.imageUrl ||
+												"/placeholder.svg"
+											}
+											alt={user.organization.name}
+											width={20}
+											height={20}
+											className="rounded-full"
+										/>
+										{user.organization.name}
+									</div>
+								</TableCell>
+								<TableCell>
+									<div className="flex items-center gap-2">
+										<Image
+											src={
+												user.organization.imageUrl ||
+												"/placeholder.svg"
+											}
+											alt={user.organization.name}
+											width={20}
+											height={20}
+											className="rounded-sm"
+										/>
+										{user.organization.name}
+									</div>
+								</TableCell>
+								<TableCell>Fonasa</TableCell>
+								<TableCell>Titular</TableCell>
+								<TableCell>Masculino</TableCell>
+								<TableCell>2024-01-01</TableCell>
+								<TableCell>2026-01-01</TableCell>
+								<TableCell>20 años</TableCell>
+								<TableCell>
+									<Button variant="outline" size="sm">
+										Editar
+									</Button>
+								</TableCell>
+								<TableCell>
+									<Switch checked={true} />
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</div>
+
+			<Pagination className="mt-4">
+				<PaginationContent>
+					<PaginationItem>
+						<PaginationPrevious
+							href="#"
+							onClick={() =>
+								setCurrentPage((prev) => Math.max(prev - 1, 1))
+							}
+							className={
+								currentPage === 1
+									? "pointer-events-none opacity-50"
+									: ""
+							}
+						/>
+					</PaginationItem>
+					{[...Array(totalPages)].map((_, i) => (
+						<PaginationItem key={i + 1}>
+							<PaginationLink
+								href="#"
+								onClick={() => setCurrentPage(i + 1)}
+								isActive={currentPage === i + 1}
+							>
+								{i + 1}
+							</PaginationLink>
+						</PaginationItem>
+					))}
+					<PaginationItem>
+						<PaginationNext
+							href="#"
+							onClick={() =>
+								setCurrentPage((prev) =>
+									Math.min(prev + 1, totalPages)
+								)
+							}
+							className={
+								currentPage === totalPages
+									? "pointer-events-none opacity-50"
+									: ""
+							}
+						/>
+					</PaginationItem>
+				</PaginationContent>
+			</Pagination>
+		</div>
+	);
+}
