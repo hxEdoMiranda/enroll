@@ -18,7 +18,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { GetServerSideProps } from 'next';
 
 
 // export default async function Page({ params }: { params: { id: string } }) {
@@ -96,20 +95,12 @@ import { GetServerSideProps } from 'next';
 //   );
 // }
 
+
 interface PageProps {
   params: {
     id: string;
   };
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params as { id: string };
-  return {
-    props: {
-      params: { id },
-    },
-  };
-};
 
 export default async function Page({ params }: PageProps) {
   const questionnaireData = await getQuestionnaireById({ id: params.id });
