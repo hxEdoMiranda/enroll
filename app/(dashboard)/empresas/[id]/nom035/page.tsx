@@ -4,6 +4,8 @@ import { NOM035ConfigurationForm } from "@/modules/configuration/nom035/componen
 import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import PuestoForm from "@/components/ms/enroll/form-nom035puesto";
+import AreaForm from "@/components/ms/enroll/form-nom035area";
 
 export default async function ConfiguracionNOM035Page({
   params,
@@ -40,14 +42,9 @@ export default async function ConfiguracionNOM035Page({
                 <DialogTitle>Agregar Área</DialogTitle>
                 <DialogDescription>Complete los siguientes campos para agregar un área.</DialogDescription>
               </DialogHeader>
-              <form>
-                {/* Campos del formulario para agregar área */}
-                <div className="mb-2">
-                  <label htmlFor="area" className="block text-sm font-medium text-gray-700">Área</label>
-                  <input type="text" id="area" name="area" className="mt-1 p-2 border rounded-md w-full" />
-                </div>
-                <Button type="submit" variant="secondary">Guardar</Button>
-              </form>
+          
+                  <AreaForm></AreaForm>
+
             </DialogContent>
           </Dialog>
           <Dialog>
@@ -59,14 +56,7 @@ export default async function ConfiguracionNOM035Page({
                 <DialogTitle>Agregar Puesto</DialogTitle>
                 <DialogDescription>Complete los siguientes campos para agregar un puesto.</DialogDescription>
               </DialogHeader>
-              <form>
-                {/* Campos del formulario para agregar puesto */}
-                <div className="mb-2">
-                  <label htmlFor="puesto" className="block text-sm font-medium text-gray-700">Puesto</label>
-                  <input type="text" id="puesto" name="puesto" className="mt-1 p-2 border rounded-md w-full" />
-                </div>
-                <Button type="submit" variant="secondary">Guardar</Button>
-              </form>
+                <PuestoForm></PuestoForm>
             </DialogContent>
           </Dialog>
         </div>
