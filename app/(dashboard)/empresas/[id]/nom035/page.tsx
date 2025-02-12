@@ -1,6 +1,9 @@
 import { isActionError } from "@/lib/utils";
 import { fetchConfigByCompanyId } from "@/modules/configuration/actions";
 import { NOM035ConfigurationForm } from "@/modules/configuration/nom035/components/nom035-configuration-form";
+import { Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 
 export default async function ConfiguracionNOM035Page({
   params,
@@ -22,6 +25,53 @@ export default async function ConfiguracionNOM035Page({
   const configurationdata = configuration.data[0];
   return (
     <main className="w-full min-h-screen bg-white p-10">
+      <div className="bg-[url('/img/shared/background-banner.png')] bg-cover bg-center bg-no-repeat relative h-24 rounded-xl mb-4 flex flex-col gap-1 items-start justify-center px-8">
+        <div className="flex gap-2 items-center">
+          <Building2 className="size-10 text-white mr-2" />
+          <h1 className="text-white font-bold text-3xl">Gestión Nom035</h1>
+        </div>
+        <div className="flex gap-2 mt-2 justify-end ml-auto mb-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="secondary">Agregar Área</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Agregar Área</DialogTitle>
+                <DialogDescription>Complete los siguientes campos para agregar un área.</DialogDescription>
+              </DialogHeader>
+              <form>
+                {/* Campos del formulario para agregar área */}
+                <div className="mb-2">
+                  <label htmlFor="area" className="block text-sm font-medium text-gray-700">Área</label>
+                  <input type="text" id="area" name="area" className="mt-1 p-2 border rounded-md w-full" />
+                </div>
+                <Button type="submit" variant="secondary">Guardar</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="secondary">Agregar Puesto</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Agregar Puesto</DialogTitle>
+                <DialogDescription>Complete los siguientes campos para agregar un puesto.</DialogDescription>
+              </DialogHeader>
+              <form>
+                {/* Campos del formulario para agregar puesto */}
+                <div className="mb-2">
+                  <label htmlFor="puesto" className="block text-sm font-medium text-gray-700">Puesto</label>
+                  <input type="text" id="puesto" name="puesto" className="mt-1 p-2 border rounded-md w-full" />
+                </div>
+                <Button type="submit" variant="secondary">Guardar</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
       <div className="flex w-full gap-4 h-full">
         <div className="bg-[#FBFBFB] flex flex-col gap-4 rounded-lg p-4 w-1/3 sticky top-[1rem] h-fit">
           <h1 className="text-primary font-bold text-2xl">NOM035</h1>
@@ -29,7 +79,6 @@ export default async function ConfiguracionNOM035Page({
             Configuración NOM035 Empresa...
           </p>
         </div>
-
         <div className="bg-[#FBFBFB] w-2/3 p-4 flex flex-col gap-4 rounded-lg h-full">
           <NOM035ConfigurationForm
             defaultValues={{
@@ -50,8 +99,8 @@ export default async function ConfiguracionNOM035Page({
               },
             }}
           />
-        </div>
-      </div>
+        </div>  
+              </div>
     </main>
   );
 }

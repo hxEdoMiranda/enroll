@@ -1,4 +1,5 @@
-const BASE_API_URL = "https://api.medibuslive.com/dev/pr/enroll/v3";
+const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3/";
+//https://api.medibuslive.com/dev/backoffice/enroll/v3/country
 
 interface IPais {
   uid?: string; // Hacer que uid sea opcional
@@ -10,7 +11,7 @@ interface IPais {
 export const postCreatePais = async (pais: IPais): Promise<any> => {
     console.log("LLegoooooooooooooooooooooooooooooooooooo");
   try {
-    const response = await fetch(`${BASE_API_URL}/paises`, {
+    const response = await fetch(`${BASE_API_URL}/country`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +32,7 @@ export const postCreatePais = async (pais: IPais): Promise<any> => {
 
 export const updatePais = async (pais: IPais): Promise<any> => {
   try {
-    const response = await fetch(`${BASE_API_URL}/paises`, {
+    const response = await fetch(`${BASE_API_URL}/country`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,5 +47,26 @@ export const updatePais = async (pais: IPais): Promise<any> => {
       errorMessage = error.message;
     }
     throw new Error(`Error updating data: ${errorMessage}`);
+  }
+};
+export const getPais = async (uid: string): Promise<IPais> => {
+  try {
+    const response = await fetch(`${BASE_API_URL}/country/${uid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const result: IPais = await response.json();
+    return result;
+  } catch (error) {
+    let errorMessage = 'An error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    throw new Error(`Error fetching data: ${errorMessage}`);
   }
 };

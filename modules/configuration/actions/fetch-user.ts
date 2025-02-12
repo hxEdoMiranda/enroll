@@ -1,19 +1,17 @@
 const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
 
-import { ConfigResponse } from "../types/nom035-config.type.ts";
+import { UserData } from "../types/user-data.type.js"; 
+import { z } from "zod";
+import { UserDataSchema } from "../schemas/user-data.schema.js";
 
 interface ErrorResponse {
   error: string;
 }
 
-export async function fetchConfigByCompanyId({
-  companyId,
-}: {
-  companyId: string;
-}): Promise<ConfigResponse | ErrorResponse> {
+export async function fetchAllUsers(): Promise<UserData[] | ErrorResponse> {
   try {
     const response = await fetch(
-      `${BASE_API_URL_LAMBDA}/backoffice/nom035/config?company_id=${companyId}`,
+      `${BASE_API_URL_LAMBDA}/backoffice/enroll/v3/patient`,
       {
         method: "GET",
         headers: {
@@ -26,9 +24,12 @@ export async function fetchConfigByCompanyId({
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
 
-    const data: ConfigResponse = await response.json();
+    const data: unknown = await response.json();
+    
+    // Valida los datos recibidos usando el esquema de validación
+    const validatedData = z.array(UserDataSchema).parse(data);
 
-    return data;
+    return validatedData as UserData[];
   } catch (error) {
     if (error instanceof Error) {
       return { error: error.message };
