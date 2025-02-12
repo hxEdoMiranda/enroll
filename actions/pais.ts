@@ -1,16 +1,17 @@
-const BASE_API_URL = "https://api.medibuslive.com/dev/pr/enroll/v3";
+const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
+//https://api.medibuslive.com/dev/backoffice/enroll/v3/country
 
-interface IPais {
+export interface IPais {
   uid?: string; // Hacer que uid sea opcional
-  codigo: string;
-  nombre: string;
-  codTelefono: string;
+  code: string;
+  name: string;
+  code_phone: string;
 }
 
 export const postCreatePais = async (pais: IPais): Promise<any> => {
     console.log("LLegoooooooooooooooooooooooooooooooooooo");
   try {
-    const response = await fetch(`${BASE_API_URL}/paises`, {
+    const response = await fetch(`${BASE_API_URL}/country`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +32,7 @@ export const postCreatePais = async (pais: IPais): Promise<any> => {
 
 export const updatePais = async (pais: IPais): Promise<any> => {
   try {
-    const response = await fetch(`${BASE_API_URL}/paises`, {
+    const response = await fetch(`${BASE_API_URL}/country`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,4 +48,41 @@ export const updatePais = async (pais: IPais): Promise<any> => {
     }
     throw new Error(`Error updating data: ${errorMessage}`);
   }
+};
+export const getPais = async (uid: string): Promise<IPais> => {
+  try {
+    const response = await fetch(`${BASE_API_URL}/country`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const result: IPais = await response.json();
+    return result;
+  } catch (error) {
+    let errorMessage = 'An error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    throw new Error(`Error fetching data: ${errorMessage}`);
+  }
+};
+export const getPaises = async (): Promise<IPais[]> => {
+  const response = await fetch(`${BASE_API_URL}/country`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener los países");
+  }
+
+  const data = await response.json();
+
+  // Si la API devuelve { data: [...] }, extraemos el array
+  return Array.isArray(data) ? data : data.data || [];
 };

@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import EmpresasTable from "@/components/ms/enroll/grid-empresa";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
+import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { CompanyTable } from "@/modules/companies/company-table";
+import EmpresaForm from '@/components/ms/enroll/form-empresa';
 
 const EmpresaPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,52 +18,35 @@ const EmpresaPage = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-white bg-opacity-50 mr-6 mt-14 mb-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-        <div className="col-span-1 lg:col-span-3">
-          {/* Contenedor con fondo */}
-          <div className="relative mb-4 p-4 rounded-md">
-            {/* Imagen de fondo */}
-            <div className="absolute inset-0 -z-10">
-              <Image
-                src="/img/fondoEmpresa.jpg" // Reemplaza con la ruta de tu imagen
-                alt="Fondo de Empresas"
-                layout="fill" // Hace que la imagen cubra todo el div
-                objectFit="cover" // Ajusta el tamaño de la imagen
-                quality={80}
-              />
-            </div>
-            <div className=" flex flex-col gap-2">
-              <Label className="text-4xl fotn-bold text-primary-foreground">
-                {" "}
-                Empresas
-              </Label>
-              <Label className="text-ms fotn-bold text-primary opacity-70">
-                Encuentra las empresas existentes y crea empresas.
-              </Label>
-              <Button className="mt-4 w-fit">CREAR EMPRESA</Button>
-            </div>
-          </div>
+    <main className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 w-full">
+      <div className="bg-[url('/img/shared/background-banner.png')] bg-cover bg-center bg-no-repeat relative h-24 rounded-xl mb-4 flex flex-col gap-1 items-start justify-center px-8">
+        <div className="flex gap-2 items-center">
+          <Building2 className="size-10 text-white mr-2" />
+          <h1 className="text-white font-bold text-3xl">Gestión Empresas</h1>
+        </div>
+        <div className="flex gap-2 mt-2 justify-end ml-auto mb-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="secondary">Agregar empresa</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Agregar Pais</DialogTitle>
+                <DialogDescription>Complete los siguientes campos para agregar una empresa.</DialogDescription>
+              </DialogHeader>
+              <form>
+                //agregar formularios
+                <EmpresaForm></EmpresaForm>
+                <Button type="submit" variant="secondary">Guardar</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+
         </div>
 
-        {/* Barra de búsqueda */}
-        <div className="col-span-1 lg:col-span-2">
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Buscar empresa..."
-              className="w-full p-2 border border-gray-300 rounded-md"
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* Tabla de empresas */}
-        <div className="col-span-1 lg:col-span-3">
-          <EmpresasTable searchTerm={searchTerm} />
-        </div>
       </div>
-    </div>
+      <CompanyTable></CompanyTable>
+      </main>
   );
 };
 

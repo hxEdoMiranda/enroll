@@ -1,6 +1,6 @@
 const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
 
-import { ConfigResponse } from "../types";
+import { ConfigResponse } from "../types/nom035-config.type.ts";
 
 interface ErrorResponse {
   error: string;
