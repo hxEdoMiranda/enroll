@@ -19,7 +19,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-
 // export default async function Page({ params }: { params: { id: string } }) {
 //   const questionnaireData = await getQuestionnaireById({ id: params.id });
 
@@ -95,15 +94,19 @@ import {
 //   );
 // }
 
+// interface PageProps {
+//   params: {
+//     id: string;
+//   };
+// }
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function Page({ params }: PageProps) {
-  const questionnaireData = await getQuestionnaireById({ id: params.id });
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const questionnaireData = await getQuestionnaireById({ id });
 
   if (!questionnaireData.ok || !questionnaireData.data) {
     throw new Error("Ocurrió un error");
@@ -121,7 +124,9 @@ export default async function Page({ params }: PageProps) {
           <div className="flex justify-between w-full">
             <div className="flex gap-2 items-center">
               <ClipboardPenLine className="size-10 text-white mr-2" />
-              <h1 className="text-white font-bold text-3xl">{questionnaireData.data.title}</h1>
+              <h1 className="text-white font-bold text-3xl">
+                {questionnaireData.data.title}
+              </h1>
             </div>
           </div>
         </div>
