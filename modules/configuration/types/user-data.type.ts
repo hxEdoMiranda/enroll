@@ -150,10 +150,6 @@ export interface Organization {
   adminDeleteEnabled:    boolean;
 }
 
-export interface Metadata {
-  [key: string]: string | number | boolean | null;
-}
-
 export interface User {
   id:                        string;
   passwordEnabled:           boolean;
