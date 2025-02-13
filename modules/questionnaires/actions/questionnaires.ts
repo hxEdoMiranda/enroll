@@ -60,7 +60,7 @@ export async function getQuestionnaires(): Promise<{
   try {
     const response = await fetch(`${BASE_API_URL_LAMBDA}/questionnaire`, {
       method: "GET",
-      cache: "no-cache",
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
       },
