@@ -1,5 +1,4 @@
-"use server";
-
+export const dynamic = "force-dynamic"
 import { getQuestionnaires } from "@/modules/questionnaires/actions/questionnaires";
 import { QuestionnairesTable } from "./components/QuestionnairesTable";
 import { ClipboardPenLine } from "lucide-react";
