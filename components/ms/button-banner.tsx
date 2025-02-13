@@ -1,21 +1,22 @@
-'use client'
+"use client";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import React from "react";
 
-interface ButtonBannerProps {
+export interface ButtonBannerProps {
 	trigger: React.ReactNode;
 	content: React.ReactNode;
 	title: string;
 	description: string;
 	onClick?: () => void;
+	className?: string;
 }
 
 export const ButtonBanner = ({
@@ -23,24 +24,30 @@ export const ButtonBanner = ({
 	title,
 	description,
 	content,
+	className,
 }: ButtonBannerProps) => {
+	const [isOpen, setIsOpen] = useState(false);
+	console.log("isOpen", isOpen);
+
+	// Clonamos el contenido y le pasamos la función para cerrar el modal
+	const contentWithProps = React.cloneElement(content as React.ReactElement, {
+		onSuccess: () => setIsOpen(false)
+	});
+
 	return (
-		<Dialog>
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>{trigger}</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
-				<div className="bg-[#FBFBFB] rounded-lg p-4">
+			<DialogContent className={className}>
+				<div className="bg-[#FBFBFB] rounded-lg p-6 w-full">
 					<DialogHeader>
-						<DialogTitle className="text-2xl font-bold text-primary">
+						<DialogTitle className="text-3xl font-bold text-primary">
 							{title}
 						</DialogTitle>
 						<DialogDescription className="text-sm text-[#262626]">
 							{description}
 						</DialogDescription>
 					</DialogHeader>
-					<div className="grid gap-4 py-4 ">{content}</div>
-					<DialogFooter>
-						<Button type="submit">Save changes</Button>
-					</DialogFooter>
+					{contentWithProps}
 				</div>
 			</DialogContent>
 		</Dialog>

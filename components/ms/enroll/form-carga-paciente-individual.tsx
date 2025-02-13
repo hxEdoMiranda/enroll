@@ -27,13 +27,13 @@ import {
 import { createUser } from "@/modules/configuration/actions/fetch-user";
 import { toast } from "sonner";
 import { splitAddress } from "@/modules/configuration/schemas/user-data.schema";
+import { Label } from "@/components/ui/label";
 
 interface PatientFormProps {
-	setOpen?: (open: boolean) => void;
+	onSuccess?: () => void;
 }
 
-export function PatientForm({ setOpen }: PatientFormProps) {
-
+export function PatientForm({ onSuccess }: PatientFormProps) {
 	const form = useForm<UserData>({
 		resolver: zodResolver(UserDataSchema),
 		defaultValues: {
@@ -54,20 +54,17 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 	});
 
 	const handleSubmit = async (data: UserData) => {
-		console.log("Data >>>", data);
-    const formattedAddress = splitAddress(data.address);
-    const formattedData = {
-      ...data,
-      address: formattedAddress,
-    };
-    console.log("Formatted Data >>>", formattedData);
+		const formattedAddress = splitAddress(data.address);
+		const formattedData = {
+			...data,
+			address: formattedAddress,
+		};
 		try {
 			const response = await createUser(formattedData);
 			if (response.ok) {
 				toast.success("Paciente agregado exitosamente");
-				console.log("Paciente agregado exitosamente >>>", response);
 				form.reset();
-				setOpen?.(false);
+				onSuccess?.();
 			} else {
 				toast.error(response.message);
 			}
@@ -78,21 +75,24 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 	};
 
 	return (
-		<div className="w-full mx-auto p-6">
-			<h2 className="text-2xl font-semibold text-primary mb-6">
+		<div className="w-full mt-6">
+			<h2 className="text-xl font-bold text-primary mb-6">
 				Datos Personales
 			</h2>
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(handleSubmit)}
-					className="space-y-6 grid grid-cols-3 gap-4"
+					className="grid grid-cols-12 gap-4"
 				>
 					<FormField
 						control={form.control}
 						name="firstName"
 						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Nombre *</FormLabel>
+							<FormItem className="col-span-5">
+								<FormLabel>
+									Nombre{" "}
+									<span className="text-primary">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Ej: Marina"
@@ -108,8 +108,11 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 						control={form.control}
 						name="lastName"
 						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Apellido *</FormLabel>
+							<FormItem className="col-span-5">
+								<FormLabel>
+									Apellido{" "}
+									<span className="text-primary">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input placeholder="Ej: Perez" {...field} />
 								</FormControl>
@@ -122,8 +125,11 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 						control={form.control}
 						name="document"
 						render={({ field }) => (
-							<FormItem>
-								<FormLabel>N° Documento *</FormLabel>
+							<FormItem className="col-span-2">
+								<FormLabel>
+									N° Documento{" "}
+									<span className="text-primary">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Ej: 18565653-6"
@@ -139,8 +145,11 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 						control={form.control}
 						name="birthDate"
 						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Fecha de Nacimiento *</FormLabel>
+							<FormItem className="col-span-4">
+								<FormLabel>
+									Fecha de Nacimiento{" "}
+									<span className="text-primary">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Ej: 2024-10-15"
@@ -152,12 +161,37 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 						)}
 					/>
 
+					<div className="grid w-full items-center col-span-4">
+						<Label htmlFor="phone1">Teléfono Contacto 1</Label>
+						<Input
+							className="mt-1"
+							type="tel"
+							id="phone1"
+							placeholder="Teléfono"
+							disabled
+						/>
+					</div>
+
+					<div className="grid w-full items-center col-span-4">
+						<Label htmlFor="phone2">Teléfono Contacto 2</Label>
+						<Input
+							className="mt-1"
+							type="tel"
+							id="phone2"
+							placeholder="Teléfono"
+							disabled
+						/>
+					</div>
+
 					<FormField
 						control={form.control}
 						name="emailAddress"
 						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Email *</FormLabel>
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Email{" "}
+									<span className="text-primary">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Ej: marina.perez@dominio.com"
@@ -171,9 +205,76 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 
 					<FormField
 						control={form.control}
+						name="address"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>Dirección Particular</FormLabel>
+								<FormControl>
+									<Input
+										placeholder="Ej: Calle 123, Ciudad, Región"
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<div className="grid w-full items-center col-span-6">
+						<Label htmlFor="company">
+							Empresa <span className="text-primary">*</span>
+						</Label>
+						<Input
+							className="mt-1"
+							type="text"
+							id="company"
+							placeholder="Compañía"
+							disabled
+						/>
+					</div>
+
+					<div className="grid w-full items-center col-span-6">
+						<Label htmlFor="plans">Planes</Label>
+						<Input
+							className="mt-1"
+							type="text"
+							id="plans"
+							placeholder="Plan"
+							disabled
+						/>
+					</div>
+
+					<div className="grid w-full items-center col-span-6">
+						<Select>
+							<Label>Tipo de Paciente</Label>
+							<SelectTrigger className="w-full" disabled>
+								<SelectValue placeholder="Seleccionar tipo de paciente" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="titular">Titular</SelectItem>
+								<SelectItem value="carga">Carga</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+
+					<div className="grid w-full items-center col-span-6">
+						<Select>
+							<Label>Previsión</Label>
+							<SelectTrigger className="w-full" disabled>
+								<SelectValue placeholder="Seleccionar previsión" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="1">Previsión 1</SelectItem>
+								<SelectItem value="2">Previsión 2</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+
+					<FormField
+						control={form.control}
 						name="gender"
 						render={({ field }) => (
-							<FormItem>
+							<FormItem className="col-span-6">
 								<FormLabel>Género *</FormLabel>
 								<Select
 									onValueChange={field.onChange}
@@ -202,7 +303,7 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 						control={form.control}
 						name="maritalStatus"
 						render={({ field }) => (
-							<FormItem>
+							<FormItem className="col-span-6">
 								<FormLabel>Estado Civil *</FormLabel>
 								<Select
 									onValueChange={field.onChange}
@@ -227,69 +328,20 @@ export function PatientForm({ setOpen }: PatientFormProps) {
 						)}
 					/>
 
-					{/* //! TODO: Agregar los planes con Ids de Mongo */}
-					{/* <FormField
-						control={form.control}
-						name="plans"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Plan *</FormLabel>
-								<Select
-									onValueChange={(value) =>
-										field.onChange([value])
-									}
-									value={field.value?.[0] || ""}
-								>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder="Seleccionar Plan" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectItem value="cronico">
-											Crónico
-										</SelectItem>
-										<SelectItem value="premium">
-											Premium
-										</SelectItem>
-										<SelectItem value="basico">
-											Básico
-										</SelectItem>
-									</SelectContent>
-								</Select>
-								<FormMessage />
-							</FormItem>
-						)}
-					/> */}
-
-					<FormField
-						control={form.control}
-						name="address"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Dirección *</FormLabel>
-								<FormControl>
-									<Input
-										placeholder="Ej: Calle 123, Ciudad, Región"
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<Button
-						type="submit"
-						className="w-full bg-blue-500 hover:bg-blue-600"
-						disabled={form.formState.isSubmitting}
-					>
-						{form.formState.isSubmitting
-							? "PROCESANDO..."
-							: "AGREGAR PACIENTE"}
-					</Button>
 				</form>
 			</Form>
+
+			<div className="flex w-[270px] justify-self-end mt-6">
+				<Button
+					onClick={form.handleSubmit(handleSubmit)}
+					className="w-full bg-primary rounded-full text-white font-bold text-base"
+					disabled={form.formState.isSubmitting}
+				>
+					{form.formState.isSubmitting
+						? "PROCESANDO..."
+						: "AGREGAR PACIENTE"}
+				</Button>
+			</div>
 		</div>
 	);
 }

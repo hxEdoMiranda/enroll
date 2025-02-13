@@ -31,7 +31,9 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import { User } from "@/modules/configuration/types/user-data.type";
-
+import { ButtonBanner } from "@/components/ms/button-banner";
+import { EditUserIcon } from "../icons";
+import { EditPatientForm } from "@/components/ms/enroll/form-editar-paciente-individual";
 
 export default function UserTable({ users }: { users: User[] }) {
 	const [searchQuery, setSearchQuery] = React.useState("");
@@ -158,9 +160,23 @@ export default function UserTable({ users }: { users: User[] }) {
 								<TableCell>2026-01-01</TableCell>
 								<TableCell>20 años</TableCell>
 								<TableCell>
-									<Button variant="outline" size="sm">
-										Editar
-									</Button>
+									<ButtonBanner
+										trigger={
+											<Button
+												variant="ghost"
+												className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+											>
+												<EditUserIcon fill="currentColor" />
+												Editar
+											</Button>
+										}
+										content={
+											<EditPatientForm user={user} />
+										}
+										title="Editar Paciente"
+										description="Edita los datos del paciente"
+										className="w-[1010px] p-8"
+									/>
 								</TableCell>
 								<TableCell>
 									<Switch checked={true} />

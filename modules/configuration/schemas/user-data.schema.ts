@@ -68,6 +68,30 @@ export const UserDataSchemaFormatted = z.object({
   countryResidence: z.string().min(2, { message: "Este campo es obligatorio" }),
 });
 
+const updateBaseSchema = {
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  birthDate: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "El formato debe ser YYYY-MM-DD" })
+    .refine(date => !isNaN(new Date(date).getTime()), { message: "Fecha inválida" }),
+  gender: z.string().optional(),
+  country: z.string().optional(),
+  emailAddress: z.string().email({ message: "No es un email válido" }).optional(),
+  language: z.string().optional(),
+  maritalStatus: z.string().optional(),
+};
+
+export const UpdateDataUserSchema = z.object({
+  ...updateBaseSchema,
+  address: z.string().optional(),
+});
+
+export const UpdateDataUserSchemaFormatted = z.object({
+  ...updateBaseSchema,
+  address: AddressSchema,
+});
+
 export function splitAddress(addressString: string) {
   const [line, city, state] = addressString.split(',').map(s => s.trim());
   return {
@@ -79,3 +103,7 @@ export function splitAddress(addressString: string) {
 
 export type UserData = z.infer<typeof UserDataSchema>;
 export type UserDataFormatted = z.infer<typeof UserDataSchemaFormatted>;
+
+export type UpdateDataUser = z.infer<typeof UpdateDataUserSchema>;
+export type UpdateDataUserFormatted = z.infer<typeof UpdateDataUserSchemaFormatted>;
+
