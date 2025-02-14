@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getPaises } from "@/actions/pais"; // Nueva función para obtener todos los países
+import { getServices, IService } from "@/actions/services"; // Nueva función para obtener los servicios
 import {
   Table,
   TableBody,
@@ -10,14 +10,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IPais } from "@/actions/pais";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
-import CountryForm from "@/components/ms/enroll/form-pais";
+//import ServiceForm from "@/components/ms/enroll/form-service"; // Ajusta según tu ruta
 import { Switch } from "@/components/ui/switch";
 
-const PaisesTable = () => {
-  const [paises, setPaises] = useState<IPais[]>([]);
+const ServicesTable = () => {
+  const [services, setServices] = useState<IService[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(""); // Estado para el término de búsqueda
@@ -25,33 +24,33 @@ const PaisesTable = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchPaises = async () => {
+    const fetchServices = async () => {
       setLoading(true);
       setError(null);
       try {
-        const paisesData: IPais[] = await getPaises(); // Obtiene todos los países
-        setPaises(paisesData);
+        const servicesData: IService[] = await getServices(); // Obtiene todos los servicios
+        setServices(servicesData);
       } catch (error) {
-        setError("Error al obtener los países");
-        console.error("Error fetching paises:", error);
+        setError("Error al obtener los servicios");
+        console.error("Error fetching services:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPaises();
+    fetchServices();
   }, []);
 
-  // Filtrar los países basados en el término de búsqueda
-  const filteredPaises = paises.filter(
-    (pais) =>
-      pais.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pais.code.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtrar los servicios basados en el término de búsqueda
+  const filteredServices = services.filter(
+    (service) =>
+      service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      service.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Paginación
-  const totalPages = Math.ceil(filteredPaises.length / itemsPerPage);
-  const currentData = filteredPaises.slice(
+  const totalPages = Math.ceil(filteredServices.length / itemsPerPage);
+  const currentData = filteredServices.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -77,16 +76,16 @@ const PaisesTable = () => {
       <div className="flex justify-between items-center">
         <input
           type="text"
-          placeholder="Buscar país por nombre o código"
+          placeholder="Buscar servicio por nombre o código"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
           className="border px-3 py-2 rounded-md"
         />
       </div>
 
-      {filteredPaises.length === 0 ? (
+      {filteredServices.length === 0 ? (
         <p className="text-center text-gray-500">
-          No hay países disponibles que coincidan con tu búsqueda.
+          No hay servicios disponibles que coincidan con tu búsqueda.
         </p>
       ) : (
         <>
@@ -95,17 +94,17 @@ const PaisesTable = () => {
               <TableRow>
                 <TableHead>Código</TableHead>
                 <TableHead>Nombre</TableHead>
-                <TableHead>Código de Teléfono</TableHead>
+                <TableHead>Descripción</TableHead>
                 <TableHead>Editar</TableHead>
                 <TableHead>Estado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentData.map((pais) => (
-                <TableRow key={pais.uid}>
-                  <TableCell>{pais.code}</TableCell>
-                  <TableCell>{pais.name}</TableCell>
-                  <TableCell>{pais.code_phone}</TableCell>
+              {currentData.map((service) => (
+                <TableRow key={service.uid}>
+                  <TableCell>{service.code}</TableCell>
+                  <TableCell>{service.name}</TableCell>
+                  <TableCell>{service.description}</TableCell>
                   <TableCell>
                     <ButtonBanner
                       trigger={
@@ -117,9 +116,9 @@ const PaisesTable = () => {
                           Editar
                         </Button>
                       }
-                      content={<CountryForm />}
-                      title="Editar Paciente"
-                      description="Edita los datos del paciente"
+                      content={<button />}
+                      title="Editar Servicio"
+                      description="Edita los datos del servicio"
                       className="w-[1010px] p-8"
                     />
                   </TableCell>
@@ -156,4 +155,4 @@ const PaisesTable = () => {
   );
 };
 
-export default PaisesTable;
+export default ServicesTable;
