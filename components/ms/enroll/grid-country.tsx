@@ -4,6 +4,10 @@ import { getPaises } from "@/actions/pais"; // Nueva función para obtener todos
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { IPais } from "@/actions/pais";
+import { ButtonBanner } from "@/components/ms/button-banner";
+import { EditUserIcon } from "@/modules/icons";
+import CountryForm from '@/components/ms/enroll/form-pais';
+import {Switch} from "@/components/ui/switch";
 
 const PaisesTable = () => {
   const [paises, setPaises] = useState<IPais[]>([]);
@@ -79,6 +83,8 @@ const PaisesTable = () => {
                 <TableHead>Código</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Código de Teléfono</TableHead>
+                <TableHead>Editar</TableHead>
+                <TableHead>Estado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -87,9 +93,34 @@ const PaisesTable = () => {
                   <TableCell>{pais.code}</TableCell>
                   <TableCell>{pais.name}</TableCell>
                   <TableCell>{pais.code_phone}</TableCell>
+                                  <TableCell>
+                                                    <ButtonBanner
+                                                      trigger={
+                                                        <Button
+                                                          variant="ghost"
+                                                          className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                                                        >
+                                                          <EditUserIcon fill="currentColor" />
+                                                          Editar
+                                                        </Button>
+                                                      }
+                                                      content={
+                                                        < CountryForm/>
+                                                      }
+                                                      title="Editar Paciente"
+                                                      description="Edita los datos del paciente"
+                                                      className="w-[1010px] p-8"
+                                                    />
+                                                  </TableCell>
+                                                  <TableCell>
+                <Switch
+                  color="primary"
+                />
+              </TableCell>
                 </TableRow>
               ))}
             </TableBody>
+
           </Table>
 
           <div className="flex justify-between items-center">

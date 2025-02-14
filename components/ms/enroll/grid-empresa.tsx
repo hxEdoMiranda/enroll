@@ -1,8 +1,18 @@
 import { useState, useEffect } from "react";
 import { getEmpresas, IEmpresa } from "@/actions/empresa";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {Switch} from "@/components/ui/switch";
+import { Switch } from "@/components/ui/switch";
+import { ButtonBanner } from "@/components/ms/button-banner";
+import { EditUserIcon } from "@/modules/icons";
+
 interface EmpresasTableProps {
   searchTerm: string;
 }
@@ -30,18 +40,24 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
   }, []);
 
   const handleToggle = (id: string) => {
-    setEmpresas(empresas.map(empresa => 
-      empresa._id === id ? { ...empresa, enabled: !empresa.enabled } : empresa
-    ));
+    setEmpresas(
+      empresas.map((empresa) =>
+        empresa._id === id ? { ...empresa, enabled: !empresa.enabled } : empresa
+      )
+    );
   };
 
-  const filteredEmpresas = empresas.filter((empresa) => 
-    empresa.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    empresa.identifier.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredEmpresas = empresas.filter(
+    (empresa) =>
+      empresa.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      empresa.identifier.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredEmpresas.length / itemsPerPage);
-  const currentData = filteredEmpresas.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentData = filteredEmpresas.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -74,6 +90,74 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
               <TableCell>{empresa.industry_type || "N/A"}</TableCell>
               <TableCell>{empresa.employee_count || "N/A"}</TableCell>
               <TableCell>{empresa.country.name || "N/A"}</TableCell>
+              <TableCell>
+                <ButtonBanner
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                    >
+                      <EditUserIcon fill="currentColor" />
+                      Ver Detalles
+                    </Button>
+                  }
+                  content={<Button></Button>}
+                  title="Editar Paciente"
+                  description="Edita los datos del paciente"
+                  className="w-[1010px] p-8"
+                />
+              </TableCell>
+              <TableCell>
+                <ButtonBanner
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                    >
+                      <EditUserIcon fill="currentColor" />
+                      General
+                    </Button>
+                  }
+                  content={<Button></Button>}
+                  title="Editar Paciente"
+                  description="Edita los datos del paciente"
+                  className="w-[1010px] p-8"
+                />
+              </TableCell>
+              <TableCell>
+                <ButtonBanner
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                    >
+                      <EditUserIcon fill="currentColor" />
+                      Planes
+                    </Button>
+                  }
+                  content={<Button></Button>}
+                  title="Editar Paciente"
+                  description="Edita los datos del paciente"
+                  className="w-[1010px] p-8"
+                />
+              </TableCell>
+              <TableCell>
+                <ButtonBanner
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                    >
+                      <EditUserIcon fill="currentColor" />
+                      Customizar
+                    </Button>
+                  }
+                  content={<Button></Button>}
+                  title="Editar Paciente"
+                  description="Edita los datos del paciente"
+                  className="w-[1010px] p-8"
+                />
+              </TableCell>
               <TableCell>
                 <Switch
                   checked={empresa.enabled}
