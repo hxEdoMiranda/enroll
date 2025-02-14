@@ -1,34 +1,41 @@
-const BASE_API_URL = "https://api.medibuslive.com/dev/pr/enroll/v3";
+const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
-interface ICountry {
-  codigo: string;
-  nombre: string;
-  codTelefono: string;
-  createdAt: string;
-  updatedAt: string;
-  uid: string;
-}
-
-export interface IEmpresa {
-  uid?: string;
-  identifier: string;
-  nid: string;
+interface IContact {
   name: string;
-  industry_type: string;
-  business_type: string;
-  country: ICountry; // Cambié esto para que sea un objeto de tipo ICountry
-  start_validity: string;
-  end_validity: string;
-  contact: { name: string }[];
-  commercial_manager: { name: string };
-  kam: { name: string };
+  phone?: string | null; // Permitir null o undefined
+  email?: string;
+}
+interface ICountry {
+  _id: string;
+  code: string;
+  name: string;
+  code_phone: string;
+}
+export interface IEmpresa {
+  _id?: string; // ID de la empresa
+  identifier: string; // Identificador único
+  name: string; // Nombre de la empresa
+  trade_name: string; // Nombre comercial
+  corporate_name: string; // Razón social
+  country: ICountry; // El país es referenciado por su ObjectId (ID del país)
+  industry_type: string; // Tipo de industria
+  business_type: string; // Tipo de negocio
+  company_phone: string; // Teléfono de la empresa
+  company_email: string; // Email de la empresa
+  contact: IContact; // Contacto de la empresa con nombre, teléfono y email opcionales
+  commercial_manager: string; // Nombre del gerente comercial
+  commercial_manager_email: string; // Email del gerente comercial
+  kam: string; // Nombre del Key Account Manager (KAM)
+  email_kam: string; // Email del Key Account Manager (KAM)
+  employee_count: number; // Número de empleados
+  enabled: boolean; // Campo para habilitar/deshabilitar
 }
 
 
 export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
     console.log("Formulario00000000000000000000000000000000000:");
   try {
-    const response = await fetch(`${BASE_API_URL}/empresa`, {
+    const response = await fetch(`${BASE_API_URL}/company`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +55,7 @@ export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
 
 export const updateEmpresa = async (empresa: IEmpresa): Promise<any> => {
   try {
-    const response = await fetch(`${BASE_API_URL}/empresa/${empresa.uid}`, {
+    const response = await fetch(`${BASE_API_URL}/empresa/${empresa._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +74,7 @@ export const updateEmpresa = async (empresa: IEmpresa): Promise<any> => {
 };
 export const getEmpresas = async (): Promise<IEmpresa[]> => {
   try {
-    const response = await fetch(`${BASE_API_URL}/empresa`, {
+    const response = await fetch(`${BASE_API_URL}/company`, {
       method: "GET",
       redirect: "follow",
     });

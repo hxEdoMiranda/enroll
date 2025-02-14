@@ -9,10 +9,8 @@ interface Step {
 
 const steps: Step[] = [
   { label: "Datos de la empresa", description: "Ingresa los detalles básicos de la empresa", isActive: true, isCompleted: false },
-  { label: "Planes", description:"Crea y vincula los planes", isActive: false, isCompleted: false },
-  { label: "Servicios", description:"Configura y asocia los servicios disponibles",isActive: false, isCompleted: false },
-  { label: "Cargar usuarios", description:"Registrar y vincular usuarios",isActive: false, isCompleted: false },
-  { label: "Personalización", description:"Crea y adapta la personalización",isActive: false, isCompleted: false },
+  { label: "Usuarios administrativos", description:"CreaAscocia los usuarios que podrán operar administrar esta empresa y vincula los planes", isActive: false, isCompleted: false },
+
 ];
 
 const Stepper = () => {

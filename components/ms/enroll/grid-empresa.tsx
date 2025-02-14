@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { getEmpresas } from "@/actions/empresa";
+import { getEmpresas, IEmpresa } from "@/actions/empresa";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IEmpresa } from "@/actions/empresa";
-
+import {Switch} from "@/components/ui/switch";
 interface EmpresasTableProps {
   searchTerm: string;
 }
@@ -18,7 +17,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
     const fetchEmpresas = async () => {
       setLoading(true);
       try {
-        const data = await getEmpresas(); // Asegúrate de que getEmpresas devuelve el array
+        const data = await getEmpresas();
         setEmpresas(data);
       } catch (error) {
         console.error("Error fetching empresas:", error);
@@ -30,7 +29,12 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
     fetchEmpresas();
   }, []);
 
-  // Filtrar empresas según el término de búsqueda
+  const handleToggle = (id: string) => {
+    setEmpresas(empresas.map(empresa => 
+      empresa._id === id ? { ...empresa, enabled: !empresa.enabled } : empresa
+    ));
+  };
+
   const filteredEmpresas = empresas.filter((empresa) => 
     empresa.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     empresa.identifier.toLowerCase().includes(searchTerm.toLowerCase())
@@ -56,21 +60,27 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Identificador</TableHead>
             <TableHead>Nombre</TableHead>
             <TableHead>Industria</TableHead>
-            <TableHead>Tipo de Negocio</TableHead>
+            <TableHead>Número de Empleados</TableHead>
             <TableHead>País</TableHead>
+            <TableHead>Habilitado</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {currentData.map((empresa) => (
-            <TableRow key={empresa.uid}>
-              <TableCell>{empresa.identifier}</TableCell>
+            <TableRow key={empresa._id}>
               <TableCell>{empresa.name}</TableCell>
-              <TableCell>{empresa.industry_type}</TableCell>
-              <TableCell>{empresa.business_type}</TableCell>
-              <TableCell>{empresa.country.nombre}</TableCell> {/* Acceso correcto a 'nombre' */}
+              <TableCell>{empresa.industry_type || "N/A"}</TableCell>
+              <TableCell>{empresa.employee_count || "N/A"}</TableCell>
+              <TableCell>{empresa.country.name || "N/A"}</TableCell>
+              <TableCell>
+                <Switch
+                  checked={empresa.enabled}
+                  onChange={() => handleToggle(empresa._id!)}
+                  color="primary"
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
