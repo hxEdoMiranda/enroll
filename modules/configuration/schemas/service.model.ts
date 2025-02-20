@@ -1,18 +1,12 @@
-import { Schema, model, ObjectId } from "mongoose";
-import { ServiceModel } from "../types/Service.type";
+import { z } from "zod";
 
-const ServiceSchema: Schema<ServiceModel> = new Schema({
-    code: { type: String, required: true, uppercase: true, trim: true },
-    name: { type: String, required: true, uppercase: true, trim: true },
-    description: { type: String, required: true, trim: true },
-    country: [{ type: Schema.Types.ObjectId, ref: 'Country' }]
-}, { timestamps: true, versionKey: false });
+export const ServiceSchema = z.object({
+  _id: z.string().min(1, { message: "Este campo es obligatorio" }),
+  code: z.string().min(1, { message: "Este campo es obligatorio" }),
+  name: z.string().min(1, { message: "Este campo es obligatorio" }),
+  state: z.boolean(),
+  description: z.string().min(1, { message: "Este campo es obligatorio" }),
+  country: z.array(z.string().min(1, { message: "Este campo es obligatorio" })),
+});
 
-ServiceSchema.methods.toJSON = function () {
-    const { __v, _id, ...service } = this.toObject();
-    service.uid = _id;
-    return service;
-};
-
-// Exporta el modelo
-export const Service = model("Service", ServiceSchema);
+export type Service = z.infer<typeof ServiceSchema>;

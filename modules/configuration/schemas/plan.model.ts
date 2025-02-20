@@ -1,28 +1,18 @@
-import mongoose, { Schema, model } from "mongoose";
-const { ObjectId } = mongoose.Types;
-import { Company } from "./company.model";
-import { PlanModel } from "../types/Plan.type";
-import { Service } from "./service.model";
+import { z } from "zod";
 
-const PlanSchema: Schema<PlanModel> = new Schema({
-  identifier: { type: String, required: true, uppercase: true, trim: true, unique: true },
-  name: { type: String, required: true, uppercase: true, trim: true },
-  state: { type: Boolean, default: true },
-  start_date: { type: Date, required: true, trim: true },
-  end_date: { type: Date, required: true, trim: true },
-  max_number_of_holders: { type: Number, required: true },
-  self_managed_load: { type: Boolean, default: false },
-  max_number_of_loads: { type: Number, default: 0 },
-  custom_plan_id: { type: ObjectId, ref: "Plan"},
-  company: { type: ObjectId, ref: Company, required: true }
-  Service: { type: ObjectId, ref: Service }
-}, { timestamps: true, versionKey: false });
+export const PlanSchema = z.object({
+  uid: z.string().min(1, { message: "Este campo es obligatorio" }),
+  identifier: z.string().min(1, { message: "Este campo es obligatorio" }),
+  name: z.string().min(1, { message: "Este campo es obligatorio" }),
+  state: z.boolean(),
+  start_date: z.date({ required_error: "Este campo es obligatorio" }),
+  end_date: z.date({ required_error: "Este campo es obligatorio" }),
+  max_number_of_holders: z.number().int().nonnegative(),
+  self_managed_load: z.boolean(),
+  max_number_of_loads: z.number().int().nonnegative(),
+  custom_plan_id: z.string().min(1, { message: "Este campo es obligatorio" }),
+  company: z.string().min(1, { message: "Este campo es obligatorio" }),
+  service: z.string().min(1, { message: "Este campo es obligatorio" }),
+});
 
-PlanSchema.methods.toJSON = function () {
-  const { __v, _id, ...program } = this.toObject();
-  program.uid = _id;
-  return program;
-};
-
-// Exportar modelo
-export const Plan = model<PlanModel>("Plan", PlanSchema);
+export type Plan = z.infer<typeof PlanSchema>;

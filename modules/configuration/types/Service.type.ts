@@ -1,10 +1,10 @@
-import { ObjectId } from "mongoose";
 
 export interface ServiceModel {
     _id: string;
     code: string;
     name: string;
+    state: boolean;
     description: string;
-    country: ObjectId[];
+    country: string[];
   }
   

@@ -1,17 +1,10 @@
-import { Schema, model } from "mongoose";
-import { CountryModel } from "../types/Country.type";
+import { z } from "zod";
 
-const CountrySchema: Schema<CountryModel> = new Schema({
-    code: { type: String, required: true, uppercase:true, trim:true },
-    name: { type: String, required: true, uppercase:true, trim:true  },
-    code_phone: { type: String, required: true, uppercase:true, trim:true  },
-},{ timestamps: true, versionKey: false});
+export const CountrySchema = z.object({
+  uid: z.string().nullable(),
+  name: z.string().min(1, { message: "Este campo es obligatorio" }),
+  code: z.string().min(1, { message: "Este campo es obligatorio" }),
+  code_phone: z.string().min(1, { message: "Este campo es obligatorio" }),
+});
 
-CountrySchema.methods.toJSON = function () {
-  const { __v, _id, state, ...program } = this.toObject();
-  program.uid = _id;
-  return program;
-};
-
-//export default model("Country", CountrySchema);
-export const Country = model("Country", CountrySchema);
+export type Country = z.infer<typeof CountrySchema>;
