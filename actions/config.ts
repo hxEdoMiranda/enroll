@@ -1,30 +1,42 @@
-const BASE_API_URL = "https://api.medibuslive.com/dev/pr/enroll/v2";
+const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3/config/buttons-home";
 
-interface ICompanyConfig {
-  idEmpresa: number;
-  img: string;
+interface ICompanyConfig  {
+  id_oauth: string;
   texto: string;
-  subTexto: string;
-  accion: string;
-  target: string;
+  sub_texto: string;
+  image: string;
+  action: string;
+  target: string | null;
+  createdAt: string;
+  updatedAt: string;
+  uid: string;
 }
 
-export const getCompanyConfig = async (company_id: number): Promise<ICompanyConfig[]> => {
+export const getCompanyConfig = async (id_oauth: string): Promise<ICompanyConfig[]> => {
+  // Aquí ya no necesitamos el cuerpo
   const requestOptions = {
     method: "GET",
     redirect: "follow" as RequestRedirect,
   };
 
   try {
-    const response = await fetch(`${BASE_API_URL}/company/config?company_id=${company_id}`, requestOptions);
-    const result = await response.json();
-    console.log(result);
-    return result.data; // Devuelve el arreglo de objetos ICompanyConfig
-  } catch (error) {
-    let errorMessage = 'An error occurred';
-    if (error instanceof Error) {
-      errorMessage = error.message;
+    // Se pasa el parámetro directamente en la URL
+    const response = await fetch(`${BASE_API_URL}?id_oauth=${id_oauth}`, requestOptions);
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
-    throw new Error(`Error fetching data: ${errorMessage}`);
+
+    // Parsear la respuesta como JSON
+    const result = await response.json();
+    
+    // Verificar si el campo 'data' está presente y contiene los datos
+    if (result.data) {
+      return result.data; // Devuelve los datos encontrados
+    } else {
+      throw new Error("No se encontraron datos.");
+    }
+  } catch (error) {
+    console.error(`Error fetching data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
   }
 };
