@@ -18,7 +18,7 @@ const EmpresaPage = () => {
             <Building2 className="size-10 text-white" />
             <h1 className="text-white font-bold text-3xl">Gestión Empresas</h1>
           </div>
-          <Link href="/home/enroll/empresa/crear-empresa">
+          <Link href="/enroll/menu/empresa/crear-empresa">
             <Button variant="secondary">
               Agregar empresa
             </Button>
