@@ -1,12 +1,6 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
-//https://api.medibuslive.com/dev/backoffice/enroll/v3/country
 
-export interface IPais {
-  uid?: string; // Hacer que uid sea opcional
-  code: string;
-  name: string;
-  code_phone: string;
-}
+import { CountryModel as IPais} from "../modules/configuration/types/Country.type";
 
 export const postCreatePais = async (pais: IPais): Promise<any> => {
     console.log("LLegoooooooooooooooooooooooooooooooooooo");
@@ -83,6 +77,5 @@ export const getPaises = async (): Promise<IPais[]> => {
 
   const data = await response.json();
 
-  // Si la API devuelve { data: [...] }, extraemos el array
   return Array.isArray(data) ? data : data.data || [];
 };

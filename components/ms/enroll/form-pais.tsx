@@ -13,42 +13,36 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import React, { useState } from 'react';
 import { postCreatePais } from '@/actions/pais';
-
-const formSchema = z.object({
-  codigo: z.string().min(1, { message: 'Código is required.' }),
-  nombre: z.string().min(1, { message: 'Nombre is required.' }),
-  codTelefono: z.string().min(1, { message: 'Código de Teléfono is required.' }),
-});
+import { CountrySchema } from '@/modules/configuration/schemas/country.model'; // Importamos el schema
 
 const CountryForm = () => {
   const [message, setMessage] = useState('');
+
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(CountrySchema),
     defaultValues: {
-      codigo: '',
-      nombre: '',
-      codTelefono: '',
+      code: '',
+      name: '',
+      code_phone: '',
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("Formulario enviado con los siguientes valores:", values);
-    try {
-      // Mapear los valores del formulario a los nombres de campos esperados por la API
-      const mappedValues = {
-        code: values.codigo,
-        name: values.nombre,
-        code_phone: values.codTelefono,
-      };
+const onSubmit = async (values: z.infer<typeof CountrySchema>) => {
+  // Convertimos undefined a null para que coincida con el modelo
+  const data = { ...values, uid: values.uid ?? null };
 
-      const result = await postCreatePais(mappedValues);
-      console.log("Resultado de la API:", result);
-      setMessage('País creado exitosamente.');
-    } catch (error) {
-      console.error("Error al enviar los datos:", error);
-      setMessage('Error al crear el país. Por favor, inténtalo de nuevo.');
-    }
-  };
+  console.log("Formulario enviado con los siguientes valores:", data);
+
+  try {
+    const result = await postCreatePais(data);
+    console.log("Resultado de la API:", result);
+    setMessage('País creado exitosamente.');
+  } catch (error) {
+    console.error("Error al enviar los datos:", error);
+    setMessage('Error al crear el país. Por favor, inténtalo de nuevo.');
+  }
+};
+
 
   return (
     <div className="space-y-8">
@@ -56,7 +50,7 @@ const CountryForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name="codigo"
+            name="code"
             render={({ field }) => (
               <FormItem>
                 <span className="block mb-1 text-primary">Código</span>
@@ -69,7 +63,7 @@ const CountryForm = () => {
           />
           <FormField
             control={form.control}
-            name="nombre"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <span className="block mb-1 text-primary">Nombre</span>
@@ -82,7 +76,7 @@ const CountryForm = () => {
           />
           <FormField
             control={form.control}
-            name="codTelefono"
+            name="code_phone"
             render={({ field }) => (
               <FormItem>
                 <span className="block mb-1 text-primary">Código de Teléfono</span>

@@ -1,39 +1,10 @@
-const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
+const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3"; 
 
-interface IContact {
-  name: string;
-  phone?: string | null; // Permitir null o undefined
-  email?: string;
-}
-interface ICountry {
-  _id: string;
-  code: string;
-  name: string;
-  code_phone: string;
-}
-export interface IEmpresa {
-  _id?: string; // ID de la empresa
-  identifier: string; // Identificador único
-  name: string; // Nombre de la empresa
-  trade_name: string; // Nombre comercial
-  corporate_name: string; // Razón social
-  country: ICountry; // El país es referenciado por su ObjectId (ID del país)
-  industry_type: string; // Tipo de industria
-  business_type: string; // Tipo de negocio
-  company_phone: string; // Teléfono de la empresa
-  company_email: string; // Email de la empresa
-  contact: IContact; // Contacto de la empresa con nombre, teléfono y email opcionales
-  commercial_manager: string; // Nombre del gerente comercial
-  commercial_manager_email: string; // Email del gerente comercial
-  kam: string; // Nombre del Key Account Manager (KAM)
-  email_kam: string; // Email del Key Account Manager (KAM)
-  employee_count: number; // Número de empleados
-  enabled: boolean; // Campo para habilitar/deshabilitar
-}
+import { CompanyModel as IEmpresa} from "../modules/configuration/types/Company.type";
 
 
 export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
-    console.log("Formulario00000000000000000000000000000000000:");
+  console.log("Formulario:");
   try {
     const response = await fetch(`${BASE_API_URL}/company`, {
       method: "POST",
@@ -72,6 +43,7 @@ export const updateEmpresa = async (empresa: IEmpresa): Promise<any> => {
     throw new Error(`Error updating data: ${errorMessage}`);
   }
 };
+
 export const getEmpresas = async (): Promise<IEmpresa[]> => {
   try {
     const response = await fetch(`${BASE_API_URL}/company`, {

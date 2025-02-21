@@ -10,14 +10,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IPais } from "@/actions/pais";
+import { CountryModel } from "@/modules/configuration/types/Country.type";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import CountryForm from "@/components/ms/enroll/form-pais";
 import { Switch } from "@/components/ui/switch";
 
 const PaisesTable = () => {
-  const [paises, setPaises] = useState<IPais[]>([]);
+  const [paises, setPaises] = useState<CountryModel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(""); // Estado para el término de búsqueda
@@ -29,7 +29,7 @@ const PaisesTable = () => {
       setLoading(true);
       setError(null);
       try {
-        const paisesData: IPais[] = await getPaises(); // Obtiene todos los países
+        const paisesData: CountryModel[] = await getPaises(); // Obtiene todos los países
         setPaises(paisesData);
       } catch (error) {
         setError("Error al obtener los países");
