@@ -313,3 +313,12 @@ export interface IDPlan {
   createdAt:             Date;
   updatedAt:             Date;
 }
+
+export interface EmailInviteData {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  urlRedirect: string;
+  role: "admin" | "patient" | "superadmin" | "doctor";
+  plans?: string[];
+}
