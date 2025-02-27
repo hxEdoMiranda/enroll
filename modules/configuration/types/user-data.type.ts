@@ -27,6 +27,11 @@ export interface Address {
   organization: Organization;
 }
 
+export interface UserPatients {
+  clerk:         UserClass;
+  organization: Organization;
+}
+
 export interface Organization {
   id:                    string;
   name:                  string;

@@ -30,12 +30,12 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
-import { User } from "@/modules/configuration/types/user-data.type";
+import { User, UserPatients } from "@/modules/configuration/types/user-data.type";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "../icons";
 import { EditPatientForm } from "@/components/ms/enroll/form-editar-paciente-individual";
 
-export default function UserTable({ users }: { users: User[] }) {
+export default function UserTable({ users }: { users: UserPatients[] }) {
 	const [searchQuery, setSearchQuery] = React.useState("");
 	const [filteredUsers, setFilteredUsers] = React.useState(users);
 	const [currentPage, setCurrentPage] = React.useState(1);
@@ -44,7 +44,7 @@ export default function UserTable({ users }: { users: User[] }) {
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
 		const filtered = users.filter((user) =>
-			user.user.firstName.toLowerCase().includes(query.toLowerCase())
+			user.clerk.firstName.toLowerCase().includes(query.toLowerCase())
 		);
 		setFilteredUsers(filtered);
 		setCurrentPage(1);
@@ -119,38 +119,38 @@ export default function UserTable({ users }: { users: User[] }) {
 					</TableHeader>
 					<TableBody>
 						{currentUsers.map((user) => (
-							<TableRow key={user.user.id}>
+							<TableRow key={user.clerk.id}>
 								<TableCell className="font-medium">
-									{user.user.firstName} {user.user.lastName}
+									{user.clerk.firstName} {user.clerk.lastName}
 								</TableCell>
 								<TableCell>
 									<div className="flex items-center gap-2">
 										<Image
 											src={
-												user.organization.imageUrl ||
+												user.organization?.imageUrl ||
 												"/placeholder.svg"
 											}
-											alt={user.organization.name}
+											alt={user.organization?.name || "-" }
 											width={20}
 											height={20}
 											className="rounded-full"
 										/>
-										{user.organization.name}
+										{user.organization?.name}
 									</div>
 								</TableCell>
 								<TableCell>
 									<div className="flex items-center gap-2">
 										<Image
 											src={
-												user.organization.imageUrl ||
+												user.organization?.imageUrl ||
 												"/placeholder.svg"
 											}
-											alt={user.organization.name}
+											alt={user.organization?.name || "-" }
 											width={20}
 											height={20}
 											className="rounded-sm"
 										/>
-										{user.organization.name}
+										{user.organization?.name}
 									</div>
 								</TableCell>
 								<TableCell>Fonasa</TableCell>
@@ -160,7 +160,7 @@ export default function UserTable({ users }: { users: User[] }) {
 								<TableCell>2026-01-01</TableCell>
 								<TableCell>20 años</TableCell>
 								<TableCell>
-									<ButtonBanner
+									{<ButtonBanner
 										trigger={
 											<Button
 												variant="ghost"
@@ -176,7 +176,7 @@ export default function UserTable({ users }: { users: User[] }) {
 										title="Editar Paciente"
 										description="Edita los datos del paciente"
 										className="w-[1010px] p-8"
-									/>
+									/>}
 								</TableCell>
 								<TableCell>
 									<Switch checked={true} />
