@@ -4,7 +4,7 @@ import { CompanyModel as IEmpresa} from "../modules/configuration/types/Company.
 
 
 export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
-  console.log("Formulario:");
+  console.log("Formularioooooooooooooooooooooooooooooooooooo:");
   try {
     const response = await fetch(`${BASE_API_URL}/company`, {
       method: "POST",
@@ -15,6 +15,7 @@ export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
     });
     const result = await response.json();
     return result;
+    
   } catch (error) {
     let errorMessage = 'An error occurred';
     if (error instanceof Error) {

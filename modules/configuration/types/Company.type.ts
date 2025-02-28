@@ -16,9 +16,9 @@ export interface CompanyModel {
     business_type: string;
     company_phone: string;
     company_email: string;
-    contact: ContactModel[];  // Cambiar a array de ContactModel
-    commercial_manager: ContactModel[];  // Cambiar a array de ContactModel
-    kam: ContactModel[];  // Cambiar a array de ContactModel
+    contact: ContactModel[];  
+    commercial_manager: ContactModel[];  
+    kam: ContactModel[];  
     employee_count: number;
     state: boolean;  // Añadir el campo state
 }

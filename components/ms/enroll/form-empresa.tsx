@@ -1,75 +1,55 @@
-'use client';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+"use client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import Link from "next/link";
 import {
   Form,
   FormField,
   FormItem,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input'; 
-import {  Select, SelectTrigger,SelectValue,SelectContent,SelectGroup, SelectItem } from '@/components/ui/select'; 
-import React, { useState, useEffect } from 'react';
-import { postCreateEmpresa } from '@/actions/empresa'; 
-import { getPaises,IPais  } from '@/actions/pais'; // Importar getPaises desde su archivo
-
-// Definir el esquema de validación
-const countrySchema = z.object({
-  _id: z.string().min(1, { message: "Country ID is required." }),
-  code: z.string().min(1, { message: "Country code is required." }),
-  name: z.string().min(1, { message: "Country name is required." }),
-  code_phone: z.string().min(1, { message: "Country phone code is required." }),
-});
-
-// Definir el esquema de validación
-const formSchema = z.object({
-  identifier: z.string().min(1, { message: 'Identifier is required.' }),
-  name: z.string().min(1, { message: 'Name is required.' }),
-  trade_name: z.string().min(1, { message: 'Trade Name is required.' }),
-  corporate_name: z.string().min(1, { message: 'Corporate Name is required.' }),
-  country: countrySchema,
-  industry_type: z.string().min(1, { message: 'Industry Type is required.' }),
-  business_type: z.string().min(1, { message: 'Business Type is required.' }),
-  company_phone: z.string().min(1, { message: 'Company Phone is required.' }),
-  company_email: z.string().email({ message: 'Invalid email format.' }),
-  commercial_manager: z.string().min(1, { message: 'Commercial Manager is required.' }),
-  commercial_manager_email: z.string().email({ message: 'Invalid email format.' }),
-  kam: z.string().min(1, { message: 'KAM is required.' }),
-  email_kam: z.string().email({ message: 'Invalid email format.' }),
-  employee_count: z.number().min(1, { message: 'Employee Count is required.' }),
-  enabled: z.boolean().default(true),
-});
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from "@/components/ui/select";
+import React, { useState, useEffect } from "react";
+import { postCreateEmpresa } from "@/actions/empresa";
+import { getPaises } from "@/actions/pais"; // Importar getPaises desde su archivo
+import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
+import { CompanySchema } from "@/modules/configuration/schemas/company.model";
+import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type"; // Asegúrate de ajustar la ruta
+import { Checkbox } from "@radix-ui/react-checkbox";
 
 const CompanyForm = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [paises, setPaises] = useState<IPais[]>([]);
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
+  const form = useForm<IEmpresa>({
+    resolver: zodResolver(CompanySchema),
     defaultValues: {
-      identifier: '',
-      name: '',
-      trade_name: '',
-      corporate_name: '',
-      country: {
-        _id: '',
-        code: '',
-        name: '',
-        code_phone: '',
-      },
-      industry_type: '',
-      business_type: '',
-      company_phone: '',
-      company_email: '',
-      commercial_manager: '',
-      commercial_manager_email: '',
-      kam: '',
-      email_kam: '',
+      uid: "",
+      identifier: "",
+      name: "",
+      trade_name: "",
+      corporate_name: "",
+      country: "",
+      industry_type: "",
+      business_type: "",
+      company_phone: "",
+      company_email: "",
+      contact: [{ name: "", mail: "", phone: "" }],
+      commercial_manager: [{ name: "", mail: "", phone: "" }],
+      kam: [{ name: "", mail: "" }],
       employee_count: 0,
-      enabled: true,
+      state: true,
     },
   });
 
@@ -86,229 +66,370 @@ const CompanyForm = () => {
     fetchPaises();
   }, []);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (values: IEmpresa) => {
     console.log("Formulario enviado con los siguientes valores:", values);
     try {
       const mappedValues = {
+        uid: values.uid,
         identifier: values.identifier,
         name: values.name,
         trade_name: values.trade_name,
         corporate_name: values.corporate_name,
-        country: values.country._id,
+        country: values.country,
         industry_type: values.industry_type,
         business_type: values.business_type,
         company_phone: values.company_phone,
         company_email: values.company_email,
-        contact: {
-          name: values.commercial_manager,
-          phone: null, 
-          mail: values.commercial_manager_email,
-        },
-        commercial_manager: values.commercial_manager,
-        commercial_manager_email: values.commercial_manager_email,
-        kam: values.kam,
-        email_kam: values.email_kam,
+        contact: values.contact.map((contact) => ({
+          name: contact.name,
+          phone: contact.phone || undefined,
+          mail: contact.mail || undefined,
+        })),
+        commercial_manager: values.commercial_manager.map((manager) => ({
+          name: manager.name,
+          phone: manager.phone || undefined,
+          mail: manager.mail || undefined,
+        })),
+        kam: values.kam.map((kam) => ({
+          name: kam.name,
+          phone: kam.phone || undefined,
+          mail: kam.mail || undefined,
+        })),
         employee_count: values.employee_count,
-        enabled: values.enabled ?? true, 
+        state: values.state ?? true,
       };
-  
+
       const result = await postCreateEmpresa(mappedValues);
-      console.log("Resultado de la API:", result);
-      setMessage('Empresa creada exitosamente.');
+      console.log(
+        "Resultado de la API:999990000000000000000000000000000000",
+        result
+      );
+      setMessage("Empresa creada exitosamente.");
     } catch (error) {
       console.error("Error al enviar los datos:", error);
-      setMessage('Error al crear la empresa. Por favor, inténtalo de nuevo.');
+      setMessage("Error al crear la empresa. Por favor, inténtalo de nuevo.");
     }
   };
-  
 
   return (
     <div className="space-y-8">
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Columna 1 */}
-        <div className="space-y-4">
-          <FormField control={form.control} name="identifier" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Identifier</span>
-              <FormControl>
-                <Input placeholder="Identifier" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="name" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Name</span>
-              <FormControl>
-                <Input placeholder="Company Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="trade_name" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Trade Name</span>
-              <FormControl>
-                <Input placeholder="Trade Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="corporate_name" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Corporate Name</span>
-              <FormControl>
-                <Input placeholder="Corporate Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-        <FormField control={form.control} name="country" render={({ field }) => (
-  <FormItem>
-    <span className="block mb-1 text-primary">Country</span>
-    <FormControl>
-      <Select
-        value={field.value?._id || ""}
-        onValueChange={(value) => {
-          const selectedCountry = paises.find(pais => pais.uid === value);
-          if (selectedCountry) {
-            field.onChange({
-              _id: selectedCountry.uid,
-              code: selectedCountry.code,
-              name: selectedCountry.name,
-              code_phone: selectedCountry.code_phone
-            });
-          }
-        }}
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <SelectTrigger>
-          <SelectValue placeholder="Select a country">
-            {field.value ? field.value.name : "Select a country"}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {paises.map(pais => (
-              <SelectItem key={pais.uid} value={pais.uid || ""}>
-                {pais.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </FormControl>
-    <FormMessage />
-  </FormItem>
-)} />
-
+        {/* Fila 1 */}
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="identifier"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Identifier</span>
+                <FormControl>
+                  <Input placeholder="Identifier" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Name</span>
+                <FormControl>
+                  <Input placeholder="Name" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="corporate_name"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Corporate Name</span>
+                <FormControl>
+                  <Input placeholder="Corporate Name" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
   
-        {/* Columna 2 */}
+        {/* Fila 2 */}
         <div className="space-y-4">
-          <FormField control={form.control} name="industry_type" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Industry Type</span>
-              <FormControl>
-                <Input placeholder="Industry Type" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="business_type" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Business Type</span>
-              <FormControl>
-                <Input placeholder="Business Type" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="company_phone" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Company Phone</span>
-              <FormControl>
-                <Input placeholder="Company Phone" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="company_email" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Company Email</span>
-              <FormControl>
-                <Input placeholder="Company Email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="commercial_manager" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Commercial Manager</span>
-              <FormControl>
-                <Input placeholder="Commercial Manager" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
+          <FormField
+            control={form.control}
+            name="trade_name"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Trade Name</span>
+                <FormControl>
+                  <Input placeholder="Trade Name" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Country</span>
+                <FormControl>
+                  <Select
+                    value={field.value || ""}
+                    onValueChange={(value) => {
+                      const selectedCountry = paises.find((pais) => pais.uid === value);
+                      if (selectedCountry) {
+                        field.onChange(selectedCountry.uid);
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a country">
+                        {field.value
+                          ? paises.find((p) => p.uid === field.value)?.name
+                          : "Select a country"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {paises.map((pais) => (
+                          <SelectItem key={pais.uid} value={pais.uid || ""}>
+                            {pais.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="industry_type"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Industry Type</span>
+                <FormControl>
+                  <Input placeholder="Industry Type" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
   
-        {/* Columna 3 */}
+        {/* Fila 3 */}
         <div className="space-y-4">
-          <FormField control={form.control} name="commercial_manager_email" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">Commercial Manager Email</span>
-              <FormControl>
-                <Input placeholder="Commercial Manager Email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="kam" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">KAM</span>
-              <FormControl>
-                <Input placeholder="KAM" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="email_kam" render={({ field }) => (
-            <FormItem>
-              <span className="block mb-1 text-primary">KAM Email</span>
-              <FormControl>
-                <Input placeholder="KAM Email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-         <FormField control={form.control} name="employee_count" render={({ field }) => (
-  <FormItem>
-    <span className="block mb-1 text-primary">Employee Count</span>
-    <FormControl>
-      <Input
-        type="number"
-        placeholder="Employee Count"
-        value={field.value} // Asegúrate de que el valor sea un número
-        onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)} // Convertir a número
-      />
-    </FormControl>
-    <FormMessage />
-  </FormItem>
-)} />
-
-          {/* Botón en la última columna */}
-          <div className="mt-4 flex justify-end">
-            <Button type="submit" className="w-full lg:w-auto">
-              Submit
-            </Button>
-          </div>
+          <FormField
+            control={form.control}
+            name="business_type"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Business Type</span>
+                <FormControl>
+                  <Input placeholder="Business Type" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="company_email"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Company Email</span>
+                <FormControl>
+                  <Input placeholder="Company Email" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="company_phone"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Company Phone</span>
+                <FormControl>
+                  <Input placeholder="Company Phone" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+  
+        {/* Fila 4 */}
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="commercial_manager.0.name"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Commercial Manager Name</span>
+                <FormControl>
+                  <Input placeholder="Commercial Manager Name" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="commercial_manager.0.mail"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Commercial Manager Email</span>
+                <FormControl>
+                  <Input placeholder="Commercial Manager Email" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="kam.0.name"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">KAM Name</span>
+                <FormControl>
+                  <Input placeholder="KAM Name" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+  
+        {/* Fila 5 */}
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="kam.0.mail"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">KAM Email</span>
+                <FormControl>
+                  <Input placeholder="KAM Email" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="employee_count"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Employee Count</span>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Employee Count"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                    className="text-xs"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+  
+        {/* Título Contacto */}
+        <div className="mt-8">
+          <span className="block text-lg font-semibold text-primary">Contacto</span>
+        </div>
+  
+        {/* Fila de Contacto */}
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="contact.0.name"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Name</span>
+                <FormControl>
+                  <Input placeholder="Contact Name" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="contact.0.phone"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Phone</span>
+                <FormControl>
+                  <Input placeholder="Contact Phone" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="contact.0.mail"
+            render={({ field }) => (
+              <FormItem>
+                <span className="block mb-1 text-primary text-xs">Email</span>
+                <FormControl>
+                  <Input placeholder="Contact Email" {...field} className="text-xs" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+  
+        {/* Botón Continuar */}
+        <div className="flex justify-end mt-6">
+        <Link href="/enroll/menu/empresa">
+          <Button type="submit">Continuar</Button>
+          </Link>
         </div>
       </form>
     </Form>
-    {message && <div className="mt-4 text-center text-primary">{message}</div>}
   </div>
-  
   
   );
 };
