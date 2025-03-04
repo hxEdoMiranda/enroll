@@ -1,12 +1,7 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
-export interface IService {
-  uid?: string; // Hacer que uid sea opcional
-  code: string;
-  name: string;
-  description: string;
-  country: string[];
-}
+import { ServiceModel as IService} from "../modules/configuration/types/Service.type";
+
 
 // Función para obtener servicios con filtros opcionales (code, name, uid)
 export const getServices = async (code?: string, name?: string, uid?: string): Promise<IService[]> => {

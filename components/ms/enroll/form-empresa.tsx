@@ -1,7 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
 import {
   Form,
@@ -22,11 +21,10 @@ import {
 } from "@/components/ui/select";
 import React, { useState, useEffect } from "react";
 import { postCreateEmpresa } from "@/actions/empresa";
-import { getPaises } from "@/actions/pais"; // Importar getPaises desde su archivo
+import { getPaises } from "@/actions/pais"; 
 import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import { CompanySchema } from "@/modules/configuration/schemas/company.model";
-import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type"; // Asegúrate de ajustar la ruta
-import { Checkbox } from "@radix-ui/react-checkbox";
+import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type"; 
 
 const CompanyForm = () => {
   const [message, setMessage] = useState("");

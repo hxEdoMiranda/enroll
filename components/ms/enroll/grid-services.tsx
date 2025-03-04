@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getServices, IService } from "@/actions/services"; // Nueva función para obtener los servicios
+import { getServices } from "@/actions/services"; // Nueva función para obtener los servicios
+import { ServiceModel as IService} from "@/modules/configuration/types/Service.type";
+
 import {
   Table,
   TableBody,
@@ -12,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
-//import ServiceForm from "@/components/ms/enroll/form-service"; // Ajusta según tu ruta
 import { Switch } from "@/components/ui/switch";
 
 const ServicesTable = () => {
@@ -70,7 +71,6 @@ const ServicesTable = () => {
   if (error) {
     return <p className="text-center text-red-500">{error}</p>;
   }
-
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -78,39 +78,31 @@ const ServicesTable = () => {
           type="text"
           placeholder="Buscar servicio por nombre o código"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="border px-3 py-2 rounded-md"
         />
       </div>
-
+  
       {filteredServices.length === 0 ? (
-        <p className="text-center text-gray-500">
-          No hay servicios disponibles que coincidan con tu búsqueda.
-        </p>
+        <p className="text-center text-gray-500">No hay servicios disponibles que coincidan con tu búsqueda.</p>
       ) : (
         <>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Descripción</TableHead>
-                <TableHead>Editar</TableHead>
-                <TableHead>Estado</TableHead>
+                <TableHead>Código</TableHead><TableHead>Nombre</TableHead><TableHead>Descripción</TableHead><TableHead>Editar</TableHead><TableHead>Estado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentData.map((service) => (
-                <TableRow key={service.uid}>
-                  <TableCell>{service.code}</TableCell>
-                  <TableCell>{service.name}</TableCell>
-                  <TableCell>{service.description}</TableCell>
+              {currentData.map((service, index) => (
+                <TableRow key={service._id || index}>
+                  <TableCell>{service.code}</TableCell><TableCell>{service.name}</TableCell><TableCell>{service.description}</TableCell>
                   <TableCell>
                     <ButtonBanner
                       trigger={
                         <Button
                           variant="ghost"
-                          className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                          className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary items-center rounded-full border border-[#D5D7DA]"
                         >
                           <EditUserIcon fill="currentColor" />
                           Editar
@@ -122,14 +114,12 @@ const ServicesTable = () => {
                       className="w-[1010px] p-8"
                     />
                   </TableCell>
-                  <TableCell>
-                    <Switch color="primary" />
-                  </TableCell>
+                  <TableCell><Switch color="primary" /></TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-
+  
           <div className="flex justify-between items-center">
             <Button
               variant="outline"
@@ -138,9 +128,7 @@ const ServicesTable = () => {
             >
               Anterior
             </Button>
-            <p>
-              Página {currentPage} de {totalPages}
-            </p>
+            <p>Página {currentPage} de {totalPages}</p>
             <Button
               variant="outline"
               onClick={handleNextPage}
@@ -153,6 +141,8 @@ const ServicesTable = () => {
       )}
     </div>
   );
+  
+ 
 };
 
 export default ServicesTable;
