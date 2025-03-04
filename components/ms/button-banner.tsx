@@ -17,6 +17,8 @@ export interface ButtonBannerProps {
 	description: string;
 	onClick?: () => void;
 	className?: string;
+	titleClassName?: string;
+	descriptionClassName?: string;
 }
 
 export const ButtonBanner = ({
@@ -25,6 +27,8 @@ export const ButtonBanner = ({
 	description,
 	content,
 	className,
+	titleClassName,
+	descriptionClassName,
 }: ButtonBannerProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	console.log("isOpen", isOpen);
@@ -40,10 +44,10 @@ export const ButtonBanner = ({
 			<DialogContent className={className}>
 				<div className="bg-[#FBFBFB] rounded-lg p-6 w-full">
 					<DialogHeader>
-						<DialogTitle className="text-3xl font-bold text-primary">
+						<DialogTitle className={`text-3xl font-bold text-primary ${titleClassName}`}>
 							{title}
 						</DialogTitle>
-						<DialogDescription className="text-sm text-[#262626]">
+						<DialogDescription className={`text-sm text-[#262626] ${descriptionClassName}`}>
 							{description}
 						</DialogDescription>
 					</DialogHeader>

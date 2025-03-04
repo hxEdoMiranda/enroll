@@ -16,6 +16,8 @@ export const ListButtonBanner = ({ buttons }: ListButtonBannerProps) => {
 					description={button.description}
 					className={button.className}
 					onClick={button.onClick}
+					titleClassName={button.titleClassName}
+					descriptionClassName={button.descriptionClassName}
 				/>
 			))}
 		</div>
