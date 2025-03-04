@@ -1,17 +1,10 @@
-const BASE_API_URL = "https://api.medibuslive.com/dev/pr/enroll/v3";
+const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
-interface IPlan {
-  identifier: string;
-  name: string;
-  company: string;
-  start_validity: string;
-  end_validity: string;
-  holder_quantity: number;
-  manage_loads: boolean;
-}
+import { PlanModel as IPlan} from "../modules/configuration/types/Plan.type";
+
 
 export const postCreatePlan = async (plan: IPlan): Promise<any> => {
-    console.log("LLegoooooooooooooooooooooooooooooooooooo");
+    console.log("LLegoooooooooooooooooooooooooooooooooooo",plan);
   try {
     const response = await fetch(`${BASE_API_URL}/plan`, {
       method: "POST",
@@ -26,6 +19,38 @@ export const postCreatePlan = async (plan: IPlan): Promise<any> => {
     
   } catch (error) {
     let errorMessage = 'An error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    throw new Error(`Error fetching data: ${errorMessage}`);
+  }
+};
+  
+import { ServiceModel as IService } from "@/modules/configuration/types/Service.type";
+
+export const getPlans = async (): Promise<IPlan[]> => {
+  console.log("Obteniendo planes...");
+  try {
+    const response = await fetch(`${BASE_API_URL}/plan`, {
+      method: "GET",
+      redirect: "follow",
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json(); // Convertir a JSON
+    console.log("Respuesta de la API:", result);
+
+    // Extraer la propiedad 'data' del objeto de respuesta
+    if (!Array.isArray(result.data)) {
+      throw new Error("La respuesta de getPlans no contiene un array en 'data'");
+    }
+
+    return result.data as IPlan[];
+  } catch (error) {
+    let errorMessage = "An error occurred";
     if (error instanceof Error) {
       errorMessage = error.message;
     }
