@@ -1,6 +1,6 @@
 
 export interface ServiceModel {
-    _id: string;
+    uid: string;
     code: string;
     name: string;
     state: boolean;

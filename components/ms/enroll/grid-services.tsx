@@ -95,7 +95,7 @@ const ServicesTable = () => {
             </TableHeader>
             <TableBody>
               {currentData.map((service, index) => (
-                <TableRow key={service._id || index}>
+                <TableRow key={service.uid || index}>
                   <TableCell>{service.code}</TableCell><TableCell>{service.name}</TableCell><TableCell>{service.description}</TableCell>
                   <TableCell>
                     <ButtonBanner

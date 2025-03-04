@@ -2,124 +2,129 @@
 import { useState, useEffect } from "react";
 import { getServices } from "@/actions/services";
 import { ServiceModel as IService } from "@/modules/configuration/types/Service.type";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
-type NameServicesTableProps = {
-  onSelectServices: (selectedIds: string[]) => void; // Prop para enviar los IDs seleccionados
-  selectedServiceIds: string[]; // Recibimos el estado de los servicios seleccionados
-};
+const NameServicesTable: React.FC<{ onServicesChange?: (services: string[]) => void }> = ({
+	onServicesChange
+}) => {
+	const [services, setServices] = useState<IService[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [currentPage, setCurrentPage] = useState(1);
+	const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox"; // Importamos el componente de checkbox
-import { Button } from "@/components/ui/button"; // Importamos el componente de botón
+	const itemsPerPage = 10;
 
-const NameServicesTable: React.FC<NameServicesTableProps> = ({ onSelectServices, selectedServiceIds }) => {
-    const [services, setServices] = useState<IService[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
+	// Carga los servicios al montar el componente
+	useEffect(() => {
+		const fetchServices = async () => {
+			try {
+				const servicesData = await getServices();
+				setServices(servicesData);
+			} catch (err) {
+				setErrorMessage("Error al obtener los servicios");
+				console.error("Error fetching services:", err);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchServices();
+	}, []);
 
-    const itemsPerPage = 10;
+	// Filtra los servicios según el término de búsqueda
+	const filteredServices = services.filter((service) =>
+		service.name.toLowerCase().includes(searchTerm.toLowerCase())
+	);
 
-    useEffect(() => {
-        const fetchServices = async () => {
-            try {
-                const servicesData = await getServices();
-                setServices(servicesData);
-            } catch (err) {
-                setError("Error al obtener los servicios");
-                console.error("Error fetching services:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchServices();
-    }, []);
+	// Pagina los servicios según la página actual
+	const paginatedServices = filteredServices.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
-    const filteredServices = services.filter(service =>
-        service.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+	// Calcula el número total de páginas
+	const totalPages = Math.ceil(filteredServices.length / itemsPerPage);
 
-    const paginatedServices = filteredServices.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
+	// Manejo del cambio en el checkbox
+	const handleCheckboxChange = (serviceId: string, checked: boolean) => {
 
-    const totalPages = Math.ceil(filteredServices.length / itemsPerPage);
 
-    // Manejo del cambio en el checkbox
-    const handleCheckboxChange = (serviceId: string) => {
-        const updatedIds = selectedServiceIds.includes(serviceId)
-            ? selectedServiceIds.filter((id) => id !== serviceId)
-            : [...selectedServiceIds, serviceId];
+		const updatedSelection = checked
+			? [...selectedServices, serviceId]
+			: selectedServices.filter(id => id !== serviceId);
+		
+		setSelectedServices(updatedSelection);
+		
+		// Notificar al componente padre sobre el cambio
+		if (onServicesChange) {
+			onServicesChange(updatedSelection);
+		}
+	};
 
-        onSelectServices(updatedIds); // Llamamos al callback para actualizar el estado en el formulario
-    };
+	return (
+		<div>
+			{/* Mostrar mensaje de error si existe */}
+			{errorMessage && (
+				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+					{errorMessage}
+				</div>
+			)}
 
-    return (
-        <div>
-            {/* Campo de búsqueda */}
-            <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Buscar servicio..."
-                className="border p-2 mb-4"
-            />
-            {/* Tabla de servicios */}
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Seleccionar</TableHead>
-                        <TableHead>Nombre del Servicio</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {loading ? (
-                        <TableRow>
-                            <TableCell colSpan={2}>Cargando...</TableCell>
-                        </TableRow>
-                    ) : (
-                        paginatedServices.map((service) => (
-                            <TableRow key={service._id || service.code}>
-                                <TableCell>
-                                    <Checkbox
-                                        checked={selectedServiceIds.includes(service._id || service.code)} // Marca el checkbox si está seleccionado
-                                        onChange={() => handleCheckboxChange(service._id || service.code)} // Llama al handler cuando el checkbox cambia
-                                    />
-                                </TableCell>
-                                <TableCell>{service.name}</TableCell>
-                            </TableRow>
-                        ))
-                    )}
-                </TableBody>
-            </Table>
+			{/* Campo de búsqueda */}
+			<input
+				type="text"
+				value={searchTerm}
+				onChange={(e) => setSearchTerm(e.target.value)}
+				placeholder="Buscar servicio..."
+				className="border p-2 mb-4"
+			/>
 
-            {/* Paginación */}
-            <div className="mt-4">
-                <Button
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                >
-                    Anterior
-                </Button>
-                <span className="mx-4">{currentPage} de {totalPages}</span>
-                <Button
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                >
-                    Siguiente
-                </Button>
-            </div>
-        </div>
-    );
+			<div className="flex flex-col">
+				{paginatedServices.map((service) => (
+					<div key={service.uid} className="flex items-center space-x-2 mb-2">
+						<Checkbox
+							id={service.uid}
+							checked={selectedServices.includes(service.uid)}
+							onCheckedChange={(checked) => {
+								handleCheckboxChange(service.uid, checked === true);
+							}}
+						/>
+						<label
+							htmlFor={service.uid}
+							className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						>
+							{service.name}
+						</label>
+					</div>
+				))}
+			</div>
+
+			{/* Paginación */}
+			<div className="mt-4">
+				<Button
+					onClick={() =>
+						setCurrentPage((prev) => Math.max(prev - 1, 1))
+					}
+					disabled={currentPage === 1}
+				>
+					Anterior
+				</Button>
+				<span className="mx-4">
+					{currentPage} de {totalPages}
+				</span>
+				<Button
+					onClick={() =>
+						setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+					}
+					disabled={currentPage === totalPages}
+				>
+					Siguiente
+				</Button>
+			</div>
+		</div>
+	);
 };
 
 export default NameServicesTable;

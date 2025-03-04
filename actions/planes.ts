@@ -1,10 +1,10 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
+import { Plan } from "@/modules/configuration/schemas/plan.model";
 import { PlanModel as IPlan} from "../modules/configuration/types/Plan.type";
-import { CompanyModel } from "@/modules/configuration/types/Company.type";
 
 
-export const postCreatePlan = async (plan: IPlan): Promise<any> => {
+export const postCreatePlan = async (plan: Plan) => {
     console.log("LLegoooooooooooooooooooooooooooooooooooo",plan);
   try {
     const response = await fetch(`${BASE_API_URL}/plan`, {
@@ -26,8 +26,6 @@ export const postCreatePlan = async (plan: IPlan): Promise<any> => {
     throw new Error(`Error fetching data: ${errorMessage}`);
   }
 };
-  
-import { ServiceModel as IService } from "@/modules/configuration/types/Service.type";
 
 export const getPlans = async (): Promise<IPlan[]> => {
   console.log("Obteniendo planes...");
