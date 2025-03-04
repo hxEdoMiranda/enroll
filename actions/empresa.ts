@@ -4,7 +4,6 @@ import { CompanyModel as IEmpresa} from "../modules/configuration/types/Company.
 import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
 
 export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
-  console.log("Formularioooooooooooooooooooooooooooooooooooo:");
   try {
     const response = await fetch(`${BASE_API_URL}/company`, {
       method: "POST",
@@ -58,7 +57,6 @@ export const getEmpresas = async (): Promise<IEmpresa[]> => {
 
     const result = await response.json();
 
-    // Asegúrate de acceder a `result.data` que contiene el array de empresas
     if (Array.isArray(result.data)) {
       return result.data; // Devuelve el array de empresas
     } else {
@@ -86,7 +84,7 @@ export const getEmpresasFull = async (): Promise<CompanyFullModel[]> => {
 
     const result = await response.json();
 
-    // Asegúrate de acceder a `result.data` que contiene el array de empresas
+
     if (Array.isArray(result.data)) {
       return result.data; // Devuelve el array de empresas
     } else {
@@ -115,10 +113,7 @@ console.log("Identioficador:", id);
     }
 
     const result = await response.json();
-console.log("============================================================",result)
-    // Asegúrate de acceder a `result.data` que contiene el array de empresas
     if (Array.isArray(result.data)) {
-      console.log("=============================================================================",result.data[0])
       return result.data[0]; // Devuelve la empresas
     } else {
       console.error("Se esperaba un array en 'result.data', pero no se encontró.");
