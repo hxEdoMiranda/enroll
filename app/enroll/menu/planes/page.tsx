@@ -1,21 +1,31 @@
 'use client';
 
-import PlanForm from '@/components/ms/enroll/form-plan'
 import Stepper from '@/components/ms/enroll/stepper';
+import { Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import PlanesTable  from "@/components/ms/enroll/grid-plan";
 
-const PlanesPage = () => {
-
+const PlanPage = () => {
   return (
-    <div className="p-4 md:p-8 bg-white bg-opacity-60 mr-6 mb-4 rounded-lg">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Columna izquierda */}
-       <PlanForm />
-
-        {/* Columna derecha */}
-      <Stepper/>
+    <main className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 w-full">
+      <div className="bg-[url('/img/shared/background-banner.png')] bg-cover bg-center bg-no-repeat relative h-24 rounded-xl mb-4 flex items-center px-8 w-full">
+        {/* Contenedor flexible para mantener el título a la izquierda y el botón a la derecha */}
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-2">
+            <Building2 className="size-10 text-white" />
+            <h1 className="text-white font-bold text-3xl">Gestión Plan</h1>
+          </div>
+          <Link href="/enroll/menu/planes/crear-plan">
+            <Button variant="secondary">
+              Agregar Plan
+            </Button>
+          </Link>
+        </div>
       </div>
-    </div>
+<PlanesTable></PlanesTable>
+    </main>
   );
 };
 
-export default PlanesPage;
+export default PlanPage;

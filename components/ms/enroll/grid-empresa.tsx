@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getEmpresasFull } from "@/actions/empresa";
-import { getPaises } from "@/actions/pais"; 
+import { getPaises } from "@/actions/pais";
 import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type"; // Asegúrate de ajustar la ruta
 //import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import {
@@ -45,7 +45,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
     fetchEmpresas();
   }, []);
 
- /* useEffect(() => {
+  /* useEffect(() => {
     const fetchPaises = async () => {
       //setLoading(true);
       try {
@@ -64,8 +64,8 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
   */
   const handleToggle = (id: string) => {
     setEmpresas(
-      empresas.map((empresa) =>        
-        empresa._id === id ? { ...empresa, enabled: !empresa.state } : empresa        
+      empresas.map((empresa) =>
+        empresa._id === id ? { ...empresa, enabled: !empresa.state } : empresa
       )
     );
   };
@@ -93,7 +93,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
   if (loading) {
     return <p>Cargando datos...</p>;
   }
-console.log("Empresas:", empresas);
+  console.log("Empresas:", empresas);
   return (
     <div className="space-y-4">
       <Table>
@@ -106,25 +106,26 @@ console.log("Empresas:", empresas);
             <TableHead>Habilitado</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody >
+        <TableBody>
           {currentData.map((empresa) => (
             <TableRow key={empresa.id}>
               <TableCell>{empresa.name}</TableCell>
               <TableCell>{empresa.industry_type || "N/A"}</TableCell>
               <TableCell>{empresa.employee_count || "N/A"}</TableCell>
-              <TableCell>{ empresa.country.name    || "N/A"}</TableCell>
+              <TableCell>{empresa.country.name || "N/A"}</TableCell>
               <TableCell>
                 <ButtonBanner
                   trigger={
-                    <Link href={`/enroll/menu/empresa/update-empresa/${empresa.identifier}`}>
-                    <Button                      
-                      variant="ghost"
-                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                    <Link
+                      href={`/enroll/menu/empresa/update-empresa/${empresa.identifier}`}
                     >
-                      <EditUserIcon fill="currentColor"  />
-                      Ver Detalles
-                      
-                    </Button>
+                      <Button
+                        variant="ghost"
+                        className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                      >
+                        <EditUserIcon fill="currentColor" />
+                        Ver Detalles
+                      </Button>
                     </Link>
                   }
                   content={<Button></Button>}
@@ -151,21 +152,15 @@ console.log("Empresas:", empresas);
                 />
               </TableCell>
               <TableCell>
-                <ButtonBanner
-                  trigger={
-                    <Button
-                      variant="ghost"
-                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
-                    >
-                      <EditUserIcon fill="currentColor" />
-                      Planes
-                    </Button>
-                  }
-                  content={<Button></Button>}
-                  title="Editar Paciente"
-                  description="Edita los datos del paciente"
-                  className="w-[1010px] p-8"
-                />
+              <Link href={`/enroll/menu/planes/crear-plan/${empresa.id}`}>
+              <Button
+                    variant="ghost"
+                    className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                  >
+                    <EditUserIcon fill="currentColor" />
+                    Planes
+                  </Button>
+                </Link>
               </TableCell>
               <TableCell>
                 <ButtonBanner
