@@ -9,7 +9,7 @@ export interface ContactModel {
 export interface CompanyModel {
     _id?: string;
     id?: string;
-    uid: string;  // Hacer requerido
+    uid?: string;  // Hacer requerido
     identifier: string;
     name: string;
     trade_name: string;
@@ -29,7 +29,7 @@ export interface CompanyModel {
 export interface CompanyFullModel {
     _id?: string;
     id?: string;
-    uid: string;  // Hacer requerido
+    uid?: string;  // Hacer requerido
     identifier: string;
     name: string;
     trade_name: string;

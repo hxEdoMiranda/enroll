@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -27,6 +28,7 @@ import { CompanySchema } from "@/modules/configuration/schemas/company.model";
 import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type"; 
 
 const CompanyForm = () => {
+  const router = useRouter();
   const [message, setMessage] = useState("");
   const [paises, setPaises] = useState<IPais[]>([]);
 
@@ -102,7 +104,8 @@ const CompanyForm = () => {
         "Resultado de la API:999990000000000000000000000000000000",
         result
       );
-      setMessage("Empresa creada exitosamente.");
+      //setMessage("Empresa creada exitosamente.");
+      router.push("/enroll/menu/empresa");
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       setMessage("Error al crear la empresa. Por favor, inténtalo de nuevo.");
@@ -421,9 +424,9 @@ const CompanyForm = () => {
   
         {/* Botón Continuar */}
         <div className="flex justify-end mt-6">
-        <Link href="/enroll/menu/empresa">
+       
           <Button type="submit">Continuar</Button>
-          </Link>
+       
         </div>
       </form>
     </Form>

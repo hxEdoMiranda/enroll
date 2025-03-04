@@ -1,5 +1,6 @@
 export interface CountryModel{
     uid:string | null;
+    _id:string | null;
     name: string;
     code:string;
     code_phone:string;

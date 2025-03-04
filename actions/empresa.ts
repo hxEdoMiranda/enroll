@@ -25,9 +25,10 @@ export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
 };
 
 export const updateEmpresa = async (empresa: IEmpresa): Promise<any> => {
+  console.log("JSON.stringify(empresa):",JSON.stringify(empresa),)
   try {
-    const response = await fetch(`${BASE_API_URL}/empresa/${empresa._id}`, {
-      method: "PUT",
+    const response = await fetch(`${BASE_API_URL}/company`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -35,12 +36,13 @@ export const updateEmpresa = async (empresa: IEmpresa): Promise<any> => {
     });
     const result = await response.json();
     return result;
+    
   } catch (error) {
     let errorMessage = 'An error occurred';
     if (error instanceof Error) {
       errorMessage = error.message;
     }
-    throw new Error(`Error updating data: ${errorMessage}`);
+    throw new Error(`Error fetching data: ${errorMessage}`);
   }
 };
 
