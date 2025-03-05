@@ -57,6 +57,19 @@ export default function UserTable({ users }: { users: UserType[] }) {
 	const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 	const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
+	const calcularEdad = (birthDate: string): number => {
+		const fechaNacimiento = new Date(birthDate);
+		const hoy = new Date();
+		let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+		const mesDiff = hoy.getMonth() - fechaNacimiento.getMonth();
+
+		if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+			edad--;
+		}
+
+		return edad;
+	};
+
 	return (
 		<div className="w-full">
 			<div className="flex items-center justify-between mb-4">
@@ -157,10 +170,10 @@ export default function UserTable({ users }: { users: UserType[] }) {
 								</TableCell>
 								<TableCell>Fonasa</TableCell>
 								<TableCell>Titular</TableCell>
-								<TableCell>Masculino</TableCell>
+								<TableCell>{user.fhir.gender || "-"}</TableCell>
 								<TableCell>2024-01-01</TableCell>
 								<TableCell>2026-01-01</TableCell>
-								<TableCell>20 años</TableCell>
+								<TableCell>{calcularEdad(user.fhir.birthDate)} años</TableCell>
 								<TableCell>
 									{
 										<ButtonBanner
