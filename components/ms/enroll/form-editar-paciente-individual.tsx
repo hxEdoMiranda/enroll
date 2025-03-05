@@ -28,11 +28,12 @@ import {
 import { updateUserById } from "@/modules/configuration/actions/fetch-user";
 import { toast } from "sonner";
 import { splitAddress } from "@/modules/configuration/schemas/user-data.schema";
-import { Data, User, UserPatients } from "@/modules/configuration/types/user-data.type";
+import { Data } from "@/modules/configuration/types/user-data.type";
 import { getUserById } from "@/modules/configuration/actions/fetch-user";
+import { UserType } from "@/modules/configuration/types/user.type";
 
 interface EditPatientFormProps {
-	user: UserPatients;
+	user: UserType;
 	setOpen?: (open: boolean) => void;
 }
 

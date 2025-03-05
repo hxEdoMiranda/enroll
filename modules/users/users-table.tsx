@@ -30,12 +30,14 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
-import { User, UserPatients } from "@/modules/configuration/types/user-data.type";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "../icons";
 import { EditPatientForm } from "@/components/ms/enroll/form-editar-paciente-individual";
+import { UserType } from "../configuration/types/user.type";
 
-export default function UserTable({ users }: { users: UserPatients[] }) {
+export default function UserTable({ users }: { users: UserType[] }) {
+	console.log("users received >>>", users);
+
 	const [searchQuery, setSearchQuery] = React.useState("");
 	const [filteredUsers, setFilteredUsers] = React.useState(users);
 	const [currentPage, setCurrentPage] = React.useState(1);
@@ -121,36 +123,36 @@ export default function UserTable({ users }: { users: UserPatients[] }) {
 						{currentUsers.map((user) => (
 							<TableRow key={user.clerk.id}>
 								<TableCell className="font-medium">
-									{user.clerk.firstName} {user.clerk.lastName}
+									{user.clerk.firstName || "-"} {user.clerk.lastName || "-"}
 								</TableCell>
 								<TableCell>
 									<div className="flex items-center gap-2">
 										<Image
 											src={
-												user.organization?.imageUrl ||
+												user.clerk.imageUrl ||
 												"/placeholder.svg"
 											}
-											alt={user.organization?.name || "-" }
+											alt={user.clerk.firstName || "-"}
 											width={20}
 											height={20}
 											className="rounded-full"
 										/>
-										{user.organization?.name}
+										{user.clerk.firstName || "-"}
 									</div>
 								</TableCell>
 								<TableCell>
 									<div className="flex items-center gap-2">
 										<Image
 											src={
-												user.organization?.imageUrl ||
+												user.clerk.imageUrl ||
 												"/placeholder.svg"
 											}
-											alt={user.organization?.name || "-" }
+											alt={user.clerk.firstName || "-"}
 											width={20}
 											height={20}
 											className="rounded-sm"
 										/>
-										{user.organization?.name}
+										{user.clerk.firstName || "-"}
 									</div>
 								</TableCell>
 								<TableCell>Fonasa</TableCell>
@@ -160,26 +162,28 @@ export default function UserTable({ users }: { users: UserPatients[] }) {
 								<TableCell>2026-01-01</TableCell>
 								<TableCell>20 años</TableCell>
 								<TableCell>
-									{<ButtonBanner
-										trigger={
-											<Button
-												variant="ghost"
-												className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
-											>
-												<EditUserIcon fill="currentColor" />
-												Editar
-											</Button>
-										}
-										content={
-											<EditPatientForm user={user} />
-										}
-										title="Editar Paciente"
-										description="Edita los datos del paciente"
-										className="w-[1010px] p-8"
-									/>}
+									{
+										<ButtonBanner
+											trigger={
+												<Button
+													variant="ghost"
+													className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+												>
+													<EditUserIcon fill="currentColor" />
+													Editar
+												</Button>
+											}
+											content={
+												<EditPatientForm user={user} />
+											}
+											title="Editar Paciente"
+											description="Edita los datos del paciente"
+											className="w-[1010px] p-8"
+										/>
+									}
 								</TableCell>
 								<TableCell>
-									<Switch checked={true} />
+									<Switch />
 								</TableCell>
 							</TableRow>
 						))}
