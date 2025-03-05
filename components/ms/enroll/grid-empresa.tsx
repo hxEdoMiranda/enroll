@@ -114,8 +114,6 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
               <TableCell>{empresa.employee_count || "N/A"}</TableCell>
               <TableCell>{empresa.country.name || "N/A"}</TableCell>
               <TableCell>
-                <ButtonBanner
-                  trigger={
                     <Link
                       href={`/enroll/menu/empresa/update-empresa/${empresa.identifier}`}
                     >
@@ -127,12 +125,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
                         Ver Detalles
                       </Button>
                     </Link>
-                  }
-                  content={<Button></Button>}
-                  title="Editar Paciente"
-                  description="Edita los datos del paciente"
-                  className="w-[1010px] p-8"
-                />
+
               </TableCell>
               <TableCell>
                 <ButtonBanner
