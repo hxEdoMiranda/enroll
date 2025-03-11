@@ -75,7 +75,9 @@ const CompanyUpdateForm = ( { id }: CompanyUpdateFormProps ) => {
     const fetchEmpresa = async () => {
       try {
         const data:IEmpresa = await getEmpresa(id) as IEmpresa;
-        //console.log(data);
+        //console.log(".::::data::::.", data);
+        //console.log(".::::data country::::.", data.country);
+        data.country.uid = data.country._id;
         setEmpresa(data);
         reset(data);
       } catch (error) {
@@ -120,7 +122,7 @@ const CompanyUpdateForm = ( { id }: CompanyUpdateFormProps ) => {
         name: values.name,
         trade_name: values.trade_name,
         corporate_name: values.corporate_name,
-        country:idCountry,
+        country: idCountry,
         industry_type: values.industry_type,
         business_type: values.business_type,
         company_phone: values.company_phone,
@@ -146,7 +148,7 @@ const CompanyUpdateForm = ( { id }: CompanyUpdateFormProps ) => {
       console.log("mappedValues:", mappedValues.country)
       const companyData: CompanyModel = {
         ...mappedValues,
-        country: mappedValues.country.toString() || idCountry || "nn", // Convierte `CountryModel` a `string`
+        country: mappedValues.country.toString() || idCountry, // Convierte `CountryModel` a `string`
     };
     //console.log("mappedValues", mappedValues);
     console.log("companyData:", companyData);
@@ -181,21 +183,6 @@ const CompanyUpdateForm = ( { id }: CompanyUpdateFormProps ) => {
      onSubmit={form.handleSubmit(handleSubmit)}
      className="grid grid-cols-1 md:grid-cols-3 gap-6"
    >
-     <div className="space-y-4">
-       <FormField
-         control={form.control}
-         name="id"
-         render={({ field }) => (
-           <FormItem>
-             <span className="block mb-1 text-primary text-xs">Id</span>
-             <FormControl>
-               <Input placeholder="Identifier" {...field} className="text-xs" value={empresa.country.uid || "nn"}  />
-             </FormControl>
-             <FormMessage />
-           </FormItem>
-         )}
-       />
-     </div>
      {/* Fila 1 */}
      <div className="space-y-4">
        <FormField
@@ -260,44 +247,47 @@ const CompanyUpdateForm = ( { id }: CompanyUpdateFormProps ) => {
        />
      </div>
      <div className="space-y-4">
-       <FormField
-         control={form.control}
-         name="country"
-         render={({ field }) => (
-           <FormItem>
-             <span className="block mb-1 text-primary text-xs">Country</span>
-             <FormControl>
-               <Select
-                 value={field.value.uid || ""}
-                 onValueChange={(value) => {
-                   const selectedCountry = paises.find((pais) => pais.uid === value);
-                   if (selectedCountry) {
-                     field.onChange(selectedCountry.uid);
-                   }
-                 }}
-               >
-                 <SelectTrigger>
-                   <SelectValue placeholder="Select a country">
-                     {field.value
-                       ? paises.find((p) => p.uid === field.value.uid)?.name
-                       : "Select a country"}
-                   </SelectValue>
-                 </SelectTrigger>
-                 <SelectContent>
-                   <SelectGroup>
-                     {paises.map((pais) => (
-                       <SelectItem key={pais.uid} value={pais.uid || ""}>
-                         {pais.name}
-                       </SelectItem>
-                     ))}
-                   </SelectGroup>
-                 </SelectContent>
-               </Select>
-             </FormControl>
-             <FormMessage />
-           </FormItem>
-         )}
-       />
+     <FormField
+  control={form.control}
+  name="country.uid"
+  render={({ field }) => (
+    <FormItem>
+      <span className="block mb-1 text-primary text-xs">Country</span>
+      <FormControl>
+        <Select
+          // Mostrar el valor actual o un valor predeterminado
+          value={field.value || ""}
+          onValueChange={(value) => {
+            const selectedCountry = paises.find((pais) => pais.uid === value);
+            if (selectedCountry) {
+              field.onChange(selectedCountry.uid); // Actualiza el valor del formulario
+            }
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select a country">
+              {field.value
+                ? paises.find((p) => p.uid === field.value)?.name
+                : "Select a country"}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {paises.map((pais) => (
+                <SelectItem key={pais.uid} value={pais.uid || "1"}>
+                  {pais.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
+
      </div>
      <div className="space-y-4">
        <FormField
@@ -502,7 +492,7 @@ const CompanyUpdateForm = ( { id }: CompanyUpdateFormProps ) => {
      {/* Botón Continuar */}
      <div className="flex justify-end mt-6">
     
-       <Button type="submit">Continuar</Button>
+       <Button type="submit">Continuar2</Button>
     
      </div>
    </form>
