@@ -38,7 +38,7 @@ export function PatientMailForm({ onSuccess }: PatientFormProps) {
 			firstName: "",
 			lastName: "",
 			emailAddress: "",
-			urlRedirect: "http://localhost:3002/sign-up",
+			urlRedirect: "https://medismart-3-0-front.vercel.app/sign-up",
 			role: "patient",
 			plans: [],
 		},

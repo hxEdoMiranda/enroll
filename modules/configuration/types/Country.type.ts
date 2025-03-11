@@ -4,4 +4,5 @@ export interface CountryModel{
     name: string;
     code:string;
     code_phone:string;
+    time_zone_UTC:string[];
 }

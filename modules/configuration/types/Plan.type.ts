@@ -1,3 +1,4 @@
+import { ServiceModel } from "./Service.type";
 
 export interface PlanModel {
     uid: string;
@@ -11,5 +12,5 @@ export interface PlanModel {
     max_number_of_loads: number;
     custom_plan_id: string;
     company: string;
-    service: string[];
+    service: ServiceModel[];
 }
