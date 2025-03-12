@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -26,74 +27,56 @@ import {
 	Service,
 	ServiceSchema,
 } from "@/modules/configuration/schemas/service.model";
-import { useEffect, useState } from "react";
-import { getPaises } from "@/actions/pais";
-import { createService } from "@/modules/configuration/actions/services";
+import { useState } from "react";
 
-interface Country {
-	code: string;
-	name: string;
-	code_phone: string;
-	createdAt?: string;
-	updatedAt?: string;
-	uid: string;
-}
+import { updateService } from "@/modules/configuration/actions/services";
+import { CountryModel as Country } from "@/modules/configuration/types/Country.type";
+
 
 interface ServiceFormProps {
-	onSuccess?: () => void;
+	id:string;
+	servicio: Service;
+	paises:Country[];
 }
 
-export function ServiceForm({ onSuccess }: ServiceFormProps) {
-	const [countries, setCountries] = useState<Country[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+export function ServiceUpdateForm({ id, servicio, paises }: ServiceFormProps) {
+	const router = useRouter();
+	console.log("ServiceUpdateForm-servicio:", servicio)
+	//const [countries, setCountries] = useState<Country[]>([]);
+	const countries:Country[] = paises;
+	const [loading, setLoading] = useState(false);
+	const [selectedCountries, setSelectedCountries] = useState<string[]>(servicio.country);
 
 	const form = useForm<Service>({
 		resolver: zodResolver(ServiceSchema),
 		defaultValues: {
-			code: "",
-			name: "",
-			description: "",
-			country: [],
-			price_2b: "",
-			discount_2b: "",
-			price_2c: "",
-			discount_2c: "",
-			responsible_name: "",
-			responsible_mail: "",
+			code: servicio.code,
+			name: servicio.name,
+			description: servicio.description,
+			country: servicio.country,
+			price_2b: servicio.price_2b,
+			discount_2b: servicio.discount_2b,
+			price_2c: servicio.price_2c,
+			discount_2c: servicio.discount_2c,
+			responsible_name: servicio.responsible_name,
+			responsible_mail: servicio.responsible_mail,
 			state: true,
-		},
+		}
 	});
-
-	useEffect(() => {
-		const fetchCountries = async () => {
-			try {
-				setLoading(true);
-				const response = await getPaises();
-				setCountries(response as Country[]);
-			} catch (error) {
-				console.error("Error al cargar países:", error);
-				toast.error("Error al cargar la lista de países");
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchCountries();
-	}, []);
 
 	const handleSubmit = async (data: Service) => {
 		try {
-			console.log(data);
-			const response = await createService(data);
-			console.log(response);
+			//console.log("handleSubmit::::::::::::::::::::::::::",data);
+			//console.log("handleSubmit-id::::::::::::::::::::::::::",id);
+			const response = await updateService(id, data);
+			//console.log(":::::::::::::response:::::::::::::", response);
 			if (response.ok) {
 				toast.success("Servicio creado exitosamente");
 				form.reset();
-				onSuccess?.();
 			} else {
 				toast.error(response.message);
 			}
+			router.push("/enroll/menu/servicios");
 		} catch (error) {
 			console.error("Error al crear el servicio:", error);
 			toast.error("Error al crear el servicio");
@@ -357,13 +340,13 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
 										.filter(
 											(country) =>
 												!selectedCountries.includes(
-													country.uid
+													country.uid || ""
 												)
 										)
 										.map((country) => (
 											<SelectItem
 												key={country.code}
-												value={country.uid}
+												value={country.uid || ""}
 											>
 												{country.name}
 											</SelectItem>
@@ -387,6 +370,7 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
 						{selectedCountries.length > 0 ? (
 							<div className="flex flex-wrap gap-2">
 								{selectedCountries.map((countryId, index) => {
+									console.log("countryId:",countryId)
 									const country = countries.find(
 										(c) => c.uid === countryId
 									);
@@ -441,7 +425,7 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
 				>
 					{form.formState.isSubmitting
 						? "PROCESANDO..."
-						: "CREAR SERVICIO"}
+						: "ACTUALIZAR SERVICIO"}
 				</Button>
 			</div>
 		</div>

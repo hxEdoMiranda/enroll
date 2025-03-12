@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import { Switch } from "@/components/ui/switch";
+import Link from "next/link";
 
 const ServicesTable = () => {
   const [services, setServices] = useState<IService[]>([]);
@@ -98,8 +99,7 @@ const ServicesTable = () => {
                 <TableRow key={service.uid || index}>
                   <TableCell>{service.code}</TableCell><TableCell>{service.name}</TableCell><TableCell>{service.description}</TableCell>
                   <TableCell>
-                    <ButtonBanner
-                      trigger={
+                    <Link href={`/enroll/menu/servicios/${service.uid}`} >
                         <Button
                           variant="ghost"
                           className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary items-center rounded-full border border-[#D5D7DA]"
@@ -107,12 +107,7 @@ const ServicesTable = () => {
                           <EditUserIcon fill="currentColor" />
                           Editar
                         </Button>
-                      }
-                      content={<button />}
-                      title="Editar Servicio"
-                      description="Edita los datos del servicio"
-                      className="w-[1010px] p-8"
-                    />
+                    </Link>
                   </TableCell>
                   <TableCell><Switch color="primary" /></TableCell>
                 </TableRow>
