@@ -1,16 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
-import { getPlanId } from "@/actions/planes";  // Asegúrate de que getPlanId esté correctamente importada
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useState, useEffect, useMemo } from "react";
+import { getPlanId } from "@/actions/planes";
 import { Button } from "@/components/ui/button";
 import { PlanModel } from "@/modules/configuration/types/Plan.type";
+import PlanForm from "@/components/ms/enroll/form-plan";
+import PlanFormUpdate from "@/components/ms/enroll/form-plan-update";
 
 interface PlanesTableidProps {
   companyId: string;
@@ -22,6 +16,9 @@ const PlanesTableid = ({ companyId }: PlanesTableidProps) => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(""); 
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [refresh, setRefresh] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState<boolean>(false); // Estado para mostrar/ocultar el formulario
+  const [planToUpdate, setPlanToUpdate] = useState<PlanModel | null>(null); // Estado para almacenar el plan a actualizar
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -29,8 +26,7 @@ const PlanesTableid = ({ companyId }: PlanesTableidProps) => {
       setLoading(true);
       setError(null);
       try {
-        // Usa companyId directamente aquí
-        const planesData = await getPlanId(companyId );
+        const planesData = await getPlanId(companyId);
 
         if (!Array.isArray(planesData)) {
           throw new Error("La respuesta de getPlanId no es un array");
@@ -47,13 +43,34 @@ const PlanesTableid = ({ companyId }: PlanesTableidProps) => {
     };
 
     fetchPlanes();
-  }, [companyId]);
+  }, [companyId, refresh]);
 
-  const filteredPlanes = planes.filter((plan) =>
-    plan.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const handlePlanCreated = () => {
+    setRefresh((prev) => !prev); // Cambia el estado para forzar la actualización
+    closeForm(); // Cierra el formulario después de la acción
+  };
+
+  const handlePlanUpdate = (plan: PlanModel) => {
+    setPlanToUpdate(plan); // Establece el plan a actualizar
+    setShowForm(true); // Muestra el formulario
+  };
+
+  const closeForm = () => {
+    setShowForm(false); // Oculta el formulario
+    setPlanToUpdate(null); // Limpia el estado del plan a actualizar
+  };
+
+  const filteredPlanes = useMemo(() => 
+    planes.filter((plan) =>
+      plan.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ), [planes, searchTerm]
   );
 
-  const totalPages = Math.ceil(filteredPlanes.length / itemsPerPage);
+  const totalPages = useMemo(() => 
+    Math.ceil(filteredPlanes.length / itemsPerPage),
+    [filteredPlanes]
+  );
+
   const currentData = filteredPlanes.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -76,64 +93,90 @@ const PlanesTableid = ({ companyId }: PlanesTableidProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <input
-          type="text"
-          placeholder="Buscar plan por nombre"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} 
-          className="border px-3 py-2 rounded-md"
-        />
+    <div className="grid grid-cols-3 gap-4">
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <input
+            type="text"
+            placeholder="Buscar plan por nombre"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border px-3 py-2 rounded-md w-full"
+          />
+        </div>
+
+        {filteredPlanes.length === 0 ? (
+          <p className="text-center text-gray-500">
+            No hay planes disponibles que coincidan con tu búsqueda.
+          </p>
+        ) : (
+          <>
+            <div className="space-y-2">
+              {currentData.map((plan) => (
+                <Button
+                  key={plan.uid}
+                  variant="outline"
+                  className="w-full bg-white text-black hover:bg-gray-100 border border-gray-300"
+                  onClick={() => handlePlanUpdate(plan)} // Al hacer click, actualizar el plan
+                >
+                  {plan.name}
+                </Button>
+              ))}
+            </div>
+
+            {/* Botón Agregar Plan */}
+            <Button
+              variant="outline"
+              onClick={() => {
+                setPlanToUpdate(null); // Limpia cualquier plan a actualizar
+                setShowForm(true); // Muestra el formulario de creación
+              }}
+              className="w-full bg-blue-500 text-white hover:bg-blue-400 mt-4"
+            >
+              Agregar Plan
+            </Button>
+
+            <div className="flex justify-between items-center mt-4">
+              <Button
+                variant="outline"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </Button>
+              <p>
+                Página {currentPage} de {totalPages}
+              </p>
+              <Button
+                variant="outline"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                Siguiente
+              </Button>
+            </div>
+          </>
+        )}
       </div>
 
-      {filteredPlanes.length === 0 ? (
-        <p className="text-center text-gray-500">
-          No hay planes disponibles que coincidan con tu búsqueda.
-        </p>
-      ) : (
-        <>
-          <Table className="min-w-full border border-white rounded-lg overflow-hidden shadow-sm bg-light-blue">
-            <TableHeader className="bg-secondary text-secondary-foreground border-b border-white">
-              <TableRow>
-                <TableHead className="py-2 px-4 text-left font-semibold label-margin">Nombre</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {currentData.map((plan, index) => (
-                <TableRow
-                  key={plan.uid}
-                  className={`border-b border-white ${
-                    index % 2 === 0 ? "bg-white" : "bg-secondary"
-                  } hover:bg-primary-opacity transition-colors`}
-                >
-                  <TableCell className="py-2 px-4 text-foreground">{plan.name}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <div className="flex justify-between items-center">
-            <Button
-              variant="outline"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-            >
-              Anterior
-            </Button>
-            <p>
-              Página {currentPage} de {totalPages}
-            </p>
-            <Button
-              variant="outline"
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-            >
-              Siguiente
-            </Button>
-          </div>
-        </>
-      )}
+      <div className="col-span-2">
+        {/* Mostrar formulario dependiendo de si es creación o actualización */}
+        {showForm && planToUpdate ? (
+          <PlanFormUpdate
+            key={planToUpdate.uid} // Clave dinámica para forzar el rerenderizado
+            company={companyId}
+            plan={planToUpdate} // Pasa el plan a actualizar
+            onPlanCreated={handlePlanCreated} // Callback para manejar la actualización
+          />
+        ) : (
+          showForm && (
+            <PlanForm
+              company={companyId}
+              onPlanCreated={handlePlanCreated} // Callback para manejar la creación
+            />
+          )
+        )}
+      </div>
     </div>
   );
 };

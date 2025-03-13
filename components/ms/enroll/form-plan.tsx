@@ -26,12 +26,16 @@ import { toast } from "sonner";
 
 import NameServicesTable from "@/components/ms/enroll/grid-name-services";
 import { postCreatePlan } from "@/actions/planes";
+import { ServiceModel as IService } from "@/modules/configuration/types/Service.type";
+
 
 interface PlanFormProps {
-	company: string;
+	company?: string;
+	onPlanCreated: () => void; // Nueva prop para notificar al padre
 }
 
-const PlanForm = ({ company }: PlanFormProps) => {
+const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
+
 
 	const form = useForm<Plan>({
 		resolver: zodResolver(PlanSchema),
@@ -45,7 +49,7 @@ const PlanForm = ({ company }: PlanFormProps) => {
 			self_managed_load: false,
 			max_number_of_loads: 0,
 			custom_plan_id: "6781197f090c7577fa400c10",
-			company: company,
+			company: company??"",
 			service: []
 		},
 	});
@@ -53,7 +57,7 @@ const PlanForm = ({ company }: PlanFormProps) => {
 	const [message, setMessage] = useState("");
 	const [isDisabled, setIsDisabled] = useState(true);
 
-	const handleServicesChange = (services: string[]) => {
+	const handleServicesChange = (services: IService[]) => {
 		form.setValue('service', services);
 		setIsDisabled(services.length === 0);
 	};
@@ -67,6 +71,8 @@ const PlanForm = ({ company }: PlanFormProps) => {
 
 			setMessage("Plan creado exitosamente.");
 			toast.success("Plan creado exitosamente");
+			onPlanCreated(); // Notifica al padre que el plan fue creado
+
 			form.reset();
 		} catch (error) {
 			console.error("Error al enviar los datos:", error);

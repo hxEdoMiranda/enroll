@@ -73,28 +73,7 @@ const CompanyUpdateForm = ( { id, emp }: CompanyUpdateFormProps ) => {
       state: true,
     },
   });
-  //console.log("....Error.....", form.formState.errors)
-  /*const { reset } = form;
-  useEffect(() => {
-    const fetchEmpresa = async () => {
-      try {
-        const data:IEmpresa = await getEmpresa(id) as IEmpresa;
-        console.log(".::::data::::.", data);
-        console.log(".::::data country::::.", data.country);
-        data.country.uid = data.country._id;
-        setEmpresa(data);
-        reset(data);
-      } catch (error) {
-        console.log('Error al obtener la empresa');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEmpresa();
-  }, [id,reset]);*/
 
-
-  //const paises:IPais = lstPaises;
   const [paises, setPaises] = useState<IPais[]>([]);
  
   useEffect(() => {
@@ -112,11 +91,7 @@ const CompanyUpdateForm = ( { id, emp }: CompanyUpdateFormProps ) => {
     fetchPaises();
   }, []);
 
-
-
-
-
-  const handleSubmit = async (values: z.infer<typeof CompanySchema>) => {
+const handleSubmit = async (values: z.infer<typeof CompanySchema>) => {
     //console.log("Formulario enviado con los siguientes valores:", values);
     const idCountry = values.country.toString();
     //console.log("Formulario enviado con los siguientes valores:", idCountry);
@@ -156,8 +131,6 @@ const CompanyUpdateForm = ( { id, emp }: CompanyUpdateFormProps ) => {
         ...mappedValues,
         country: mappedValues.country.toString() || idCountry, // Convierte `CountryModel` a `string`
     };
-    //console.log("mappedValues", mappedValues);
-    //console.log("companyData:", companyData);
     const result = await updateEmpresa(companyData as CompanyModel);
       //const result = await postCreateEmpresa(mappedValues);
       console.log(
@@ -175,10 +148,6 @@ const CompanyUpdateForm = ( { id, emp }: CompanyUpdateFormProps ) => {
   if (loading) {
     return <p>Cargando...</p>;
   }
-
-/*  if (error) {
-    return <p>{error}</p>;
-  }*/
 
   return (
 

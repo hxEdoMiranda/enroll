@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const ServiceSchema = z.object({
+  uid: z.string().min(1, { message: "Este campo es obligatorio" }).optional().or(z.literal("")),
   code: z.string().min(1, { message: "Este campo es obligatorio" }),
   name: z.string().min(1, { message: "Este campo es obligatorio" }),
   description: z.string().min(1, { message: "Este campo es obligatorio" }),
