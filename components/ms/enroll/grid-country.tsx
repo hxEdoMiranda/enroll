@@ -15,8 +15,10 @@ import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import CountryForm from "@/components/ms/enroll/form-pais";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 
 const PaisesTable = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false); // Controla la visibilidad del modal
   const [paises, setPaises] = useState<CountryModel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +50,6 @@ const PaisesTable = () => {
       pais.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pais.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   // Paginación
   const totalPages = Math.ceil(filteredPaises.length / itemsPerPage);
   const currentData = filteredPaises.slice(
@@ -117,7 +118,7 @@ const PaisesTable = () => {
                           Editar
                         </Button>
                       }
-                      content={<CountryForm />}
+                      content={<Dialog  open={isOpen} onOpenChange={setIsOpen}><CountryForm closeModal={() => setIsOpen(false)} Pais={ pais as CountryModel} /></Dialog>}
                       title="Editar Paciente"
                       description="Edita los datos del paciente"
                       className="w-[1010px] p-8"
