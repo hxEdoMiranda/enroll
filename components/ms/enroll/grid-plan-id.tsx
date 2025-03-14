@@ -17,8 +17,8 @@ const PlanesTableid = ({ companyId }: PlanesTableidProps) => {
   const [searchTerm, setSearchTerm] = useState<string>(""); 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [refresh, setRefresh] = useState<boolean>(false);
-  const [showForm, setShowForm] = useState<boolean>(false); // Estado para mostrar/ocultar el formulario
-  const [planToUpdate, setPlanToUpdate] = useState<PlanModel | null>(null); // Estado para almacenar el plan a actualizar
+  const [showForm, setShowForm] = useState<boolean>(false); 
+  const [planToUpdate, setPlanToUpdate] = useState<PlanModel | null>(null); 
   const itemsPerPage = 10;
 
   useEffect(() => {

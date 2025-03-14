@@ -27,9 +27,14 @@ import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { postCreatePlan } from "@/actions/planes";
 
-const PlanForm = () => {
+interface PlanFormProps {
+	company?: string;
+	onPlanCreated?: () => void;
+}
+
+const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 	const params = useParams();
-	const companyId = params?.id as string;
+	const companyId = company || params?.id as string;
 	console.log("ID de la empresa:", companyId);
 
 	const form = useForm<Plan>({
@@ -78,8 +83,13 @@ const PlanForm = () => {
 			setMessage("Plan creado exitosamente.");
 			toast.success("Plan creado exitosamente");
 
-			form.reset();
-			window.location.reload();
+			// Llama al callback si existe
+			if (onPlanCreated) {
+				onPlanCreated();
+			} else {
+				form.reset();
+				window.location.reload();
+			}
 		} catch (error) {
 			console.error("Error al enviar los datos:", error);
 			setMessage(

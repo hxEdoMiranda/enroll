@@ -3,7 +3,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -11,17 +10,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm, FormProvider } from "react-hook-form"; // Importamos FormProvider
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plan, PlanSchema } from "@/modules/configuration/schemas/plan.model";
 import { updatePlan } from "@/actions/planes";
 import { toast } from "sonner";
-import NameServicesTable from "@/components/ms/enroll/grid-name-services";
 
 interface PlanFormUpdateProps {
   company?: string;
   onPlanCreated: () => void;
-  plan: Plan; // Recibe el plan para ser editado
+  plan: Plan; 
 }
 
 const PlanFormUpdate = ({ company, onPlanCreated, plan }: PlanFormUpdateProps) => {

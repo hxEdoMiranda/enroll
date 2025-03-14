@@ -20,8 +20,8 @@ const EnrollButton = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await getCompanyConfig(99);
-                setCompanyConfigs(data);
+                const data = await getCompanyConfig("99");
+                setCompanyConfigs(data as unknown as ICompanyConfig[]);
             } catch (error) {
                 console.error('Error fetching company config:', error);
             }

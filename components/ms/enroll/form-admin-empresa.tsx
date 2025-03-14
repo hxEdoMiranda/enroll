@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import Link from "next/link"; // Importar Link de Next.js
+import Link from "next/link"; 
 
 const PermissionsTable = () => {
   const [data] = useState([

@@ -8,7 +8,8 @@ import { z } from "zod";
   time_zone_UTC: z.string().min(1, {message: "Este campo es obligatorio"})
 });*/
 export const CountrySchema = z.object({
-  uid: z.string().optional(),
+  uid: z.string().nullable(),
+  _id: z.string().nullable(),
   name: z.string().min(1, { message: "Este campo es obligatorio" }),
   code: z.string().min(1, { message: "Este campo es obligatorio" }),
   code_phone: z.string().min(1, { message: "Este campo es obligatorio" }),

@@ -12,11 +12,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
-import { updateService } from "@/modules/configuration/actions/services";
 
 
 const ServicesTable = () => {

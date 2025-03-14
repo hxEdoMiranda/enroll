@@ -39,6 +39,8 @@ export function BannerPlanManager({ planesData, selectedPlanId, onPlanSelect }: 
 			),
 			content: <PlanForm />,
 			className: "w-[1010px] p-8",
+			title: "Agregar Plan",
+			description: "Crear un nuevo plan en el sistema"
 		},
 	];
 

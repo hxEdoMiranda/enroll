@@ -61,7 +61,7 @@ if(Pais){
     defaultValues:deault_pais,
   });
 
-const onSubmit = async (values: z.infer<typeof CountrySchema>) => {
+const onSubmit = async (values: CountryModel) => {
   // Convertimos undefined a null para que coincida con el modelo
   const data = { ...values, uid: values.uid ?? null, _id: values.uid ?? null };
 

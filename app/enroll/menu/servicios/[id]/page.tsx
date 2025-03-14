@@ -1,9 +1,3 @@
-import CompanyUpdateForm from '@/components/ms/enroll/form-empresa-update';
-// import EmpresaConfig from '@/components/ms/enroll/form-configuracion';
-import Stepper from '@/components/ms/enroll/stepper';
-import { GetServerSideProps } from 'next';
-import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type";
-import { getEmpresa, getEmpresas, postCreateEmpresa, updateEmpresa } from "@/actions/empresa";
 import { getPaises } from "@/actions/pais";
 import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import { ServiceUpdateForm } from '@/components/ms/enroll/form-editar-servicio';

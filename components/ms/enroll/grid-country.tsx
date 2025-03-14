@@ -15,7 +15,7 @@ import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import CountryForm from "@/components/ms/enroll/form-pais";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog} from "@/components/ui/dialog";
 
 const PaisesTable = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false); // Controla la visibilidad del modal

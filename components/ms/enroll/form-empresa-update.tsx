@@ -23,13 +23,12 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import React, { useState, useEffect } from "react";
-import { getEmpresa, getEmpresas, postCreateEmpresa, updateEmpresa } from "@/actions/empresa";
-import { getPaises } from "@/actions/pais"; // Importar getPaises desde su archivo
+import { updateEmpresa } from "@/actions/empresa";
+import { getPaises } from "@/actions/pais"; 
 import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import { CompanySchema } from "@/modules/configuration/schemas/company.model";
-import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type"; // Asegúrate de ajustar la ruta
-import { CompanyModel  } from "@/modules/configuration/types/Company.type"; // Asegúrate de ajustar la ruta
-import { Checkbox } from "@radix-ui/react-checkbox";
+import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type"; 
+import { CompanyModel  } from "@/modules/configuration/types/Company.type"; 
 
 
 

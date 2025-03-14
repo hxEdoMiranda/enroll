@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { getEmpresasFull } from "@/actions/empresa";
-import { getPaises } from "@/actions/pais";
 import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type"; // Asegúrate de ajustar la ruta
 //import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import {
@@ -16,7 +15,6 @@ import { Switch } from "@/components/ui/switch";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import Link from "next/link";
-import { Console } from "console";
 
 interface EmpresasTableProps {
   searchTerm: string;
