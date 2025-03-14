@@ -13,8 +13,9 @@ export default async function CreatePlanPage({
 	const planesData = await getPlanId(id);
 	// console.log("planesData:", planesData);
 	const servicesData = await getServices();
-	console.log("servicesData:", servicesData);
+	// console.log("servicesData:", servicesData);
 	const companyData = await getEmpresa(id) as CompanyFullModel;
+	console.log("companyData:", companyData);
 
 	return (
 		<>
