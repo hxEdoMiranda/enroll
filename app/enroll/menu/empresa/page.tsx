@@ -1,8 +1,6 @@
 "use client";
 
 import EmpresasTable from "@/components/ms/enroll/grid-empresa";
-// import Image from "next/image";
-// import { Label } from "@/components/ui/label";
 import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
