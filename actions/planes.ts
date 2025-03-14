@@ -1,6 +1,6 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
-import { Plan } from "@/modules/configuration/schemas/plan.model";
+import { Plan, UpdatePlan } from "@/modules/configuration/schemas/plan.model";
 import { PlanModel as IPlan} from "../modules/configuration/types/Plan.type";
 
 
@@ -119,3 +119,34 @@ export const updatePlan = async (plan: Plan): Promise<IPlan> => {
     throw new Error(`Error actualizando el plan: ${errorMessage}`);
   }
 };
+
+export const updatePlanInfo = async (plan: UpdatePlan) => {
+  console.log("Actualizando plan", plan);
+
+  try {
+    const response = await fetch(`${BASE_API_URL}/plan`, {
+      method: "POST", // Usamos POST para crear o actualizar el plan
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(plan), // Usamos el modelo `Plan` con los datos actualizados
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! Status: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log("Plan actualizado con éxito:", result);
+    return result as IPlan;
+  } catch (error) {
+    let errorMessage = 'An error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.error(`Error actualizando el plan: ${errorMessage}`);
+    throw new Error(`Error actualizando el plan: ${errorMessage}`);
+  }
+};
+

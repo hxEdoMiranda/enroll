@@ -105,7 +105,7 @@ export const getEmpresasFull = async (): Promise<CompanyFullModel[]> => {
 export const getEmpresa = async (id:string): Promise<CompanyFullModel|null> => {
   try {
 console.log("Identioficador:", id);
-    const response = await fetch(`${BASE_API_URL}/company?identifier=${id}`, {
+    const response = await fetch(`${BASE_API_URL}/company?id=${id}`, {
       method: "GET",
       redirect: "follow",
     });
