@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
+import { useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,57 +24,62 @@ import {
 import { Input } from "@/components/ui/input";
 import { PlanSchema, Plan } from "@/modules/configuration/schemas/plan.model";
 import { toast } from "sonner";
-
-import NameServicesTable from "@/components/ms/enroll/grid-name-services";
+import { Switch } from "@/components/ui/switch";
 import { postCreatePlan } from "@/actions/planes";
-import { ServiceModel as IService } from "@/modules/configuration/types/Service.type";
 
-
-interface PlanFormProps {
-	company?: string;
-	onPlanCreated: () => void; // Nueva prop para notificar al padre
-}
-
-const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
-
+const PlanForm = () => {
+	const params = useParams();
+	const companyId = params?.id as string;
+	console.log("ID de la empresa:", companyId);
 
 	const form = useForm<Plan>({
 		resolver: zodResolver(PlanSchema),
 		defaultValues: {
 			identifier: "",
 			name: "",
-			state: true,
+			state: false,
 			start_date: "",
 			end_date: "",
 			max_number_of_holders: 0,
 			self_managed_load: false,
 			max_number_of_loads: 0,
 			custom_plan_id: "6781197f090c7577fa400c10",
-			company: company??"",
-			service: []
+			company: companyId ?? "",
+			service: [
+				{
+					uid: "67cb0c18071a1f16bbfc09f5",
+					code: "SRV123",
+					name: "SERVICE A",
+					description: "A sample service description",
+					country: ["676aa26110ab35a51022c3eb"],
+					price_2b: "1000",
+					discount_2b: "10",
+					price_2c: "1500",
+					discount_2c: "5",
+					responsible_name: "John Doe",
+					responsible_mail: "john.doe@example.com",
+					state: true,
+				},
+			],
 		},
+		mode: "onChange",
 	});
 
-	const [message, setMessage] = useState("");
-	const [isDisabled, setIsDisabled] = useState(true);
+	console.log("form", form.getValues());
 
-	const handleServicesChange = (services: IService[]) => {
-		form.setValue('service', services);
-		setIsDisabled(services.length === 0);
-	};
+	const [message, setMessage] = useState("");
 
 	const handleSubmit = async (values: Plan) => {
 		console.log("Formulario enviado con los siguientes valores:", values);
 		try {
-
 			const result = await postCreatePlan(values);
 			console.log("Resultado de la API:", result);
 
 			setMessage("Plan creado exitosamente.");
 			toast.success("Plan creado exitosamente");
-			onPlanCreated(); // Notifica al padre que el plan fue creado
 
 			form.reset();
+			window.location.reload();
 		} catch (error) {
 			console.error("Error al enviar los datos:", error);
 			setMessage(
@@ -85,7 +91,10 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 
 	return (
 		<div className="w-full mt-6">
-			<h2 className="text-xl font-bold text-primary mb-6">Crear Plan</h2>
+			<h2 className="text-2xl font-semibold mb-6">Agregar Plan</h2>
+			<p className="text-xl font-bold mb-6">
+				Información básica del plan.
+			</p>
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(handleSubmit)}
@@ -97,7 +106,10 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						name="identifier"
 						render={({ field }) => (
 							<FormItem className="col-span-6">
-								<FormLabel>Identificador del plan *</FormLabel>
+								<FormLabel>
+									Identificador del Plan{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Ej: Identificador único del plan"
@@ -115,7 +127,10 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						name="name"
 						render={({ field }) => (
 							<FormItem className="col-span-6">
-								<FormLabel>Nombre del Plan *</FormLabel>
+								<FormLabel>
+									Nombre del Plan{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Ej: Plan Básico"
@@ -133,7 +148,10 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						name="start_date"
 						render={({ field }) => (
 							<FormItem className="col-span-6">
-								<FormLabel>Fecha de inicio *</FormLabel>
+								<FormLabel>
+									Fecha Inicio{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input type="date" {...field} />
 								</FormControl>
@@ -148,7 +166,10 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						name="end_date"
 						render={({ field }) => (
 							<FormItem className="col-span-6">
-								<FormLabel>Fecha de fin *</FormLabel>
+								<FormLabel>
+									Fecha Termino{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input type="date" {...field} />
 								</FormControl>
@@ -163,7 +184,10 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						name="state"
 						render={({ field }) => (
 							<FormItem className="col-span-6">
-								<FormLabel>Estado *</FormLabel>
+								<FormLabel>
+									Estado{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
 								<FormControl>
 									<Select
 										onValueChange={(value) =>
@@ -198,29 +222,20 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						control={form.control}
 						name="self_managed_load"
 						render={({ field }) => (
-							<FormItem className="col-span-6">
-								<FormLabel>Self Managed Load *</FormLabel>
+							<FormItem className="col-span-6 flex flex-row items-center gap-2">
+								<div className="space-y-0">
+									<FormLabel className="items-center">
+										Cargas Autoadministrables{" "}
+										<span className="text-red-500">*</span>
+									</FormLabel>
+								</div>
 								<FormControl>
-									<Select
-										onValueChange={(value) => field.onChange(value === "true")}
-										value={field.value ? "true" : "false"}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Seleccionar opción" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											<SelectItem value="true">
-												Sí
-											</SelectItem>
-											<SelectItem value="false">
-												No
-											</SelectItem>
-										</SelectContent>
-									</Select>
+									<Switch
+										checked={field.value}
+										onCheckedChange={field.onChange}
+										className="bg-primary mt-0"
+									/>
 								</FormControl>
-								<FormMessage />
 							</FormItem>
 						)}
 					/>
@@ -232,7 +247,8 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						render={({ field }) => (
 							<FormItem className="col-span-6">
 								<FormLabel>
-									Número máximo de holders *
+									Cantidad Máxima Titulares{" "}
+									<span className="text-red-500">*</span>
 								</FormLabel>
 								<FormControl>
 									<Input
@@ -258,7 +274,10 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						name="max_number_of_loads"
 						render={({ field }) => (
 							<FormItem className="col-span-6">
-								<FormLabel>Número máximo de cargas *</FormLabel>
+								<FormLabel>
+									Cantidad Máxima Cargas{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
 								<FormControl>
 									<Input
 										type="number"
@@ -277,19 +296,11 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 						)}
 					/>
 
-					{/* Componente NameServicesTable */}
-					<div className="col-span-12 w-full">
-						<NameServicesTable
-							onServicesChange={handleServicesChange}
-						/>
-					</div>
-
 					{/* Botón de enviar */}
 					<div className="col-span-12 flex justify-end mt-6">
 						<Button
 							type="submit"
 							className="bg-primary rounded-full text-white font-bold text-base"
-							disabled={isDisabled}
 						>
 							{form.formState.isSubmitting
 								? "PROCESANDO..."

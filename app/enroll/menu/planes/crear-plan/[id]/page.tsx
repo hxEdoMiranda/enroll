@@ -1,25 +1,25 @@
-import CompanyForm from '@/components/ms/enroll/form-empresa';
-import PlanesTableid from '@/components/ms/enroll/grid-plan-id'
-import PlanForm from '@/components/ms/enroll/form-plan'
+import { getEmpresa } from "@/actions/empresa";
+import { getPlanId } from "@/actions/planes";
+import { getServices } from "@/actions/services";
+import { PlanManager } from "@/components/ms/enroll/plan-manager";
+import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
 
+export default async function CreatePlanPage({
+	params,
+}: {
+	params: { id: string };
+}) {
+	const { id } = params;
+	const planesData = await getPlanId(id);
+	// console.log("planesData:", planesData);
+	const servicesData = await getServices();
+	// console.log("servicesData:", servicesData);
+	const companyData = await getEmpresa(id) as CompanyFullModel;
 
-export default async function CreatePlanPage({ params }: { params: { id: string } }) {
-	
-  // Esperar a que los parámetros estén disponibles
-  const resolvedParams = await params;
-  const { id } = resolvedParams;
-	
 	return (
-		<main className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 w-full">
-		{/* 	<div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-		
-				<PlanesTableid companyId={id} />
-		
-				<div className="lg:col-span-2">
-					<PlanForm company={id} />
-				</div>
-			</div>*/}
-			<PlanesTableid companyId={id} />
-		</main>
+		<>
+			<PlanManager planesData={planesData} companyData={companyData} servicesData={servicesData} />
+			{/* <PlanesTableid companyId={id} /> */}
+		</>
 	);
-};
+}
