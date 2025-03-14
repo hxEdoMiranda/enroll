@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import React, { useState } from 'react';
-import { postCreatePais } from '@/actions/pais';
+import { postCreatePais } from '@/actions/enroll/pais';
 
 const formSchema = z.object({
   codigo: z.string().min(1, { message: 'Código is required.' }),

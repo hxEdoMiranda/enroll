@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getEmpresas, IEmpresa } from "@/actions/empresa";
+import { getEmpresas, IEmpresa } from "@/actions/enroll/empresa";
 import {
   Table,
   TableBody,

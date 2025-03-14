@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import React, { useState } from 'react';
-import { postPuesto } from '@/actions/nom035-puesto'; 
+import { postPuesto } from '@/actions/enroll/nom035-puesto'; 
 
 const formSchema = z.object({
   name_puesto: z.string().min(1, { message: 'Nombre del Puesto es requerido.' }),

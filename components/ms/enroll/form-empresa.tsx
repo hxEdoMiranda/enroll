@@ -13,8 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; 
 import {  Select, SelectTrigger,SelectValue,SelectContent,SelectGroup, SelectItem } from '@/components/ui/select'; 
 import React, { useState, useEffect } from 'react';
-import { postCreateEmpresa } from '@/actions/empresa'; 
-import { getPaises,IPais  } from '@/actions/pais'; // Importar getPaises desde su archivo
+import { postCreateEmpresa } from '@/actions/enroll/empresa'; 
+import { getPaises,IPais  } from '@/actions/enroll/pais'; // Importar getPaises desde su archivo
 
 // Definir el esquema de validación
 const countrySchema = z.object({

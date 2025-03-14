@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getPaises } from "@/actions/pais"; // Nueva función para obtener todos los países
+import { getPaises } from "@/actions/enroll/pais"; // Nueva función para obtener todos los países
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IPais } from "@/actions/pais";
+import { IPais } from "@/actions/enroll/pais";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import CountryForm from "@/components/ms/enroll/form-pais";

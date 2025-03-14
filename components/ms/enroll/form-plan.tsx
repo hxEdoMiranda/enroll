@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import { postCreatePlan } from "@/actions/planes"; // Importa la función de acciones
+import { postCreatePlan } from "@/actions/enroll/planes"; // Importa la función de acciones
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@radix-ui/react-label";
 

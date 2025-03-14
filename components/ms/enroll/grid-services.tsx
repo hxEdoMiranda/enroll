@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getServices, IService } from "@/actions/services"; // Nueva función para obtener los servicios
+import { getServices, IService } from "@/actions/enroll/services"; // Nueva función para obtener los servicios
 import {
   Table,
   TableBody,

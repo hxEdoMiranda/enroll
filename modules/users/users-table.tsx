@@ -36,6 +36,7 @@ import { EditUserIcon } from "../icons";
 import { EditPatientForm } from "@/components/ms/enroll/form-editar-paciente-individual";
 
 export default function UserTable({ users }: { users: User[] }) {
+	console.log("Users >>>", users);
 	const [searchQuery, setSearchQuery] = React.useState("");
 	const [filteredUsers, setFilteredUsers] = React.useState(users);
 	const [currentPage, setCurrentPage] = React.useState(1);
