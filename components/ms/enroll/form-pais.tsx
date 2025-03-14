@@ -30,7 +30,7 @@ type CountryFormProps = {
 const CountryForm = ({ closeModal, Pais }: CountryFormProps) => {
   let Msg:string = "País creado exitosamente.";
   let MsgButon:string="Crear";
-  let deault_pais:CountryModel = {
+  const deault_pais:CountryModel = {
     uid:null,
     _id:null,
     code: '',

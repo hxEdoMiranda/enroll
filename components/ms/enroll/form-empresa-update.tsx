@@ -45,7 +45,7 @@ const CompanyUpdateForm = ( { id, emp }: CompanyUpdateFormProps ) => {
   //const { id } = params; 
   console.log("CompanyUpdateForm-id:", id)
   console.log("CompanyUpdateForm-emp:", emp)
-  const [message, setMessage] = useState("");
+  //const [message, setMessage] = useState("");
   //const [empresa, setEmpresa] = useState<IEmpresa | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   //const [error, setError] = useState<string | null>(null);
@@ -139,7 +139,7 @@ const handleSubmit = async (values: z.infer<typeof CompanySchema>) => {
       router.push("/enroll/menu/empresa");
     } catch (error) {
       console.error("Error al enviar los datos:", error);
-      setMessage("Error al crear la empresa. Por favor, inténtalo de nuevo.");
+      //setMessage("Error al crear la empresa. Por favor, inténtalo de nuevo.");
     }
   };
 
