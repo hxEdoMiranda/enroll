@@ -7,9 +7,9 @@ import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
 export default async function CreatePlanPage({
 	params,
 }: {
-	params: { id: string };
+	params: Promise<{ id: string }>;
 }) {
-	const { id } = params;
+	const { id } = await params;
 	const planesData = await getPlanId(id);
 	// console.log("planesData:", planesData);
 	const servicesData = await getServices();
