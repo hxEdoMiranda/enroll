@@ -50,22 +50,6 @@ const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
 			max_number_of_loads: 0,
 			custom_plan_id: "6781197f090c7577fa400c10",
 			company: companyId ?? "",
-			service: [
-				{
-					uid: "67cb0c18071a1f16bbfc09f5",
-					code: "SRV123",
-					name: "SERVICE A",
-					description: "A sample service description",
-					country: ["676aa26110ab35a51022c3eb"],
-					price_2b: "1000",
-					discount_2b: "10",
-					price_2c: "1500",
-					discount_2c: "5",
-					responsible_name: "John Doe",
-					responsible_mail: "john.doe@example.com",
-					state: true,
-				},
-			],
 		},
 		mode: "onChange",
 	});

@@ -4,7 +4,7 @@ import { PlanModel } from "@/modules/configuration/types/Plan.type";
 import { BannerPlanManager } from "./banner-plan-manager";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, SaveIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
 	Form,
@@ -15,13 +15,6 @@ import {
 	FormField,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectValue,
-	SelectTrigger,
-	SelectContent,
-	SelectItem,
-} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -40,18 +33,24 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
 import { updatePlanInfo } from "@/actions/planes";
 import { ServiceModel } from "@/modules/configuration/types/Service.type";
+import { toast } from "sonner";
 
 interface PlanManagerProps {
 	planesData: PlanModel[];
 	companyData: CompanyFullModel;
-  servicesData: ServiceModel[];
+	servicesData: ServiceModel[];
 }
 
-export function PlanManager({ planesData, companyData, servicesData }: PlanManagerProps) {
+export function PlanManager({
+	planesData,
+	companyData,
+	servicesData,
+}: PlanManagerProps) {
 	const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 	const [message, setMessage] = useState("");
-
-	console.log("companyData", companyData);
+	const [selectedServices, setSelectedServices] = useState<ServiceModel[]>(
+		[]
+	);
 
 	// Función para formatear fechas al formato YYYY-MM-DD
 	const formatDate = (dateString: string) => {
@@ -60,74 +59,88 @@ export function PlanManager({ planesData, companyData, servicesData }: PlanManag
 		return date.toISOString().split("T")[0];
 	};
 
+	const selectedPlan = selectedPlanId
+		? planesData.find((plan) => plan.uid === selectedPlanId)
+		: null;
+
+	// Inicializar el formulario con valores vacíos
+	const form = useForm<UpdatePlan>({
+		resolver: zodResolver(UpdatePlanSchema),
+		defaultValues: {
+			uid: "",
+			identifier: "",
+			name: "",
+			state: false,
+			start_date: "",
+			end_date: "",
+			max_number_of_holders: 0,
+			self_managed_load: false,
+			max_number_of_loads: 0,
+			custom_plan_id: "6781197f090c7577fa400c10",
+			company: companyData.id,
+			service: [],
+		},
+	});
+
 	// Establecer el primer plan como seleccionado por defecto
 	useEffect(() => {
 		if (!selectedPlanId && planesData.length > 0) {
 			setSelectedPlanId(planesData[0].uid);
 		}
-	}, []);
-
-	const selectedPlan = selectedPlanId
-		? planesData.find((plan) => plan.uid === selectedPlanId)
-		: null;
-
-	const defaultValues = {
-		uid: selectedPlan ? selectedPlan.uid : "",
-		identifier: selectedPlan ? selectedPlan.identifier : "",
-		name: selectedPlan ? selectedPlan.name : "",
-		state: selectedPlan ? selectedPlan.state : false,
-		start_date: selectedPlan ? formatDate(selectedPlan.start_date) : "",
-		end_date: selectedPlan ? formatDate(selectedPlan.end_date) : "",
-		max_number_of_holders: selectedPlan
-			? selectedPlan.max_number_of_holders
-			: 0,
-		self_managed_load: selectedPlan
-			? selectedPlan.self_managed_load
-			: false,
-		max_number_of_loads: selectedPlan
-			? selectedPlan.max_number_of_loads
-			: 0,
-		custom_plan_id: "6781197f090c7577fa400c10",
-		company: companyData.id,
-	};
-
-	console.log("defaultValues", defaultValues);
-
-	const form = useForm<UpdatePlan>({
-		resolver: zodResolver(UpdatePlanSchema),
-		defaultValues,
-	});
+	}, [selectedPlanId, planesData]);
 
 	// Actualizar el formulario cuando cambie el plan seleccionado
 	useEffect(() => {
 		if (selectedPlan) {
-			const updatedValues = {
-				...defaultValues,
-			};
-			form.reset(updatedValues);
+			form.reset({
+				uid: selectedPlan.uid,
+				identifier: selectedPlan.identifier,
+				name: selectedPlan.name,
+				state: selectedPlan.state,
+				start_date: formatDate(selectedPlan.start_date),
+				end_date: formatDate(selectedPlan.end_date),
+				max_number_of_holders: selectedPlan.max_number_of_holders,
+				self_managed_load: selectedPlan.self_managed_load,
+				max_number_of_loads: selectedPlan.max_number_of_loads,
+				custom_plan_id: "6781197f090c7577fa400c10",
+				company: companyData.id,
+				service: selectedPlan.service,
+			});
+
+			// Aseguramos que los servicios del plan estén correctamente seleccionados
+			const planServices = selectedPlan.service || [];
+			setSelectedServices(planServices);
+		} else {
+			setSelectedServices([]);
 		}
-	}, [selectedPlanId, selectedPlan]);
+	}, [selectedPlan, form, companyData.id, servicesData]);
+
+	// Función para manejar la selección de servicios
+	const handleServiceToggle = (service: ServiceModel) => {
+		setSelectedServices((prev) => {
+			const isSelected = prev.some((s) => s.code === service.code);
+			if (isSelected) {
+				return prev.filter((s) => s.code !== service.code);
+			} else {
+				return [...prev, service];
+			}
+		});
+	};
 
 	const handleSubmit = async (values: UpdatePlan) => {
 		try {
-			console.log("Iniciando envío del formulario");
-			console.log("editando usuario con estos valores", values);
-			setMessage(
-				"Editando usuario con estos valores: " +
-					JSON.stringify(values, null, 2)
-			);
-			const result = await updatePlanInfo({
+			setMessage("Editando usuario");
+			await updatePlanInfo({
 				...values,
-				service: selectedPlan?.service,
+				service: selectedServices.map((service) => service),
 			});
-			console.log("resultado de la actualizacion", result);
 			setMessage("Plan actualizado correctamente");
+			toast.success("Plan actualizado correctamente");
 		} catch (error) {
 			console.error("Error al enviar el formulario:", error);
 			setMessage("Error al enviar el formulario");
 		}
 	};
-
 	return (
 		<div className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 w-full">
 			<BannerPlanManager
@@ -139,7 +152,9 @@ export function PlanManager({ planesData, companyData, servicesData }: PlanManag
 				<div className="flex flex-row justify-between mb-8">
 					<div className="flex flex-col">
 						<h2 className="text-3xl font-medium">
-							{`${selectedPlan?.name} -  Información y Servicios`}
+							{selectedPlan?.name
+								? `${selectedPlan.name} - Información y Servicios`
+								: "Plan - Información y Servicios"}
 						</h2>
 						<p className="text-lg font-medium">
 							Agregue o edite la información básica del plan,
@@ -265,45 +280,24 @@ export function PlanManager({ planesData, companyData, servicesData }: PlanManag
 										control={form.control}
 										name="state"
 										render={({ field }) => (
-											<FormItem className="col-span-6">
-												<FormLabel>
-													Estado{" "}
-													<span className="text-red-500">
-														*
-													</span>
-												</FormLabel>
+											<FormItem className="col-span-6 flex flex-row items-center gap-2">
+												<div className="space-y-0">
+													<FormLabel className="items-center">
+														Estado{" "}
+														<span className="text-red-500">
+															*
+														</span>
+													</FormLabel>
+												</div>
 												<FormControl>
-													<Select
-														onValueChange={(
-															value
-														) =>
-															field.onChange(
-																value ===
-																	"active"
-															)
+													<Switch
+														checked={field.value}
+														onCheckedChange={
+															field.onChange
 														}
-														value={
-															field.value
-																? "active"
-																: "inactive"
-														}
-													>
-														<FormControl>
-															<SelectTrigger>
-																<SelectValue placeholder="Seleccionar Estado" />
-															</SelectTrigger>
-														</FormControl>
-														<SelectContent>
-															<SelectItem value="active">
-																Activo
-															</SelectItem>
-															<SelectItem value="inactive">
-																Inactivo
-															</SelectItem>
-														</SelectContent>
-													</Select>
+														className="bg-primary mt-0"
+													/>
 												</FormControl>
-												<FormMessage />
 											</FormItem>
 										)}
 									/>
@@ -405,18 +399,6 @@ export function PlanManager({ planesData, companyData, servicesData }: PlanManag
 											</FormItem>
 										)}
 									/>
-
-									{/* Botón de enviar */}
-									<div className="col-span-12 flex justify-end mt-6">
-										<Button
-											type="submit"
-											className="bg-primary rounded-full text-white font-bold text-base"
-										>
-											{form.formState.isSubmitting
-												? "PROCESANDO..."
-												: "EDITAR PLAN"}
-										</Button>
-									</div>
 								</form>
 							</Form>
 							{message && (
@@ -428,14 +410,11 @@ export function PlanManager({ planesData, companyData, servicesData }: PlanManag
 					</div>
 					<div className="col-span-1 border border-primary rounded-md p-4">
 						<h3 className="text-xl font-medium">Servicios</h3>
-						<Tabs defaultValue="account" className="w-full">
+						<Tabs defaultValue="all" className="w-full">
 							<TabsList>
-								<TabsTrigger value="account">Todo</TabsTrigger>
-								<TabsTrigger value="password">
-									Macroservicios
-								</TabsTrigger>
+								<TabsTrigger value="all">Todo</TabsTrigger>
 							</TabsList>
-							<TabsContent value="account">
+							<TabsContent value="all">
 								<Accordion
 									type="single"
 									collapsible
@@ -450,26 +429,49 @@ export function PlanManager({ planesData, companyData, servicesData }: PlanManag
 										</AccordionTrigger>
 										<AccordionContent className="flex flex-col">
 											{servicesData.map((service) => (
-												<div className="flex items-center space-x-3 px-8 py-4" key={service.uid}>
-													<Checkbox id="terms" />
-													<label
-													htmlFor="terms"
-													className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+												<div
+													className="flex items-center space-x-3 px-8 py-4"
+													key={service.uid}
 												>
-													{service.name}
-												</label>
-											</div>
+													<Checkbox
+														id={`${service.uid}`}
+														checked={selectedServices.some(
+															(s) =>
+																s.code ===
+																service.code
+														)}
+														onCheckedChange={() =>
+															handleServiceToggle(
+																service
+															)
+														}
+														className="data-[state=checked]:bg-primary"
+													/>
+													<label
+														htmlFor={`${service.uid}`}
+														className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+													>
+														{service.name}
+													</label>
+												</div>
 											))}
 										</AccordionContent>
 									</AccordionItem>
 								</Accordion>
 							</TabsContent>
-							<TabsContent value="password">
-								Change your password here.
-							</TabsContent>
 						</Tabs>
 					</div>
 				</div>
+			</div>
+			<Separator className="my-8" />
+			<div className="flex flex-row gap-4 justify-end">
+				<Button
+					onClick={form.handleSubmit(handleSubmit)}
+					className="bg-primary rounded-full text-white font-bold text-base"
+				>
+					GUARDAR CAMBIOS
+					<SaveIcon />
+				</Button>
 			</div>
 		</div>
 	);
