@@ -29,7 +29,6 @@ import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.
 
 const CompanyForm = () => {
   const router = useRouter();
-  const [message, setMessage] = useState("");
   const [paises, setPaises] = useState<IPais[]>([]);
 
   const form = useForm<IEmpresa>({
@@ -104,11 +103,9 @@ const CompanyForm = () => {
         "Resultado de la API:999990000000000000000000000000000000",
         result
       );
-      //setMessage("Empresa creada exitosamente.");
       router.push("/enroll/menu/empresa/crear-usuario");
     } catch (error) {
       console.error("Error al enviar los datos:", error);
-      setMessage("Error al crear la empresa. Por favor, inténtalo de nuevo.");
     }
   };
 

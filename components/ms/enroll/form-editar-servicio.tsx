@@ -44,7 +44,7 @@ export function ServiceUpdateForm({ id, servicio, paises }: ServiceFormProps) {
 	console.log("ServiceUpdateForm-servicio:", servicio)
 	//const [countries, setCountries] = useState<Country[]>([]);
 	const countries:Country[] = paises;
-	const [loading, setLoading] = useState(false);
+	const loading = false; 
 	const [selectedCountries, setSelectedCountries] = useState<string[]>(servicio.country);
 
 	const form = useForm<Service>({

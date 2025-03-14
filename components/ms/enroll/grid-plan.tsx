@@ -36,8 +36,8 @@ const PlanesTable = () => {
         }
         
         setPlanes(planesData);
-      } catch (error: any) {
-        setError("Error al obtener los planes: " + (error.message || error));
+      } catch (error: unknown) {
+        setError("Error al obtener los planes: " + (error instanceof Error ? error.message : String(error)));
         console.error("Error fetching planes:", error);
         setPlanes([]); 
       } finally {
