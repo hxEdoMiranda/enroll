@@ -8,18 +8,19 @@ interface Step {
 }
 
 const steps: Step[] = [
-  { label: "Datos de la empresa", description: "Ingresa los detalles básicos de la empresa", isActive: true, isCompleted: false },
-  { label: "Usuarios administrativos", description:"CreaAscocia los usuarios que podrán operar administrar esta empresa y vincula los planes", isActive: false, isCompleted: false },
+  { label: "Datos de la empresa", description: "Ingresa los detalles básicos de la empresa", isActive: false, isCompleted: false },
+  { label: "Usuarios administrativos", description:"CreaAscocia los usuarios que podrán operar administrar esta empresa y vincula los planes", isActive: true, isCompleted: false },
 
 ];
 
-const Stepper = () => {
+const Stepper2 = () => {
   return (
     <div className="flex flex-col space-y-6">
 <div className="mb-8">
   <h1 className="text-3xl font-semibold text-primary">Crear Empresa</h1>
   <p className="text-base text-gray-600 mt-2">Completa los pasos para registrar la empresa en nuestra plataforma</p>
 </div>
+
       {steps.map((step, index) => (
         <div key={index} className="relative flex items-start">
           {/* Line connecting steps */}
@@ -62,4 +63,4 @@ const Stepper = () => {
   );
 };
 
-export default Stepper;
+export default Stepper2;

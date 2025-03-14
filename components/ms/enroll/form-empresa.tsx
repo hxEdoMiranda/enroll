@@ -106,7 +106,7 @@ const CompanyForm = () => {
         result
       );
       //setMessage("Empresa creada exitosamente.");
-      router.push("/enroll/menu/empresa");
+      router.push("/enroll/menu/empresa/crear-usuario");
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       setMessage("Error al crear la empresa. Por favor, inténtalo de nuevo.");
