@@ -20,12 +20,13 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import React, { useState, useEffect } from "react";
 import { postCreateEmpresa } from "@/actions/empresa";
-import { getPaises } from "@/actions/pais"; 
+import { getPaises } from "@/actions/pais";
 import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import { CompanySchema } from "@/modules/configuration/schemas/company.model";
-import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type"; 
+import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type";
 
 const CompanyForm = () => {
   const router = useRouter();
@@ -114,324 +115,420 @@ const CompanyForm = () => {
 
   return (
     <div className="space-y-8">
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
-        {/* Fila 1 */}
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="identifier"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Identifier</span>
-                <FormControl>
-                  <Input placeholder="Identifier" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Name</span>
-                <FormControl>
-                  <Input placeholder="Name" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="corporate_name"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Corporate Name</span>
-                <FormControl>
-                  <Input placeholder="Corporate Name" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-  
-        {/* Fila 2 */}
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="trade_name"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Trade Name</span>
-                <FormControl>
-                  <Input placeholder="Trade Name" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="country"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Country</span>
-                <FormControl>
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={(value) => {
-                      const selectedCountry = paises.find((pais) => pais.uid === value);
-                      if (selectedCountry) {
-                        field.onChange(selectedCountry.uid);
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+          {/* Fila 1 */}
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="identifier"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Identificador
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Identificador"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Nombre
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Nombre"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="corporate_name"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Nombre Fantasía
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Nombre Fantasía"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Fila 2 */}
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="trade_name"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Razón Social
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Razón Social"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    País
+                  </span>
+                  <FormControl>
+                    <Select
+                      value={field.value || ""}
+                      onValueChange={(value) => {
+                        const selectedCountry = paises.find(
+                          (pais) => pais.uid === value
+                        );
+                        if (selectedCountry) {
+                          field.onChange(selectedCountry.uid);
+                        }
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione">
+                          {field.value
+                            ? paises.find((p) => p.uid === field.value)?.name
+                            : "Select a country"}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {paises.map((pais) => (
+                            <SelectItem key={pais.uid} value={pais.uid || ""}>
+                              {pais.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="industry_type"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Tipo Industria
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Tipo Industria"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Fila 3 */}
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="business_type"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Tipo Negocio
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Tipo Negocio"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="company_email"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Correo Empresa
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Correo Empresa"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="company_phone"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Telefono Empresa
+                  </span>
+                  <FormControl>
+                    <Input placeholder="+56" {...field} className="text-xs" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Fila 4 */}
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="commercial_manager.0.name"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Gerente comercial
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Gerente comercial"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="commercial_manager.0.mail"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Correo Gerente comercial
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Correo"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="kam.0.name"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Kam
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="KAM Name"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Fila 5 */}
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="kam.0.mail"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Correo Kam
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Correo"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="employee_count"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Cantidad de Empleados
+                  </span>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Employee Count"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(Number(e.target.value) || 0)
                       }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a country">
-                        {field.value
-                          ? paises.find((p) => p.uid === field.value)?.name
-                          : "Select a country"}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {paises.map((pais) => (
-                          <SelectItem key={pais.uid} value={pais.uid || ""}>
-                            {pais.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="industry_type"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Industry Type</span>
-                <FormControl>
-                  <Input placeholder="Industry Type" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-  
-        {/* Fila 3 */}
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="business_type"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Business Type</span>
-                <FormControl>
-                  <Input placeholder="Business Type" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="company_email"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Company Email</span>
-                <FormControl>
-                  <Input placeholder="Company Email" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="company_phone"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Company Phone</span>
-                <FormControl>
-                  <Input placeholder="Company Phone" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-  
-        {/* Fila 4 */}
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="commercial_manager.0.name"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Commercial Manager Name</span>
-                <FormControl>
-                  <Input placeholder="Commercial Manager Name" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="commercial_manager.0.mail"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Commercial Manager Email</span>
-                <FormControl>
-                  <Input placeholder="Commercial Manager Email" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="kam.0.name"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">KAM Name</span>
-                <FormControl>
-                  <Input placeholder="KAM Name" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-  
-        {/* Fila 5 */}
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="kam.0.mail"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">KAM Email</span>
-                <FormControl>
-                  <Input placeholder="KAM Email" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="employee_count"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Employee Count</span>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Employee Count"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                    className="text-xs"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-  
-        {/* Título Contacto */}
-        <div className="mt-8">
-          <span className="block text-lg font-semibold text-primary">Contacto</span>
-        </div>
-  
-        {/* Fila de Contacto */}
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="contact.0.name"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Name</span>
-                <FormControl>
-                  <Input placeholder="Contact Name" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="contact.0.phone"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Phone</span>
-                <FormControl>
-                  <Input placeholder="Contact Phone" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="contact.0.mail"
-            render={({ field }) => (
-              <FormItem>
-                <span className="block mb-1 text-primary text-xs">Email</span>
-                <FormControl>
-                  <Input placeholder="Contact Email" {...field} className="text-xs" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-  
-        {/* Botón Continuar */}
-        <div className="flex justify-end mt-6">
-       
-          <Button type="submit">Continuar</Button>
-       
-        </div>
-      </form>
-    </Form>
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Título Contacto */}
+
+         {/* Título Contacto con Switch */}
+<div className="flex items-center gap-4 col-span-1 md:col-span-3 md:col-start-1">
+  <span className="block text-lg font-semibold text-foreground">
+    Contacto
+  </span>
+  <div className="flex items-center">
+    <Switch className="w-10 h-6 " color="primary" />
+    <span className="text-sm text-foreground">Contacto principal</span>
   </div>
-  
+</div>
+
+
+          {/* Fila de Contacto */}
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="contact.0.name"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Nombre
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Nombre"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="contact.0.phone"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Telefono
+                  </span>
+                  <FormControl>
+                    <Input placeholder="+56 " {...field} className="text-xs" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="contact.0.mail"
+              render={({ field }) => (
+                <FormItem>
+                  <span className="block mb-1 text-foreground text-sm font-medium">
+                    Correo
+                  </span>
+                  <FormControl>
+                    <Input
+                      placeholder="Correo"
+                      {...field}
+                      className="text-xs"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Botón Continuar */}
+          <div className="col-span-1 md:col-start-3 flex justify-end mt-6">
+            <Button type="submit">Continuar</Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 

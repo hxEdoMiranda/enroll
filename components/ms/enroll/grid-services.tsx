@@ -16,6 +16,8 @@ import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
+import { updateService } from "@/modules/configuration/actions/services";
+
 
 const ServicesTable = () => {
   const [services, setServices] = useState<IService[]>([]);
@@ -31,6 +33,7 @@ const ServicesTable = () => {
       setError(null);
       try {
         const servicesData: IService[] = await getServices(); // Obtiene todos los servicios
+        console.log("Datos obtenidos de getServices:", servicesData); // <--- Agrega este console.log
         setServices(servicesData);
       } catch (error) {
         setError("Error al obtener los servicios");
@@ -42,6 +45,8 @@ const ServicesTable = () => {
 
     fetchServices();
   }, []);
+
+
 
   // Filtrar los servicios basados en el término de búsqueda
   const filteredServices = services.filter(
@@ -91,13 +96,13 @@ const ServicesTable = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Código</TableHead><TableHead>Nombre</TableHead><TableHead>Descripción</TableHead><TableHead>Editar</TableHead><TableHead>Estado</TableHead>
+               <TableHead>Nombre</TableHead><TableHead>Descripción</TableHead><TableHead>Editar</TableHead><TableHead>Estado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {currentData.map((service, index) => (
                 <TableRow key={service.uid || index}>
-                  <TableCell>{service.code}</TableCell><TableCell>{service.name}</TableCell><TableCell>{service.description}</TableCell>
+                  <TableCell>{service.name}</TableCell><TableCell>{service.description}</TableCell>
                   <TableCell>
                     <Link href={`/enroll/menu/servicios/${service.uid}`} >
                         <Button
@@ -109,7 +114,10 @@ const ServicesTable = () => {
                         </Button>
                     </Link>
                   </TableCell>
-                  <TableCell><Switch color="primary" /></TableCell>
+                  <TableCell>
+  <Switch color="primary" checked={service.state} />
+</TableCell>
+
                 </TableRow>
               ))}
             </TableBody>
