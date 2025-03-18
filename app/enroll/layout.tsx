@@ -12,7 +12,7 @@ export default async function DashboardLayout({
       <div className="flex h-screen">
         <Sidebar />
         <div className="flex-1 flex flex-col">
-          <Header returnButton={true} />
+          <Header returnButton={true} root="enroll" />
           <main className="flex-1 overflow-auto">{children}</main>
         </div>
       </div>

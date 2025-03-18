@@ -21,12 +21,13 @@ import Breadcrumbs from "./breadcrumbs";
 interface HeaderProps {
   className?: string;
   returnButton: boolean;
+  root?:string;
 }
 
-export function Header({ className }: HeaderProps) {
+export function Header({ className, root }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const isRoot = pathname === "/";
+  const isRoot = pathname === `/${root}`;
 
   const { signOut } = useClerk();
   const { session } = useSession();
