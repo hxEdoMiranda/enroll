@@ -113,7 +113,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
               <TableCell>{empresa.country.name || "N/A"}</TableCell>
               <TableCell>
                     <Link
-                      href={`/enroll/menu/empresa/update-empresa/${empresa.identifier}`}
+                      href={`/enroll/menu/empresa/update-empresa/${empresa.id}`}
                     >
                       <Button
                         variant="ghost"
