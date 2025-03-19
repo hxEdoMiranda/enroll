@@ -35,13 +35,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { CleanedSchedule } from "@/types/agenda-admin/schedule";
 import { useToast } from "@/hooks/use-toast";
-import { createSchedule } from "@/actions/admin-agenda/schedule";
+import { createSchedule } from "@/app/actions/admin-agenda/schedule";
 import { differenceInMinutes } from "date-fns";
 import {
   fetchCreateSlot,
   fetchDeleteSlot,
   fetchGetSlotsByidPractitioner,
-} from "@/actions/admin-agenda/slots";
+} from "@/app/actions/admin-agenda/slots";
 
 interface AgendaCalendarProps {
   practitionerId?: string;

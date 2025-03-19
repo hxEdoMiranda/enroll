@@ -30,7 +30,7 @@ import {
   fetchCreatePostPractitioner,
   fetchGetPractitionerById,
   fetchUpdatePerfilPractitioner,
-} from "@/actions/admin-agenda/practitioner";
+} from "@/app/actions/admin-agenda/practitioner";
 import { cn, getTimeZones } from "@/lib/utils";
 import {
   PractitionerCreateData,

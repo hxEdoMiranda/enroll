@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getCompanyConfig } from '@/actions/enroll/config';
+import { getCompanyConfig } from '@/app/actions/enroll/config';
 
 interface ICompanyConfig {
     idEmpresa: number;

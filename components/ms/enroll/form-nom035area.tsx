@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import React, { useState } from 'react';
-import { postArea } from '@/actions/enroll/nom035-area';
+import { postArea } from '@/app/actions/enroll/nom035-area';
 
 const formSchema = z.object({
   name_area: z.string().min(1, { message: 'Nombre del Área es requerido.' }),

@@ -1,4 +1,4 @@
-import { fetchGetPractitioner } from "@/actions/admin-agenda/practitioner";
+import { fetchGetPractitioner } from "@/app/actions/admin-agenda/practitioner";
 import { AgendaContent } from "@/components/agenda-admin/agenda-content";
 
 export default async function AgendaPage() {

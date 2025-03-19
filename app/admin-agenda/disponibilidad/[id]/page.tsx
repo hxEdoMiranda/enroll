@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchGetPractitionerById } from "@/actions/admin-agenda/practitioner";
-import { fetchGetScheduleByIdPractitioner } from "@/actions/admin-agenda/schedule";
+import { fetchGetPractitionerById } from "@/app/actions/admin-agenda/practitioner";
+import { fetchGetScheduleByIdPractitioner } from "@/app/actions/admin-agenda/schedule";
 import { AvailabilityCalendar } from "@/components/agenda-admin/availability-calendar";
 
 export default async function DisponibilidadEditPage({ params }: { params: { id: string } }) {

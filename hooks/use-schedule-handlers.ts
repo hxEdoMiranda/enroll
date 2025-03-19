@@ -16,7 +16,7 @@ import {
   deleteSchedule,
   fetchGetScheduleByIdPractitioner,
   updateSchedule,
-} from "@/actions/admin-agenda/schedule";
+} from "@/app/actions/admin-agenda/schedule";
 import {
   TimeSlot,
   WeekSchedule,

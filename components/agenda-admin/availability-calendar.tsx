@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { createSchedule } from "@/actions/admin-agenda/schedule";
+import { createSchedule } from "@/app/actions/admin-agenda/schedule";
 import { CleanedSchedule } from "@/types/agenda-admin/schedule";
 import { useRouter } from "next/navigation";
 

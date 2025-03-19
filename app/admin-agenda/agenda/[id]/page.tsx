@@ -2,18 +2,18 @@
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AgendaCalendar } from "@/components/agenda-admin/agenda-calendar";
-import { fetchGetScheduleByIdPractitioner } from "@/actions/admin-agenda/schedule";
-import { fetchGetPractitionerById } from "@/actions/admin-agenda/practitioner";
+import { fetchGetScheduleByIdPractitioner } from "@/app/actions/admin-agenda/schedule";
+import { fetchGetPractitionerById } from "@/app/actions/admin-agenda/practitioner";
 import { CleanedSchedule } from "@/types/agenda-admin/schedule";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
 
 export default async function AgendaEditPage({ params }: { params: { id: string } }) {
   const {id} = await params 
+  const startDateTime = new Date().toISOString();
   const [practitionerResponse, scheduleResponse] = await Promise.all([
     fetchGetPractitionerById(id),
-    fetchGetScheduleByIdPractitioner(id)
+    fetchGetScheduleByIdPractitioner(id, startDateTime)
   ]);
 
   if (!('data' in practitionerResponse)) {
