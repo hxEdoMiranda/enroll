@@ -22,8 +22,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import React, { useState, useEffect } from "react";
-import { updateEmpresa } from "@/actions/empresa";
-import { getPaises } from "@/actions/pais"; 
+import { updateEmpresa } from "@/app/actions/empresa";
+import { getPaises } from "@/app/actions/pais"; 
 import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import { CompanySchema } from "@/modules/configuration/schemas/company.model";
 import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type"; 

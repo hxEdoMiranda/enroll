@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
-import { updatePlanInfo } from "@/actions/planes";
+import { updatePlanInfo } from "@/app/actions/planes";
 import { ServiceModel } from "@/modules/configuration/types/Service.type";
 import { toast } from "sonner";
 

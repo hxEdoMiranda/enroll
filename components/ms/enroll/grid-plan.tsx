@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getPlans } from "@/actions/planes";
+import { getPlans } from "@/app/actions/planes";
 import {
   Table,
   TableBody,

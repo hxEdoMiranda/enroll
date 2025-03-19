@@ -26,7 +26,7 @@ import {
 	ServiceSchema,
 } from "@/modules/configuration/schemas/service.model";
 import { useEffect, useState } from "react";
-import { getPaises } from "@/actions/pais";
+import { getPaises } from "@/app/actions/pais";
 import { createService } from "@/modules/configuration/actions/services";
 
 interface Country {

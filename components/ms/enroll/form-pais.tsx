@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import React, { useState } from 'react';
-import { postCreatePais } from '@/actions/pais';
+import { postCreatePais } from '@/app/actions/pais';
 import { CountrySchema } from '@/modules/configuration/schemas/country.model'; // Importamos el schema
 import { CountryModel } from "@/modules/configuration/types/Country.type";
 // Define el tipo de props para incluir closeModal y el esquema opcional

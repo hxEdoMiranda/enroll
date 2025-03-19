@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import React, { useState, useEffect } from "react";
-import { postCreateEmpresa } from "@/actions/empresa";
-import { getPaises } from "@/actions/pais";
+import { postCreateEmpresa } from "@/app/actions/empresa";
+import { getPaises } from "@/app/actions/pais";
 import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import { CompanySchema } from "@/modules/configuration/schemas/company.model";
 import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type";

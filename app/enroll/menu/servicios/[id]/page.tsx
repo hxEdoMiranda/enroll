@@ -1,7 +1,7 @@
-import { getPaises } from "@/actions/pais";
+import { getPaises } from "@/app/actions/pais";
 import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import { ServiceUpdateForm } from '@/components/ms/enroll/form-editar-servicio';
-import { getServices } from '@/actions/services';
+import { getServices } from '@/app/actions/services';
 import { ServiceModel as IService} from "@/modules/configuration/types/Service.type";
 
 export default async function ServiceUpdatePage({

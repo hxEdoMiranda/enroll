@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-import { getCompanyConfig } from "@/actions/config";
+import { getCompanyConfig } from "@/app/actions/config";
 
 interface ICompanyConfig {
   id_oauth: string;

@@ -1,6 +1,6 @@
-import { getEmpresa } from "@/actions/empresa";
-import { getPlanId } from "@/actions/planes";
-import { getServices } from "@/actions/services";
+import { getEmpresa } from "@/app/actions/empresa";
+import { getPlanId } from "@/app/actions/planes";
+import { getServices } from "@/app/actions/services";
 import { PlanManager } from "@/components/ms/enroll/plan-manager";
 import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
 

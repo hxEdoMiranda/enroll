@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getServices } from "@/actions/services";
+import { getServices } from "@/app/actions/services";
 import { ServiceModel as IService } from "@/modules/configuration/types/Service.type";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";

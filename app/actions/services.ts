@@ -1,6 +1,6 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
-import { ServiceModel as IService} from "../modules/configuration/types/Service.type";
+import { ServiceModel as IService} from "../../modules/configuration/types/Service.type";
 
 
 // Función para obtener servicios con filtros opcionales (code, name, uid)

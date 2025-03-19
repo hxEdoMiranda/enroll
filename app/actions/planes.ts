@@ -1,7 +1,7 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
 import { Plan, UpdatePlan } from "@/modules/configuration/schemas/plan.model";
-import { PlanModel as IPlan} from "../modules/configuration/types/Plan.type";
+import { PlanModel as IPlan} from "../../modules/configuration/types/Plan.type";
 
 
 export const postCreatePlan = async (plan: Plan) => {

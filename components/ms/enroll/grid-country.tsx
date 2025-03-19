@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getPaises } from "@/actions/pais"; // Nueva función para obtener todos los países
+import { getPaises } from "@/app/actions/pais"; // Nueva función para obtener todos los países
 import {
   Table,
   TableBody,

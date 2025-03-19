@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { PlanSchema, Plan } from "@/modules/configuration/schemas/plan.model";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
-import { postCreatePlan } from "@/actions/planes";
+import { postCreatePlan } from "@/app/actions/planes";
 
 interface PlanFormProps {
 	company?: string;

@@ -1,6 +1,6 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
-import { CountryModel as IPais} from "../modules/configuration/types/Country.type";
+import { CountryModel as IPais} from "../../modules/configuration/types/Country.type";
 
 export const postCreatePais = async (pais: IPais): Promise<any> => {
     console.log("LLegoooooooooooooooooooooooooooooooooooo");

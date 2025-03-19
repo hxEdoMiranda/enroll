@@ -34,6 +34,9 @@ export function HeaderBackoffice({ className }: HeaderProps) {
         className
       )}
     >
+        <div className="mr-auto">
+    <img src="/img/back-office/isotipo-negativo.svg" alt="Logo" className="h-16 w-auto" />
+  </div>
       <div className="flex flex-col gap-2 w-full">
         <div className="flex items-center justify-between w-full">
           <div className="ml-auto">

@@ -2,7 +2,7 @@ import CompanyUpdateForm from '@/components/ms/enroll/form-empresa-update';
 // import EmpresaConfig from '@/components/ms/enroll/form-configuracion';
 import Stepper from '@/components/ms/enroll/stepper';
 import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type";
-import { getEmpresa } from "@/actions/empresa";
+import { getEmpresa } from "@/app/actions/empresa";
 
 export default async function EmpresaUpdatePage({
   params,

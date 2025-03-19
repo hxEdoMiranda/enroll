@@ -1,6 +1,6 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3"; 
 
-import { CompanyModel as IEmpresa} from "../modules/configuration/types/Company.type";
+import { CompanyModel as IEmpresa} from "../../modules/configuration/types/Company.type";
 import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
 
 export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {

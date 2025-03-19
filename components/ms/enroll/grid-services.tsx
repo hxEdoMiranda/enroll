@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getServices } from "@/actions/services"; // Nueva función para obtener los servicios
+import { getServices } from "@/app/actions/services"; // Nueva función para obtener los servicios
 import { ServiceModel as IService} from "@/modules/configuration/types/Service.type";
 
 import {
