@@ -15,7 +15,6 @@ export interface ButtonBannerProps {
 	content: React.ReactNode;
 	title: string;
 	description: string;
-	onClick?: () => void;
 	className?: string;
 	titleClassName?: string;
 	descriptionClassName?: string;
@@ -33,9 +32,15 @@ export const ButtonBanner = ({
 	const [isOpen, setIsOpen] = useState(false);
 	console.log("isOpen", isOpen);
 
-	// Clonamos el contenido y le pasamos la función para cerrar el modal
+	// Clone the content and pass the setIsOpen function
 	const contentWithProps = React.cloneElement(content as React.ReactElement, {
-		onSuccess: () => setIsOpen(false)
+		onSuccess: () => {
+			setIsOpen(false);
+			// Call the original onSuccess if it exists
+			if ((content as React.ReactElement).props.onSuccess) {
+				(content as React.ReactElement).props.onSuccess();
+			}
+		}
 	});
 
 	return (

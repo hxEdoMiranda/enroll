@@ -34,9 +34,10 @@ import { UserType } from "@/modules/configuration/types/user.type";
 interface EditPatientFormProps {
 	user: UserType;
 	setOpen?: (open: boolean) => void;
+	onSuccess?: () => void;
 }
 
-export function EditPatientForm({ user, setOpen }: EditPatientFormProps) {
+export function EditPatientForm({ user, setOpen, onSuccess }: EditPatientFormProps) {
 	const [userData, setUserData] = useState<Data | null>(null);
 
 	const form = useForm<UpdateDataUser>({
@@ -94,6 +95,7 @@ export function EditPatientForm({ user, setOpen }: EditPatientFormProps) {
 				console.log("Paciente actualizado exitosamente >>>", response);
 				form.reset();
 				setOpen?.(false);
+				onSuccess?.();
 			} else {
 				toast.error(response.message);
 			}

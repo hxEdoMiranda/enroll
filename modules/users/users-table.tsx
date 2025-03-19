@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ChevronDown, Search } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 import {
 	Table,
@@ -34,6 +35,7 @@ import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "../icons";
 import { EditPatientForm } from "@/components/ms/enroll/form-editar-paciente-individual";
 import { UserType } from "../configuration/types/user.type";
+import { getAllUsers } from "@/modules/configuration/actions/fetch-user";
 
 export default function UserTable({ users }: { users: UserType[] }) {
 	console.log("users received >>>", users);
@@ -42,10 +44,36 @@ export default function UserTable({ users }: { users: UserType[] }) {
 	const [filteredUsers, setFilteredUsers] = React.useState(users);
 	const [currentPage, setCurrentPage] = React.useState(1);
 	const usersPerPage = 8;
+	const [isOpen, setIsOpen] = React.useState(false);
+	const [tableUsers, setTableUsers] = React.useState(users);
+
+	const refreshTable = async () => {
+		try {
+			const response = await getAllUsers();
+			if (response.ok && response.data) {
+				const newUsers = response.data;
+				setTableUsers(newUsers);
+				const filteredData = searchQuery 
+					? newUsers.filter((user: UserType) =>
+						user.clerk.firstName.toLowerCase().includes(searchQuery.toLowerCase())
+					  )
+					: newUsers;
+				setFilteredUsers(filteredData);
+				setCurrentPage(1);
+				toast.success('Tabla actualizada exitosamente');
+			} else {
+				console.error('Error en la respuesta:', response);
+				toast.error('Error al actualizar la tabla');
+			}
+		} catch (error) {
+			console.error('Error refreshing table:', error);
+			toast.error('Error al actualizar la tabla');
+		}
+	};
 
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
-		const filtered = users.filter((user) =>
+		const filtered = tableUsers.filter((user) =>
 			user.clerk.firstName.toLowerCase().includes(query.toLowerCase())
 		);
 		setFilteredUsers(filtered);
@@ -175,25 +203,26 @@ export default function UserTable({ users }: { users: UserType[] }) {
 								<TableCell>2026-01-01</TableCell>
 								<TableCell>{calcularEdad(user.fhir.birthDate)} años</TableCell>
 								<TableCell>
-									{
-										<ButtonBanner
-											trigger={
-												<Button
-													variant="ghost"
-													className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
-												>
-													<EditUserIcon fill="currentColor" />
-													Editar
-												</Button>
-											}
-											content={
-												<EditPatientForm user={user} />
-											}
-											title="Editar Paciente"
-											description="Edita los datos del paciente"
-											className="w-[1010px] p-8"
-										/>
-									}
+									<ButtonBanner
+										trigger={
+											<Button
+												variant="ghost"
+												className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary items-center rounded-full border border-[#D5D7DA]"
+											>
+												<EditUserIcon fill="currentColor" />
+												Editar
+											</Button>
+										}
+										content={
+											<EditPatientForm 
+												user={user}
+												onSuccess={refreshTable}
+											/>
+										}
+										title="Editar Paciente"
+										description="Edita los datos del paciente"
+										className="w-[1010px] p-8"
+									/>
 								</TableCell>
 								<TableCell>
 									<Switch />
