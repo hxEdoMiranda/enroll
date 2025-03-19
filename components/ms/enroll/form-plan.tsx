@@ -1,207 +1,315 @@
 "use client";
-import { useForm } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import { postCreatePlan } from "@/app/actions/enroll/planes"; // Importa la función de acciones
+import { useParams } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { PlanSchema, Plan } from "@/modules/configuration/schemas/plan.model";
+import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@radix-ui/react-label";
+import { postCreatePlan } from "@/app/actions/planes";
 
-const formSchema = z.object({
-  identifier: z.string().min(1, { message: "Identifier is required." }),
-  name: z.string().min(1, { message: "Name is required." }),
-  company: z.string().min(1, { message: "Company is required." }),
-  start_validity: z.string().min(1, { message: "Start validity is required." }),
-  end_validity: z.string().min(1, { message: "End validity is required." }),
-  holder_quantity: z.preprocess(
-    (val) => Number(val),
-    z.number().min(1, { message: "Holder quantity is required." })
-  ),
-  manage_loads: z.boolean(),
-  load_count_per_holder: z.preprocess(
-    (val) => Number(val),
-    z.number().min(1, { message: "Load count per holder is required." })
-  ),
-  selfmanage_loads: z.boolean(),
-});
+interface PlanFormProps {
+	company?: string;
+	onPlanCreated?: () => void;
+}
 
-const PlanForm = () => {
-  const [message, setMessage] = useState("");
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      identifier: "",
-      name: "",
-      company: "",
-      start_validity: "",
-      end_validity: "",
-      holder_quantity: 0,
-      manage_loads: false,
-      load_count_per_holder: 0,
-      selfmanage_loads: false,
-    },
-  });
+const PlanForm = ({ company, onPlanCreated }: PlanFormProps) => {
+	const params = useParams();
+	const companyId = company || params?.id as string;
+	console.log("ID de la empresa:", companyId);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("Formulario enviado con los siguientes valores:", values);
-    try {
-      const result = await postCreatePlan(values);
-      console.log("Resultado de la API:", result);
-      setMessage("Plan creado exitosamente.");
-    } catch (error) {
-      console.error("Error al enviar los datos:", error);
-      setMessage("Error al crear el plan. Por favor, inténtalo de nuevo.");
-    }
-  };
+	const form = useForm<Plan>({
+		resolver: zodResolver(PlanSchema),
+		defaultValues: {
+			identifier: "",
+			name: "",
+			state: false,
+			start_date: "",
+			end_date: "",
+			max_number_of_holders: 0,
+			self_managed_load: false,
+			max_number_of_loads: 0,
+			custom_plan_id: "6781197f090c7577fa400c10",
+			company: companyId ?? "",
+		},
+		mode: "onChange",
+	});
 
-  return (
-    <div className="space-y-8">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="identifier"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="identifier" className="block mb-1 text-primary-foreground">Identifier</Label>
-                <FormControl>
-                  <Input id="identifier" placeholder="Identifier" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="name" className="block mb-1 text-primary-foreground">Name</Label>
-                <FormControl>
-                  <Input id="name" placeholder="Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="company"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="company" className="block mb-1 text-primary-foreground">Company</Label>
-                <FormControl>
-                  <Input id="company" placeholder="Company" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="start_validity"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="start_validity" className="block mb-1 text-primary-foreground">Start Validity</Label>
-                <FormControl>
-                  <Input id="start_validity" type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="end_validity"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="end_validity" className="block mb-1 text-primary-foreground">End Validity</Label>
-                <FormControl>
-                  <Input id="end_validity" type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="holder_quantity"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="holder_quantity" className="block mb-1 text-primary-foreground">Holder Quantity</Label>
-                <FormControl>
-                  <Input id="holder_quantity" type="number" placeholder="Holder Quantity" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="manage_loads"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="manage_loads" className="block mb-1 text-primary-foreground">Manage Loads</Label>
-                <FormControl>
-                  <Switch
-                    id="manage_loads"
-                    checked={field.value}
-                    onCheckedChange={(checked) => field.onChange(checked)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="load_count_per_holder"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="load_count_per_holder" className="block mb-1 text-primary-foreground">Load Count per Holder</Label>
-                <FormControl>
-                  <Input id="load_count_per_holder" type="number" placeholder="Load Count per Holder" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="selfmanage_loads"
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor="selfmanage_loads" className="block mb-1 text-primary-foreground">Self-manage Loads</Label>
-                <FormControl>
-                  <Switch
-                    id="selfmanage_loads"
-                    checked={field.value}
-                    onCheckedChange={(checked) => field.onChange(checked)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="mt-8 flex justify-center">
-            <Button type="submit" className="w-full lg:w-1/2">
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Form>
-      {message && <div className="mt-4 text-center text-primary-foreground">{message}</div>}
-    </div>
-  );
+	console.log("form", form.getValues());
+
+	const [message, setMessage] = useState("");
+
+	const handleSubmit = async (values: Plan) => {
+		console.log("Formulario enviado con los siguientes valores:", values);
+		try {
+			const result = await postCreatePlan(values);
+			console.log("Resultado de la API:", result);
+
+			setMessage("Plan creado exitosamente.");
+			toast.success("Plan creado exitosamente");
+
+			// Llama al callback si existe
+			if (onPlanCreated) {
+				onPlanCreated();
+			} else {
+				form.reset();
+				window.location.reload();
+			}
+		} catch (error) {
+			console.error("Error al enviar los datos:", error);
+			setMessage(
+				"Error al crear el plan. Por favor, inténtalo de nuevo."
+			);
+			toast.error("Error al crear el plan");
+		}
+	};
+
+	return (
+		<div className="w-full mt-6">
+			<h2 className="text-2xl font-semibold mb-6">Agregar Plan</h2>
+			<p className="text-xl font-bold mb-6">
+				Información básica del plan.
+			</p>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(handleSubmit)}
+					className="grid grid-cols-12 gap-4"
+				>
+					{/* Campo Identifier */}
+					<FormField
+						control={form.control}
+						name="identifier"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Identificador del Plan{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input
+										placeholder="Ej: Identificador único del plan"
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Campo Name */}
+					<FormField
+						control={form.control}
+						name="name"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Nombre del Plan{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input
+										placeholder="Ej: Plan Básico"
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Campo Fecha de inicio */}
+					<FormField
+						control={form.control}
+						name="start_date"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Fecha Inicio{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input type="date" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Campo Fecha de fin */}
+					<FormField
+						control={form.control}
+						name="end_date"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Fecha Termino{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input type="date" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Campo Estado */}
+					<FormField
+						control={form.control}
+						name="state"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Estado{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Select
+										onValueChange={(value) =>
+											field.onChange(value === "active")
+										}
+										value={
+											field.value ? "active" : "inactive"
+										}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Seleccionar Estado" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="active">
+												Activo
+											</SelectItem>
+											<SelectItem value="inactive">
+												Inactivo
+											</SelectItem>
+										</SelectContent>
+									</Select>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Campo Self Managed Load */}
+					<FormField
+						control={form.control}
+						name="self_managed_load"
+						render={({ field }) => (
+							<FormItem className="col-span-6 flex flex-row items-center gap-2">
+								<div className="space-y-0">
+									<FormLabel className="items-center">
+										Cargas Autoadministrables{" "}
+										<span className="text-red-500">*</span>
+									</FormLabel>
+								</div>
+								<FormControl>
+									<Switch
+										checked={field.value}
+										onCheckedChange={field.onChange}
+										className="bg-primary mt-0"
+									/>
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+
+					{/* Campo Maximo de holders */}
+					<FormField
+						control={form.control}
+						name="max_number_of_holders"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Cantidad Máxima Titulares{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input
+										type="number"
+										placeholder="Ej: 100"
+										{...field}
+										value={field.value || ""} // Aseguramos que el valor siempre sea un string o vacío
+										onChange={(e) =>
+											field.onChange(
+												Number(e.target.value) || 0
+											)
+										} // Convertimos el valor a número
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Campo Maximo de cargas */}
+					<FormField
+						control={form.control}
+						name="max_number_of_loads"
+						render={({ field }) => (
+							<FormItem className="col-span-6">
+								<FormLabel>
+									Cantidad Máxima Cargas{" "}
+									<span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input
+										type="number"
+										placeholder="Ej: 10"
+										{...field}
+										value={field.value || ""} // Aseguramos que el valor siempre sea un string o vacío
+										onChange={(e) =>
+											field.onChange(
+												Number(e.target.value) || 0
+											)
+										} // Convertimos el valor a número
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Botón de enviar */}
+					<div className="col-span-12 flex justify-end mt-6">
+						<Button
+							type="submit"
+							className="bg-primary rounded-full text-white font-bold text-base"
+						>
+							{form.formState.isSubmitting
+								? "PROCESANDO..."
+								: "CREAR PLAN"}
+						</Button>
+					</div>
+				</form>
+			</Form>
+			{message && (
+				<div className="mt-4 text-center text-sm text-gray-500">
+					{message}
+				</div>
+			)}
+		</div>
+	);
 };
 
 export default PlanForm;

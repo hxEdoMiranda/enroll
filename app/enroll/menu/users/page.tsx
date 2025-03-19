@@ -7,12 +7,11 @@ import {
 import { Button } from "@/components/ui/button";
 import UserTable from "@/modules/users/users-table";
 import { getAllUsers } from "@/modules/configuration/actions/fetch-user";
-import { PatientForm } from "@/components/ms/enroll/form-carga-paciente-individual";
+import { PatientMailForm } from "@/components/ms/enroll/form-envio-correo-individual";
 import { ListButtonBanner } from "@/components/ms/list-button-banner";
 
 export default async function EmpresasPage() {
 	const users = await getAllUsers();
-	console.log("Users >>>", users.data);
 
 	const actionsButtons = [
 		{
@@ -25,7 +24,8 @@ export default async function EmpresasPage() {
 					CARGA INDIVIDUAL
 				</Button>
 			),
-			content: <PatientForm />,
+
+			content: <PatientMailForm />,
 			title: "Carga Individual",
 			description: "Carga un usuario individualmente",
 			className: "w-[1010px] p-8",
@@ -41,7 +41,8 @@ export default async function EmpresasPage() {
 					CARGA MASIVA
 				</Button>
 			),
-			content: <PatientForm />,
+
+			content: <PatientMailForm />,
 			title: "Carga Masiva",
 			description: "Carga usuarios en masa",
 		},
@@ -56,7 +57,7 @@ export default async function EmpresasPage() {
 					BAJA MASIVA
 				</Button>
 			),
-			content: <PatientForm />,
+			content: <PatientMailForm />,
 			title: "Baja Masiva",
 			description: "Baja usuarios en masa",
 		},

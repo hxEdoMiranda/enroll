@@ -16,6 +16,10 @@ const steps: Step[] = [
 const Stepper = () => {
   return (
     <div className="flex flex-col space-y-6">
+<div className="mb-8">
+  <h1 className="text-3xl font-semibold text-primary">Crear Empresa</h1>
+  <p className="text-base text-gray-600 mt-2">Completa los pasos para registrar la empresa en nuestra plataforma</p>
+</div>
       {steps.map((step, index) => (
         <div key={index} className="relative flex items-start">
           {/* Line connecting steps */}

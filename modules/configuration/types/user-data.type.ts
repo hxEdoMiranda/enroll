@@ -27,6 +27,11 @@ export interface Address {
   organization: Organization;
 }
 
+export interface UserPatients {
+  clerk:         UserClass;
+  organization: Organization;
+}
+
 export interface Organization {
   id:                    string;
   name:                  string;
@@ -312,4 +317,13 @@ export interface IDPlan {
   state:                 boolean;
   createdAt:             Date;
   updatedAt:             Date;
+}
+
+export interface EmailInviteData {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  urlRedirect: string;
+  role: "admin" | "patient" | "superadmin" | "doctor";
+  plans?: string[];
 }

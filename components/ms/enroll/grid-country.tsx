@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getPaises } from "@/app/actions/enroll/pais"; // Nueva función para obtener todos los países
+import { getPaises } from "@/app/actions/pais"; // Nueva función para obtener todos los países
 import {
   Table,
   TableBody,
@@ -10,14 +10,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IPais } from "@/app/actions/enroll/pais";
+import { CountryModel } from "@/modules/configuration/types/Country.type";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
 import CountryForm from "@/components/ms/enroll/form-pais";
 import { Switch } from "@/components/ui/switch";
+import { Dialog} from "@/components/ui/dialog";
 
 const PaisesTable = () => {
-  const [paises, setPaises] = useState<IPais[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false); // Controla la visibilidad del modal
+  const [paises, setPaises] = useState<CountryModel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(""); // Estado para el término de búsqueda
@@ -29,7 +31,7 @@ const PaisesTable = () => {
       setLoading(true);
       setError(null);
       try {
-        const paisesData: IPais[] = await getPaises(); // Obtiene todos los países
+        const paisesData: CountryModel[] = await getPaises(); // Obtiene todos los países
         setPaises(paisesData);
       } catch (error) {
         setError("Error al obtener los países");
@@ -48,7 +50,6 @@ const PaisesTable = () => {
       pais.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pais.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   // Paginación
   const totalPages = Math.ceil(filteredPaises.length / itemsPerPage);
   const currentData = filteredPaises.slice(
@@ -117,7 +118,7 @@ const PaisesTable = () => {
                           Editar
                         </Button>
                       }
-                      content={<CountryForm />}
+                      content={<Dialog  open={isOpen} onOpenChange={setIsOpen}><CountryForm closeModal={() => setIsOpen(false)} Pais={ pais as CountryModel} /></Dialog>}
                       title="Editar Paciente"
                       description="Edita los datos del paciente"
                       className="w-[1010px] p-8"

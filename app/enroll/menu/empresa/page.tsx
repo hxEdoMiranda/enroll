@@ -1,8 +1,6 @@
 "use client";
 
 import EmpresasTable from "@/components/ms/enroll/grid-empresa";
-// import Image from "next/image";
-// import { Label } from "@/components/ui/label";
 import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
@@ -18,7 +16,8 @@ const EmpresaPage = () => {
             <Building2 className="size-10 text-white" />
             <h1 className="text-white font-bold text-3xl">Gestión Empresas</h1>
           </div>
-          <Link href="/home/enroll/empresa/crear-empresa">
+
+          <Link href="/enroll/menu/empresa/crear-empresa">
             <Button variant="secondary">
               Agregar empresa
             </Button>

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ChevronDown, Search } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 import {
 	Table,
@@ -30,22 +31,49 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
-import { User } from "@/modules/configuration/types/user-data.type";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "../icons";
 import { EditPatientForm } from "@/components/ms/enroll/form-editar-paciente-individual";
+import { UserType } from "../configuration/types/user.type";
+import { getAllUsers } from "@/modules/configuration/actions/fetch-user";
 
-export default function UserTable({ users }: { users: User[] }) {
-	console.log("Users >>>", users);
+export default function UserTable({ users }: { users: UserType[] }) {
+	console.log("users received >>>", users);
 	const [searchQuery, setSearchQuery] = React.useState("");
 	const [filteredUsers, setFilteredUsers] = React.useState(users);
 	const [currentPage, setCurrentPage] = React.useState(1);
 	const usersPerPage = 8;
+	const [isOpen, setIsOpen] = React.useState(false);
+	const [tableUsers, setTableUsers] = React.useState(users);
+
+	const refreshTable = async () => {
+		try {
+			const response = await getAllUsers();
+			if (response.ok && response.data) {
+				const newUsers = response.data;
+				setTableUsers(newUsers);
+				const filteredData = searchQuery 
+					? newUsers.filter((user: UserType) =>
+						user.clerk.firstName.toLowerCase().includes(searchQuery.toLowerCase())
+					  )
+					: newUsers;
+				setFilteredUsers(filteredData);
+				setCurrentPage(1);
+				toast.success('Tabla actualizada exitosamente');
+			} else {
+				console.error('Error en la respuesta:', response);
+				toast.error('Error al actualizar la tabla');
+			}
+		} catch (error) {
+			console.error('Error refreshing table:', error);
+			toast.error('Error al actualizar la tabla');
+		}
+	};
 
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
-		const filtered = users.filter((user) =>
-			user.user.firstName.toLowerCase().includes(query.toLowerCase())
+		const filtered = tableUsers.filter((user) =>
+			user.clerk.firstName.toLowerCase().includes(query.toLowerCase())
 		);
 		setFilteredUsers(filtered);
 		setCurrentPage(1);
@@ -55,6 +83,19 @@ export default function UserTable({ users }: { users: User[] }) {
 	const indexOfFirstUser = indexOfLastUser - usersPerPage;
 	const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 	const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+	const calcularEdad = (birthDate: string): number => {
+		const fechaNacimiento = new Date(birthDate);
+		const hoy = new Date();
+		let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+		const mesDiff = hoy.getMonth() - fechaNacimiento.getMonth();
+
+		if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+			edad--;
+		}
+
+		return edad;
+	};
 
 	return (
 		<div className="w-full">
@@ -120,59 +161,62 @@ export default function UserTable({ users }: { users: User[] }) {
 					</TableHeader>
 					<TableBody>
 						{currentUsers.map((user) => (
-							<TableRow key={user.user.id}>
+							<TableRow key={user.clerk.id}>
 								<TableCell className="font-medium">
-									{user.user.firstName} {user.user.lastName}
+									{user.clerk.firstName || "-"} {user.clerk.lastName || "-"}
 								</TableCell>
 								<TableCell>
 									<div className="flex items-center gap-2">
 										<Image
 											src={
-												user.organization.imageUrl ||
+												user.clerk.imageUrl ||
 												"/placeholder.svg"
 											}
-											alt={user.organization.name}
+											alt={user.clerk.firstName || "-"}
 											width={20}
 											height={20}
 											className="rounded-full"
 										/>
-										{user.organization.name}
+										{user.clerk.firstName || "-"}
 									</div>
 								</TableCell>
 								<TableCell>
 									<div className="flex items-center gap-2">
 										<Image
 											src={
-												user.organization.imageUrl ||
+												user.clerk.imageUrl ||
 												"/placeholder.svg"
 											}
-											alt={user.organization.name}
+											alt={user.clerk.firstName || "-"}
 											width={20}
 											height={20}
 											className="rounded-sm"
 										/>
-										{user.organization.name}
+										{user.clerk.firstName || "-"}
 									</div>
 								</TableCell>
 								<TableCell>Fonasa</TableCell>
 								<TableCell>Titular</TableCell>
-								<TableCell>Masculino</TableCell>
+								<TableCell>{user.fhir.gender || "-"}</TableCell>
 								<TableCell>2024-01-01</TableCell>
 								<TableCell>2026-01-01</TableCell>
-								<TableCell>20 años</TableCell>
+								<TableCell>{calcularEdad(user.fhir.birthDate)} años</TableCell>
 								<TableCell>
 									<ButtonBanner
 										trigger={
 											<Button
 												variant="ghost"
-												className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+												className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary items-center rounded-full border border-[#D5D7DA]"
 											>
 												<EditUserIcon fill="currentColor" />
 												Editar
 											</Button>
 										}
 										content={
-											<EditPatientForm user={user} />
+											<EditPatientForm 
+												user={user}
+												onSuccess={refreshTable}
+											/>
 										}
 										title="Editar Paciente"
 										description="Edita los datos del paciente"
@@ -180,7 +224,7 @@ export default function UserTable({ users }: { users: User[] }) {
 									/>
 								</TableCell>
 								<TableCell>
-									<Switch checked={true} />
+									<Switch />
 								</TableCell>
 							</TableRow>
 						))}

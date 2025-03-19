@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -28,23 +27,25 @@ import {
 import { updateUserById } from "@/modules/configuration/actions/fetch-user";
 import { toast } from "sonner";
 import { splitAddress } from "@/modules/configuration/schemas/user-data.schema";
-import { Data, User } from "@/modules/configuration/types/user-data.type";
+import { Data } from "@/modules/configuration/types/user-data.type";
 import { getUserById } from "@/modules/configuration/actions/fetch-user";
+import { UserType } from "@/modules/configuration/types/user.type";
 
 interface EditPatientFormProps {
-	user: User;
+	user: UserType;
 	setOpen?: (open: boolean) => void;
+	onSuccess?: () => void;
 }
 
-export function EditPatientForm({ user, setOpen }: EditPatientFormProps) {
+export function EditPatientForm({ user, setOpen, onSuccess }: EditPatientFormProps) {
 	const [userData, setUserData] = useState<Data | null>(null);
 
 	const form = useForm<UpdateDataUser>({
 		resolver: zodResolver(UpdateDataUserSchema),
 		defaultValues: {
-			firstName: user.user.firstName || "",
-			lastName: user.user.lastName || "",
-			emailAddress: user.user.emailAddresses[0].emailAddress || "",
+			firstName: user.clerk.firstName || "",
+			lastName: user.clerk.lastName || "",
+			emailAddress: user.clerk.emailAddresses[0].emailAddress || "",
 			birthDate: userData?.fhir.birthDate || "",
 			address:
 				`${userData?.fhir.address[0].line[0]}, ${userData?.fhir.address[0].city}, ${userData?.fhir.address[0].state}` ||
@@ -58,7 +59,8 @@ export function EditPatientForm({ user, setOpen }: EditPatientFormProps) {
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const response = await getUserById(user.user.id);
+				const response = await getUserById(user.clerk.id);
+				console.log(response.data);
 				setUserData(response.data);
 				form.reset({
 					...form.getValues(),
@@ -76,7 +78,7 @@ export function EditPatientForm({ user, setOpen }: EditPatientFormProps) {
 		};
 
 		fetchUserData();
-	}, [user.user.id]);
+	}, [user.clerk.id]);
 
 	const handleSubmit = async (data: UpdateDataUser) => {
 		console.log("Data >>>", data);
@@ -87,12 +89,13 @@ export function EditPatientForm({ user, setOpen }: EditPatientFormProps) {
 		};
 		console.log("Formatted Data >>>", formattedData);
 		try {
-			const response = await updateUserById(user.user.id, formattedData);
+			const response = await updateUserById(user.clerk.id, formattedData);
 			if (response.ok) {
 				toast.success("Paciente actualizado exitosamente");
 				console.log("Paciente actualizado exitosamente >>>", response);
 				form.reset();
 				setOpen?.(false);
+				onSuccess?.();
 			} else {
 				toast.error(response.message);
 			}

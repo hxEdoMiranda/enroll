@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { getEmpresas, IEmpresa } from "@/app/actions/enroll/empresa";
+import { getEmpresasFull } from "@/app/actions/empresa";
+import { CompanyFullModel as IEmpresa } from "@/modules/configuration/types/Company.type"; // Asegúrate de ajustar la ruta
+//import { CountryModel as IPais } from "@/modules/configuration/types/Country.type";
 import {
   Table,
   TableBody,
@@ -12,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ButtonBanner } from "@/components/ms/button-banner";
 import { EditUserIcon } from "@/modules/icons";
+import Link from "next/link";
 
 interface EmpresasTableProps {
   searchTerm: string;
@@ -19,6 +22,7 @@ interface EmpresasTableProps {
 
 const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
   const [empresas, setEmpresas] = useState<IEmpresa[]>([]);
+  //const [paises, setPaises] = useState<IPais[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
@@ -27,7 +31,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
     const fetchEmpresas = async () => {
       setLoading(true);
       try {
-        const data = await getEmpresas();
+        const data = await getEmpresasFull();
         setEmpresas(data);
       } catch (error) {
         console.error("Error fetching empresas:", error);
@@ -39,10 +43,27 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
     fetchEmpresas();
   }, []);
 
+  /* useEffect(() => {
+    const fetchPaises = async () => {
+      //setLoading(true);
+      try {
+        const data = await getPaises();
+        console.log("data Paises:", data);
+        setPaises(data);
+      } catch (error) {
+        console.error("Error fetching empresas:", error);
+      } finally {
+        //setLoading(false);
+      }
+    };
+
+    fetchPaises();
+  }, []);
+  */
   const handleToggle = (id: string) => {
     setEmpresas(
       empresas.map((empresa) =>
-        empresa._id === id ? { ...empresa, enabled: !empresa.enabled } : empresa
+        empresa._id === id ? { ...empresa, enabled: !empresa.state } : empresa
       )
     );
   };
@@ -70,7 +91,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
   if (loading) {
     return <p>Cargando datos...</p>;
   }
-
+  console.log("Empresas:", empresas);
   return (
     <div className="space-y-4">
       <Table>
@@ -85,27 +106,24 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
         </TableHeader>
         <TableBody>
           {currentData.map((empresa) => (
-            <TableRow key={empresa._id}>
+            <TableRow key={empresa.id}>
               <TableCell>{empresa.name}</TableCell>
               <TableCell>{empresa.industry_type || "N/A"}</TableCell>
               <TableCell>{empresa.employee_count || "N/A"}</TableCell>
               <TableCell>{empresa.country.name || "N/A"}</TableCell>
               <TableCell>
-                <ButtonBanner
-                  trigger={
-                    <Button
-                      variant="ghost"
-                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                    <Link
+                      href={`/enroll/menu/empresa/update-empresa/${empresa.id}`}
                     >
-                      <EditUserIcon fill="currentColor" />
-                      Ver Detalles
-                    </Button>
-                  }
-                  content={<Button></Button>}
-                  title="Editar Paciente"
-                  description="Edita los datos del paciente"
-                  className="w-[1010px] p-8"
-                />
+                      <Button
+                        variant="ghost"
+                        className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                      >
+                        <EditUserIcon fill="currentColor" />
+                        Ver Detalles
+                      </Button>
+                    </Link>
+
               </TableCell>
               <TableCell>
                 <ButtonBanner
@@ -125,21 +143,15 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
                 />
               </TableCell>
               <TableCell>
-                <ButtonBanner
-                  trigger={
-                    <Button
-                      variant="ghost"
-                      className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
-                    >
-                      <EditUserIcon fill="currentColor" />
-                      Planes
-                    </Button>
-                  }
-                  content={<Button></Button>}
-                  title="Editar Paciente"
-                  description="Edita los datos del paciente"
-                  className="w-[1010px] p-8"
-                />
+              <Link href={`/enroll/menu/planes/crear-plan/${empresa.id}`}>
+              <Button
+                    variant="ghost"
+                    className="flex font-semibold flex-row gap-2 shadow-sm text-[#414651] bg-white hover:bg-primary hover:text-white hover:border-primary  items-center rounded-full border border-[#D5D7DA]"
+                  >
+                    <EditUserIcon fill="currentColor" />
+                    Planes
+                  </Button>
+                </Link>
               </TableCell>
               <TableCell>
                 <ButtonBanner
@@ -160,7 +172,7 @@ const EmpresasTable = ({ searchTerm }: EmpresasTableProps) => {
               </TableCell>
               <TableCell>
                 <Switch
-                  checked={empresa.enabled}
+                  checked={empresa.state}
                   onChange={() => handleToggle(empresa._id!)}
                   color="primary"
                 />

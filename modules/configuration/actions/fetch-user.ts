@@ -6,7 +6,8 @@ const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
 
 export const getAllUsers = async () => {
   try {
-    const response = await fetch(`${BASE_API_URL_LAMBDA}/backoffice/enroll/v3/patient`);
+    //const response = await fetch(`${BASE_API_URL_LAMBDA}/backoffice/enroll/v3/patient`);
+    const response = await fetch(`${BASE_API_URL_LAMBDA}/patient/holder`);
     const result = await response.json();
     if (response.status === 200) {
 
@@ -31,7 +32,8 @@ export const getAllUsers = async () => {
 
 export const getUserById = async (id: string) => {
   try {
-    const response = await fetch(`${BASE_API_URL_LAMBDA}/backoffice/enroll/v3/patient/${id}`);
+    //const response = await fetch(`${BASE_API_URL_LAMBDA}/backoffice/enroll/v3/patient/${id}`);
+    const response = await fetch(`${BASE_API_URL_LAMBDA}/patient/holder?idOauth=${id}`);
     const result = await response.json();
     if (response.status === 200) {
 
