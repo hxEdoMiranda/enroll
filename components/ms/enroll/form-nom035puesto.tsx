@@ -15,6 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import React, { useState } from 'react';
 import { postPuesto } from '@/app/actions/nom035-puesto'; 
 
+
 const formSchema = z.object({
   name_puesto: z.string().min(1, { message: 'Nombre del Puesto es requerido.' }),
   status: z.boolean().default(true).refine(value => value !== null, {

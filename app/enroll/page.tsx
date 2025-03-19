@@ -1,4 +1,5 @@
 
+
 import HomeButton from '@/components/ms/boton-menu';
 
 export default async function HomePage() {
@@ -12,3 +13,4 @@ export default async function HomePage() {
     </main>
   );
 }
+

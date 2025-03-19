@@ -39,7 +39,6 @@ import { getAllUsers } from "@/modules/configuration/actions/fetch-user";
 
 export default function UserTable({ users }: { users: UserType[] }) {
 	console.log("users received >>>", users);
-
 	const [searchQuery, setSearchQuery] = React.useState("");
 	const [filteredUsers, setFilteredUsers] = React.useState(users);
 	const [currentPage, setCurrentPage] = React.useState(1);

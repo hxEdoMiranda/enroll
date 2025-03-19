@@ -27,6 +27,7 @@ import { CountryModel as IPais } from "@/modules/configuration/types/Country.typ
 import { CompanySchema } from "@/modules/configuration/schemas/company.model";
 import { CompanyModel as IEmpresa } from "@/modules/configuration/types/Company.type";
 
+
 const CompanyForm = () => {
   const router = useRouter();
   const [paises, setPaises] = useState<IPais[]>([]);

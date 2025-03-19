@@ -1,4 +1,5 @@
 'use client';
+
 import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
@@ -21,9 +22,10 @@ const PlanPage = () => {
           </Link>
         </div>
       </div>
-<PlanesTable></PlanesTable>
+    <PlanesTable></PlanesTable>
     </main>
   );
 };
 
 export default PlanPage;
+

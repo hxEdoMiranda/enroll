@@ -12,7 +12,6 @@ import { ListButtonBanner } from "@/components/ms/list-button-banner";
 
 export default async function EmpresasPage() {
 	const users = await getAllUsers();
-	console.log("Users >>>", users.data);
 
 	const actionsButtons = [
 		{
@@ -25,6 +24,7 @@ export default async function EmpresasPage() {
 					CARGA INDIVIDUAL
 				</Button>
 			),
+
 			content: <PatientMailForm />,
 			title: "Carga Individual",
 			description: "Carga un usuario individualmente",
@@ -41,6 +41,7 @@ export default async function EmpresasPage() {
 					CARGA MASIVA
 				</Button>
 			),
+
 			content: <PatientMailForm />,
 			title: "Carga Masiva",
 			description: "Carga usuarios en masa",

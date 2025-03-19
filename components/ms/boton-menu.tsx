@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { getCompanyConfig } from "@/app/actions/config";
 
+
 interface ICompanyConfig {
   id_oauth: string;
   texto: string;

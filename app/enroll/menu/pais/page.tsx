@@ -1,3 +1,4 @@
+
 "use client"
 import React, { useState } from 'react';
 import PaisForm from '@/components/ms/enroll/form-pais'
@@ -7,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import PaisesTable  from "@/components/ms/enroll/grid-country"
 
 const CountryPage = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false); // Controla la visibilidad del modal
+const [isOpen, setIsOpen] = useState<boolean>(false); // Controla la visibilidad del modal
   return (
 
 <main className="min-h-screen bg-white px-4 sm:px-6 lg:px-8 w-full">
