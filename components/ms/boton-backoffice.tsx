@@ -19,7 +19,7 @@ interface ICompanyConfig {
   app?: string;
 }
 
-const HomeButton = () => {
+const HomeBackButton = () => {
   const { isLoaded, userId } = useAuth();
   const [companyConfigs, setCompanyConfigs] = useState<ICompanyConfig[]>([]);
 
@@ -46,7 +46,7 @@ const HomeButton = () => {
 
   // Filter configs to only show Enroll buttons
   const filteredConfigs = companyConfigs.filter(config => 
-    config.app?.toLowerCase() === "enroll"
+    config.app?.toLowerCase() === "backoffice"
 );
 
 
@@ -82,4 +82,4 @@ const HomeButton = () => {
   
 };
 
-export default HomeButton;
+export default HomeBackButton;

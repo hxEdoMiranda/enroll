@@ -10,6 +10,7 @@ interface ICompanyConfig  {
   createdAt: string;
   updatedAt: string;
   uid: string;
+  app?: string;
 }
 
 export const getCompanyConfig = async (id_oauth: string): Promise<ICompanyConfig[]> => {
@@ -28,7 +29,7 @@ export const getCompanyConfig = async (id_oauth: string): Promise<ICompanyConfig
 
     // Parsear la respuesta como JSON
     const result = await response.json();
-    
+
     // Verificar si el campo 'data' está presente y contiene los datos
     if (result.data) {
       return result.data; // Devuelve los datos encontrados

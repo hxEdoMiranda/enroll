@@ -1,5 +1,4 @@
-import { Header } from "@/modules/shared/header";
-import { Sidebar } from "@/modules/shared/sidebar";
+import { HeaderBackoffice } from "@/components/ms/header-backoffice";
 import { ClerkProvider } from "@clerk/nextjs";
 
 export default async function DashboardLayout({
@@ -10,9 +9,8 @@ export default async function DashboardLayout({
   return (
     <ClerkProvider>
       <div className="flex h-screen">
-        <Sidebar />
         <div className="flex-1 flex flex-col">
-          <Header returnButton={true} />
+          <HeaderBackoffice />
           <main className="flex-1 overflow-auto">{children}</main>
         </div>
       </div>

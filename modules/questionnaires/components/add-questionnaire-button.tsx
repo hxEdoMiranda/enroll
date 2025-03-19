@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateQuestionnaireForm } from "@/app/(dashboard)/cuestionarios/components/CreateQuestionnaireForm";
+import { CreateQuestionnaireForm } from "@/app/dashboard/cuestionarios/components/CreateQuestionnaireForm";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/modules/shared/modal/provider";
 import { SquarePlus } from "lucide-react";
