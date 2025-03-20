@@ -18,6 +18,7 @@ export interface ButtonBannerProps {
 	className?: string;
 	titleClassName?: string;
 	descriptionClassName?: string;
+	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export const ButtonBanner = ({
