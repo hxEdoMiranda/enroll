@@ -12,7 +12,8 @@ interface ScheduleResponseData {
 
 
 
-const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
+// const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
+const BASE_API_URL_LAMBDA = "https://api.medibuslive.com/dev"
 
 export const fetchGetScheduleByIdPractitioner = async (
   id: string,

@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import {
   Search,
   Calendar,
@@ -168,18 +168,22 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
     setShowEditConfirmDialog(true);
   };
 
+  const hasLoaded = useRef(false);
   useEffect(() => {
-    if (selectedPractitioner && startDate && endDate) {
-      console.log("Fecha término modificada, actualizando calendario");
-      
-      initializeWeeklySchedule(
-        startDate,
-        endDate,
-        uniformStartTime,
-        uniformEndTime,
-        existingSchedules || [],
-        selectedPractitioner
-      );
+    if (!hasLoaded.current) {
+      if (selectedPractitioner && startDate && endDate) {
+        console.log("Fecha término modificada, actualizando calendario");
+        
+        initializeWeeklySchedule(
+          startDate,
+          endDate,
+          uniformStartTime,
+          uniformEndTime,
+          existingSchedules || [],
+          selectedPractitioner
+        );
+      }
+      hasLoaded.current = true;
     }
   }, [endDate, startDate, selectedPractitioner, initializeWeeklySchedule, uniformStartTime, uniformEndTime, existingSchedules]);
 
