@@ -20,7 +20,6 @@ export const searchSpecialties = async (searchTerm: string): Promise<{ data: { i
   }
 
   try {
-    const encodedTerm = encodeURIComponent(searchTerm);
     const url = `https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/SNOMEDCT-ES/2024-09-30/descriptions?&limit=100&term=psicologia&active=true&conceptActive=true&lang=english&semanticTags=calificador&groupByConcept=true`;
     
     const response = await fetch(url, {

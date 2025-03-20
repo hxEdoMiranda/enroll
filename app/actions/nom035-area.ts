@@ -5,7 +5,14 @@ interface IArea {
   status: boolean;
 }
 
-export const getArea = async (area: IArea): Promise<any> => {
+
+interface IAreaResponse {
+  success: boolean;
+  data?: IArea | IArea[];
+  message?: string;
+}
+
+export const getArea = async (area: IArea): Promise<IAreaResponse> => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -23,7 +30,7 @@ export const getArea = async (area: IArea): Promise<any> => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const result = await response.text();
+    const result = await response.json();
     console.log(result);
     return result;
   } catch (error) {
@@ -34,7 +41,7 @@ export const getArea = async (area: IArea): Promise<any> => {
     throw new Error(`Error fetching data: ${errorMessage}`);
   }
 };
-export const postArea = async (area: IArea): Promise<any> => {
+export const postArea = async (area: IArea): Promise<IAreaResponse> => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
   
@@ -52,7 +59,7 @@ export const postArea = async (area: IArea): Promise<any> => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const result = await response.text();
+      const result = await response.json();
       console.log(result);
       return result;
     } catch (error) {

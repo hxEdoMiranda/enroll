@@ -10,7 +10,14 @@ interface IPlan {
   manage_loads: boolean;
 }
 
-export const postCreatePlan = async (plan: IPlan): Promise<any> => {
+// Interfaz para la respuesta de la API
+interface IPlanResponse {
+  success: boolean;
+  data?: IPlan | IPlan[];
+  message?: string;
+}
+
+export const postCreatePlan = async (plan: IPlan): Promise<IPlanResponse> => {
     console.log("LLegoooooooooooooooooooooooooooooooooooo");
   try {
     const response = await fetch(`${BASE_API_URL}/plan`, {

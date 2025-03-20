@@ -1,4 +1,9 @@
-import { SlotRequestBody, Slot, SlotsResponse, ErrorResponse } from "@/types/agenda-admin/slots";
+import { SlotRequestBody, Slot, ErrorResponse } from "@/types/agenda-admin/slots";
+
+interface SlotsResponse {
+  data: Slot[];
+  message?: string;
+}
 
 const BASE_API_URL_LAMBDA = "https://api.medibuslive.com/dev";
 
@@ -98,7 +103,7 @@ export const fetchCreateSlot = async (slotData: SlotRequestBody): Promise<{ data
   };
 
 
-  export const fetchGetSlotsByidPractitioner= async (idPractitioner:any): Promise<{ data: Slot[] } | ErrorResponse> => {
+  export const fetchGetSlotsByidPractitioner= async (idPractitioner: string): Promise<{ data: Slot[] } | ErrorResponse> => {
      
     try {
       const response = await fetch(

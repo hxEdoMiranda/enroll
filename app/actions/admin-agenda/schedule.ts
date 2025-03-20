@@ -4,10 +4,20 @@ import {
   ErrorResponse,
   ScheduleResponse,
 } from "@/types/agenda-admin/schedule";
-import { start } from "repl";
 
-// const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
-const BASE_API_URL_LAMBDA = "https://api.medibuslive.com/dev";
+// Definir interfaces para las respuestas
+interface ScheduleResponseData {
+  id: string;
+  [key: string]: unknown;
+}
+
+// Respuesta genérica que se usa en varias funciones
+interface ApiResponse {
+  data?: ScheduleResponseData | ScheduleResponseData[] | null;
+  message?: string;
+}
+
+const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
 
 export const fetchGetScheduleByIdPractitioner = async (
   id: string,
@@ -39,8 +49,6 @@ export const fetchGetScheduleByIdPractitioner = async (
       active: schedule.active,
     }));
 
-    console.log(cleanedData);
-
     return { data: cleanedData };
   } catch (error) {
     if (error instanceof Error) {
@@ -56,7 +64,7 @@ export const fetchGetScheduleByIdPractitioner = async (
 
 export const createSchedule = async (
   data: CreateScheduleData
-): Promise<{ data: any } | ErrorResponse> => {
+): Promise<{ data: ScheduleResponseData } | ErrorResponse> => {
   console.log(data);
 
   try {
@@ -92,7 +100,7 @@ export const createSchedule = async (
 export const updateSchedule = async (
   data: CreateScheduleData,
   id: string
-): Promise<{ data: any } | ErrorResponse> => {
+): Promise<{ data: ScheduleResponseData } | ErrorResponse> => {
   console.log("Updating schedule:", id, data);
 
   try {
@@ -111,8 +119,6 @@ export const updateSchedule = async (
       }
     );
 
-    // Imprimir información de la respuesta para depuración
-    console.log("Update response status:", response.status);
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -138,17 +144,15 @@ export const updateSchedule = async (
 
 export const deleteSchedule = async (
   id: string
-): Promise<{ data?: any; message?: string } | ErrorResponse> => {
+): Promise<{ data?: ScheduleResponseData | null; message?: string } | ErrorResponse> => {
   try {
-    console.log("Deleting schedule with ID:", id);
-    
     if (!id) {
       throw new Error("ID no proporcionado");
     }
      const  url =  `${BASE_API_URL_LAMBDA}/agenda/schedule/${id}`
      console.log(url)
     const response = await fetch(
-      `${BASE_API_URL_LAMBDA}/agenda/schedule/${id}`,
+      url,
       {
         method: "DELETE",
         headers: {
@@ -167,7 +171,7 @@ export const deleteSchedule = async (
     try {
       responseData = await response.json();
       console.log("Delete response:", responseData);
-    } catch (e) {
+    } catch (_) {
       console.log("Response is not valid JSON, returning generic success");
       return { message: "Recurso eliminado correctamente" };
     }
@@ -193,7 +197,7 @@ export const deleteSchedule = async (
 export const fetchGetScheduleByIdPractitionerAndSpeciality = async (
   id: string,
   idSpecialty: string
-): Promise<{ data: any[] } | ErrorResponse> => {
+): Promise<{ data: unknown[] } | ErrorResponse> => {
   try {
     const response = await fetch(
       `${BASE_API_URL_LAMBDA}/agenda/schedule?idPractitioner=${id}&idSpecialty=${idSpecialty}`,

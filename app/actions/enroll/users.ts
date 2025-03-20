@@ -1,7 +1,15 @@
 const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
 interface IPatient {
-  // Define aquí la estructura de tus datos de paciente
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  birthDate?: string;
+  gender?: string;
+  documentType?: string;
+  documentNumber?: string;
 }
 
 export const fetchPatients = async (): Promise<IPatient[]> => {
