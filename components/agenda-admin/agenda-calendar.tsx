@@ -752,14 +752,6 @@ export function AgendaCalendar({
         const slotsResponse = await fetchGetSlotsByidPractitioner(practitionerId);
         
         const availableSlots = "data" in slotsResponse ? slotsResponse.data : [];
-        // Transformar los slots recibidos al formato esperado por SlotEvent
-        const formattedSlots = availableSlots.map(slot => ({
-          id: slot.id,
-          status: slot.status,
-          startDateTime: slot.start,
-          endDateTime: slot.end,
-          idSchedule: slot.schedule?.reference || ''
-        }));
         
         if (initialSchedule && initialSchedule.length > 0) {
           const availabilityEvents = initialSchedule.map((schedule) => {

@@ -42,7 +42,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 
 // Definir la interfaz para compatibilidad con ambos tipos de datos
-interface ProfesionalData extends Partial<PractitionerGetData> {
+export interface ProfesionalData extends Partial<PractitionerGetData> {
   nombre?: string;
   apellido?: string;
   email?: string;
