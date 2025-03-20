@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { useProfesionalesStore } from "@/store/agenda-admin/profesionalesStore";
+import { PractitionerGetData } from "@/types/agenda-admin/agenda-admin";
 
 export function ProfesionalesTable() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export function ProfesionalesTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const [totalPages, setTotalPages] = useState(1);
-  const [paginatedData, setPaginatedData] = useState<any[]>([]);
+  const [paginatedData, setPaginatedData] = useState<PractitionerGetData[]>([]);
 
   useEffect(() => {
     // Calculate total pages
@@ -49,7 +50,7 @@ export function ProfesionalesTable() {
     setPaginatedData(filteredData.slice(startIndex, endIndex));
   }, [filteredData, currentPage]);
 
-  const handleStateChange = (_profesional: any) => {
+  const handleStateChange = () => {
     setDialogOpen(true);
   };
 
@@ -136,14 +137,14 @@ export function ProfesionalesTable() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {profesional.qualifications
-                        .map((q: { titleDisplay: string }) => q.titleDisplay)
-                        .join(", ")}
+                      {profesional.qualifications?.
+                        map((q) => q.titleDisplay)
+                        .join(", ") || "-"}
                     </TableCell>
                     <TableCell>
-                      {profesional.specializations
-                        .map((s: { display: string }) => s.display)
-                        .join(", ")}
+                      {profesional.specializations?.
+                        map((s) => s.display)
+                        .join(", ") || "-"}
                     </TableCell>
                     <TableCell>{profesional.emailAddress}</TableCell>
                     <TableCell>{profesional.phoneNumber}</TableCell>
@@ -172,7 +173,7 @@ export function ProfesionalesTable() {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8"
-                          onClick={() => handleStateChange(profesional)}
+                          onClick={() => handleStateChange()}
                           title={`Cambiar estado`}
                         >
                           <ToggleLeft className="h-4 w-4" />

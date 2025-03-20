@@ -31,10 +31,9 @@ import {
   fetchGetPractitionerById,
   fetchUpdatePerfilPractitioner,
 } from "@/app/actions/admin-agenda/practitioner";
-import { cn, getTimeZones } from "@/lib/utils";
+import {  getTimeZones } from "@/lib/utils";
 import {
   PractitionerCreateData,
-  PractitionerGetByIdResponse,
   PractitionerUpdateData,
 } from "@/types/agenda-admin/agenda-admin";
 import { useToast } from "@/hooks/use-toast";

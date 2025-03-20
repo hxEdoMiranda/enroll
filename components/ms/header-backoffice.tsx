@@ -1,10 +1,7 @@
 "use client";
 
 import { useClerk, useSession } from "@clerk/nextjs";
-
 import {  LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -21,8 +18,7 @@ interface HeaderProps {
 }
 
 export function HeaderBackoffice({ className }: HeaderProps) {
-  const router = useRouter();
-  const pathname = usePathname();
+ 
 
   const { signOut } = useClerk();
   const { session } = useSession();
