@@ -9,7 +9,7 @@ import Link from "next/link";
 
 
 export default async function AgendaEditPage({ params }: { params: { id: string } }) {
-  const {id} = await params 
+  const { id } = params;
   const startDateTime = new Date().toISOString();
   const [practitionerResponse, scheduleResponse] = await Promise.all([
     fetchGetPractitionerById(id),
