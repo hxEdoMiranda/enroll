@@ -2,7 +2,11 @@ import { fetchGetPractitionerById } from "@/app/actions/admin-agenda/practitione
 import { EditProfesionalForm } from "@/components/agenda-admin/edit-profesional-form";
 import { ProfesionalData } from "@/components/agenda-admin/edit-profesional-form";
 
-export default async function EditProfesionalPage({ params }: { params: { id: string } }) {
+export default async function EditProfesionalPage({
+	params,
+}: {
+	params: Promise<{ id: string }>;
+}) {
   const { id } =  await params;
   const infoDoctor = await fetchGetPractitionerById(id);
 
