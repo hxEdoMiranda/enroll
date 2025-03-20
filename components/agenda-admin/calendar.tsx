@@ -35,7 +35,6 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// Definir interfaces para los tipos
 interface CalendarEvent {
   id: number;
   start: Date;
@@ -49,7 +48,6 @@ interface CalendarEvent {
   title?: string;
 }
 
-// Define un tipo para NavigateAction basado en react-big-calendar
 type NavigateAction = 'PREV' | 'NEXT' | 'TODAY' | 'DATE';
 
 interface CustomToolbarProps {

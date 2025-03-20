@@ -4,12 +4,13 @@ import {
   Calendar as BigCalendar,
   dateFnsLocalizer,
   Views,
+  View,
+  NavigateAction,
 } from "react-big-calendar";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { startOfWeek } from "date-fns/startOfWeek";
 import { getDay } from "date-fns/getDay";
-import { addDays } from "date-fns/addDays";
 import { addMinutes } from "date-fns/addMinutes";
 import { isSameDay } from "date-fns/isSameDay";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -45,6 +46,68 @@ import {
 interface AgendaCalendarProps {
   practitionerId?: string;
   initialSchedule?: CleanedSchedule[];
+}
+
+interface CalendarEvent {
+  id?: string;
+  start: Date;
+  end: Date;
+  type: "availability" | "slot" | string;
+  specialty?: string;
+  active?: boolean;
+  status?: string;
+  idSchedule?: string;
+  slots?: SlotEvent[];
+}
+
+interface SlotEvent {
+  id?: string;
+  status: string;
+  startDateTime: string;
+  endDateTime: string;
+  idSchedule: string;
+}
+
+interface CustomToolbarProps {
+  onNavigate: (navigate: NavigateAction, date?: Date) => void;
+  label: string;
+  onView: (view: View) => void;
+  view: View;
+  date: Date;
+}
+
+interface EventWrapperProps {
+  event: CalendarEvent;
+  view?: View | string;
+  onDeleteSlot?: (event: CalendarEvent) => void;
+  onSwitchToDay?: (date: Date) => void;
+  allEvents?: CalendarEvent[];
+}
+
+interface MonthEventWrapperProps {
+  event: CalendarEvent;
+  onSwitchToDay?: (date: Date) => void;
+  allEvents: CalendarEvent[];
+}
+
+interface DayEventWrapperProps {
+  event: CalendarEvent;
+  onDeleteSlot?: (event: CalendarEvent) => void;
+}
+
+interface CustomHeaderCellProps {
+  label: string;
+}
+
+interface DateCellWrapperProps {
+  children: React.ReactNode;
+  value: Date;
+}
+
+interface SlotInfo {
+  start: Date;
+  end: Date;
+  [key: string]: any; 
 }
 
 const locales = {
@@ -101,7 +164,7 @@ const SPECIALTY_COLORS: Record<string, { bg: string; light: string; text: string
   },
 };
 
-const CustomToolbar = ({ onNavigate, label, onView, view, date }: any) => {
+const CustomToolbar = ({ onNavigate,  onView, view, date }: CustomToolbarProps) => {
   let formattedDate = '';
   
   if (view === Views.MONTH) {
@@ -189,16 +252,16 @@ const getSpecialtyColors = (specialty: string | undefined) => {
   return SPECIALTY_COLORS[lowerSpecialty] || SPECIALTY_COLORS.default;
 };
 
-const MonthEventWrapper = ({ event, onSwitchToDay, allEvents }: any) => {
+const MonthEventWrapper = ({ event, onSwitchToDay, allEvents }: MonthEventWrapperProps) => {
   if (event.type === "availability") {
-    const slotsForDay = event.slots?.filter((slot: any) =>
+    const slotsForDay = event.slots?.filter((slot: SlotEvent) =>
       isSameDay(new Date(slot.startDateTime), new Date(event.start))
     );
 
     const colors = getSpecialtyColors(event.specialty);
 
     const hasMultipleAvailabilities = (
-      allEvents.filter((e: any) => 
+      allEvents.filter((e: CalendarEvent) => 
         e.type === "availability" && 
         isSameDay(new Date(e.start), new Date(event.start))
       ).length > 1
@@ -245,14 +308,14 @@ const MonthEventWrapper = ({ event, onSwitchToDay, allEvents }: any) => {
   return null;
 };
 
-const EventWrapper = ({ event, view, onDeleteSlot, onSwitchToDay, allEvents }: any) => {
+const EventWrapper = ({ event, view, onDeleteSlot, onSwitchToDay, allEvents }: EventWrapperProps) => {
   if (view === Views.MONTH) {
-    return <MonthEventWrapper event={event} onSwitchToDay={onSwitchToDay} allEvents={allEvents} />;
+    return <MonthEventWrapper event={event} onSwitchToDay={onSwitchToDay} allEvents={allEvents || []} />;
   }
   return <DayEventWrapper event={event} onDeleteSlot={onDeleteSlot} />;
 };
 
-const DayEventWrapper = ({ event, onDeleteSlot }: any) => {
+const DayEventWrapper = ({ event, onDeleteSlot }: DayEventWrapperProps) => {
   if (event.type === "availability") {
     const colors = getSpecialtyColors(event.specialty);
 
@@ -290,7 +353,7 @@ const DayEventWrapper = ({ event, onDeleteSlot }: any) => {
             className="absolute top-0 right-0 h-6 w-6 p-1 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600"
             onClick={(e) => {
               e.stopPropagation();
-              onDeleteSlot(event);
+              onDeleteSlot && onDeleteSlot(event);
             }}
           >
             <Trash2 className="h-4 w-4 text-white" />
@@ -311,7 +374,7 @@ const DayEventWrapper = ({ event, onDeleteSlot }: any) => {
   );
 };
 
-const CustomHeaderCell = ({ label }: any) => {
+const CustomHeaderCell = ({ label }: CustomHeaderCellProps) => {
   let formattedLabel = '';
   if (label === 'Sun') formattedLabel = 'dom';
   else if (label === 'Mon') formattedLabel = 'lun';
@@ -628,7 +691,7 @@ const customDayPropGetter = (date: Date) => {
 };
 
 // Formatear horas para mostrar en formato 24 horas
-const timeGutterFormat = (date: Date, culture?: string, localizer?: any): string => {
+const timeGutterFormat = (date: Date): string => {
   const hours = date.getHours();
   const minutes = date.getMinutes();
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
@@ -655,16 +718,16 @@ export function AgendaCalendar({
 }: AgendaCalendarProps) {
   const [view, setView] = useState<"month" | "day">(Views.MONTH);
   const [date, setDate] = useState(new Date());
-  const [events, setEvents] = useState<any[]>([]);
-  const [slots, setSlots] = useState<any[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [slots, setSlots] = useState<SlotEvent[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null);
   const [selectedDuration, setSelectedDuration] = useState("30");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const DateCellWrapper = ({ children, value }: any) => {
+  const DateCellWrapper = ({ children, value }: DateCellWrapperProps) => {
     const handleClick = () => {
       setDate(value);
       setView(Views.DAY);
@@ -688,13 +751,28 @@ export function AgendaCalendar({
         const slotsResponse = await fetchGetSlotsByidPractitioner(practitionerId);
         
         const availableSlots = "data" in slotsResponse ? slotsResponse.data : [];
-        setSlots(availableSlots);
+        // Transformar los slots recibidos al formato esperado por SlotEvent
+        const formattedSlots = availableSlots.map(slot => ({
+          id: slot.id,
+          status: slot.status,
+          startDateTime: slot.start,
+          endDateTime: slot.end,
+          idSchedule: slot.schedule?.reference || ''
+        }));
+        
+        setSlots(formattedSlots);
   
         if (initialSchedule && initialSchedule.length > 0) {
           const availabilityEvents = initialSchedule.map((schedule) => {
             const scheduleSlots = availableSlots.filter(
               (slot) => slot.schedule.reference === `Schedule/${schedule.id}`
-            );
+            ).map(slot => ({
+              id: slot.id,
+              status: slot.status,
+              startDateTime: slot.start,
+              endDateTime: slot.end,
+              idSchedule: slot.schedule?.reference || ''
+            }));
   
             return {
               start: new Date(schedule.start),
@@ -772,7 +850,7 @@ export function AgendaCalendar({
     injectCustomStyles();
   }, []);
 
-  const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+  const handleSelectSlot = (slotInfo: SlotInfo) => {
     console.log("Slot seleccionado:", slotInfo);
 
     if (view === Views.MONTH) {
@@ -804,17 +882,17 @@ export function AgendaCalendar({
   };
 
   const handleDeleteSlot = async () => {
-    if (!selectedSlot?.id) return;
+    if (!selectedSlot?.start) return;
 
     try {
       setLoading(true);
-      const response = await fetchDeleteSlot(selectedSlot.id);
+      const response = await fetchDeleteSlot(selectedSlot.start.toISOString());
 
       if ("error" in response) {
         throw new Error(response.error);
       }
 
-      setEvents((prev) => prev.filter((event) => event.id !== selectedSlot.id));
+      setEvents((prev) => prev.filter((event) => !isSameDay(new Date(event.start), selectedSlot.start)));
 
       setEvents((prev) =>
         prev.map((event) => {
@@ -823,7 +901,7 @@ export function AgendaCalendar({
               ...event,
               slots:
                 event.slots?.filter(
-                  (slot: any) => slot.id !== selectedSlot.id
+                  (slot: SlotEvent) => !isSameDay(new Date(slot.startDateTime), selectedSlot.start)
                 ) || [],
             };
           }
@@ -849,13 +927,16 @@ export function AgendaCalendar({
     }
   };
 
-  const handleSlotSelection = (event: any) => {
+  const handleSlotSelection = (event: CalendarEvent) => {
     if (
       view === Views.DAY &&
       event.type === "slot" &&
       event.status === "free"
     ) {
-      setSelectedSlot(event);
+      setSelectedSlot({
+        start: event.start,
+        end: event.end,
+      });
       setShowDeleteDialog(true);
     }
   };
@@ -909,6 +990,12 @@ export function AgendaCalendar({
           break;
         }
   
+        // Asegurar que availabilityEvent.id siempre exista
+        if (!availabilityEvent.id) {
+          console.error("No se encontró ID para el evento de disponibilidad");
+          continue;
+        }
+        
         const slotData = {
           idSchedule: availabilityEvent.id,
           startDateTime: format(slotStart, "yyyy-MM-dd'T'HH:mm:ss"),
@@ -1194,8 +1281,8 @@ export function AgendaCalendar({
               {selectedSlot && (
                 <div className="mt-2 text-sm">
                   Horario:{" "}
-                  {format(new Date(selectedSlot.start), "dd/MM/yyyy HH:mm")} -{" "}
-                  {format(new Date(selectedSlot.end), "HH:mm")}
+                  {format(selectedSlot.start, "dd/MM/yyyy HH:mm")} -{" "}
+                  {format(selectedSlot.end, "HH:mm")}
                 </div>
               )}
             </DialogDescription>

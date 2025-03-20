@@ -44,6 +44,54 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 
+// Definir interfaces para reemplazar 'any'
+interface Practitioner {
+  id: string;
+  firstName: string;
+  lastName: string;
+  qualifications?: { titleDisplay: string }[];
+  specializations?: { code: string; display?: string }[];
+  emailAddress?: string;
+  phoneNumber?: string;
+}
+
+interface Specialty {
+  code: string;
+  display: string;
+}
+
+interface TimeSlot {
+  startTime: string;
+  endTime: string;
+  isNew?: boolean;
+  isExisting?: boolean;
+  scheduleId?: string;
+  specialtyCode?: string;
+  specialtyDisplay?: string;
+}
+
+interface ScheduleDay {
+  date: Date;
+  enabled: boolean;
+  isExisting?: boolean;
+  disabled?: boolean;
+  timeSlots: TimeSlot[];
+}
+
+interface WeekSchedule {
+  weekNumber: number;
+  startDate: Date;
+  endDate: Date;
+  days: ScheduleDay[];
+}
+
+interface DeletingSlot {
+  weekIndex: number;
+  dayIndex: number;
+  slotIndex: number;
+  scheduleId?: string;
+}
+
 const DAYS_OF_WEEK = [
   { name: "Lunes", number: 1 },
   { name: "Martes", number: 2 },
@@ -58,7 +106,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
-  const [selectedPractitioner, setSelectedPractitioner] = useState<any>(null);
+  const [selectedPractitioner, setSelectedPractitioner] = useState<Practitioner | null>(null);
   const [startDate, setStartDate] = useState<string>(
     format(new Date(), "yyyy-MM-dd")
   );
@@ -98,15 +146,18 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
     const query = searchQuery.toLowerCase().trim();
     return data.filter(profesional => {
       const fullName = `${profesional.firstName} ${profesional.lastName}`.toLowerCase();
-            const hasSpecialty = profesional.specializations?.some(
-        (spec: any) => spec.display?.toLowerCase().includes(query)
+      const hasSpecialty = profesional.specializations?.some(
+        (spec) => {
+          if (!spec.display) return false;
+          return spec.display.toLowerCase().includes(query);
+        }
       );
       
-      return fullName.includes(query) || hasSpecialty;
+      return fullName.includes(query) || Boolean(hasSpecialty);
     });
   }, [data, searchQuery]);
 
-  const handleOpenAvailabilityModal = (practitioner: any) => {
+  const handleOpenAvailabilityModal = (practitioner: Practitioner) => {
     openAvailabilityModal(
       practitioner,
       setSelectedPractitioner,
@@ -149,7 +200,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
         selectedPractitioner
       );
     }
-  }, [endDate, startDate, selectedPractitioner]);
+  }, [endDate, startDate, selectedPractitioner, initializeWeeklySchedule, uniformStartTime, uniformEndTime, existingSchedules]);
 
   return (
     <div className="space-y-6">
@@ -279,7 +330,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                   value={selectedSpecialtyData?.display || ""}
                   onValueChange={(display) => {
                     const specialty = selectedPractitioner?.specializations?.find(
-                      (spec: { display: string }) => spec.display === display
+                      (spec) => spec.display !== undefined && spec.display === display
                     );
                     if (specialty) {
                       setSelectedSpecialtyData({
@@ -293,7 +344,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                     <SelectValue placeholder="Seleccione especialidad" />
                   </SelectTrigger>
                   <SelectContent>
-                    {selectedPractitioner?.specializations?.map((spec: any) => (
+                    {selectedPractitioner?.specializations?.map((spec) => (
                       <SelectItem key={spec.code} value={spec.display || ""}>
                         {spec.display}
                       </SelectItem>
@@ -382,7 +433,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                             {week.days.map((day, dayIndex) => (
                               <div
                                 key={dayIndex}
-                                className={`border rounded p-2 space-y-2 ${(day as any).disabled ? 'opacity-50' : ''}`}
+                                className={`border rounded p-2 space-y-2 ${(day as ScheduleDay).disabled ? 'opacity-50' : ''}`}
                               >
                                 <div className="text-center text-sm">
                                   {format(day.date, "dd")}
@@ -423,7 +474,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                         )
                                       );
                                     }}
-                                    disabled={(day as any).disabled || day.date < parseISO(startDate) || day.date > parseISO(endDate)}
+                                    disabled={(day as ScheduleDay).disabled || day.date < parseISO(startDate) || day.date > parseISO(endDate)}
                                   />
                                 </div>
                                 {day.enabled && (
@@ -439,7 +490,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                           }
                                           groups[specialty].push(slot);
                                           return groups;
-                                        }, {} as Record<string, any[]>);
+                                        }, {} as Record<string, TimeSlot[]>);
 
                                       return Object.entries(slotsBySpecialty).map(
                                         ([specialty, slots]) => (
@@ -662,7 +713,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                                         setDeletingSlot({
                                                           weekIndex,
                                                           dayIndex,
-                                                          slotIndex,
+                                                          slotIndex: day.timeSlots.findIndex(s => s === slot),
                                                           scheduleId: slot.scheduleId,
                                                         });
                                                         setShowDeleteConfirmDialog(true);

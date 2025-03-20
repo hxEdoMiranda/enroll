@@ -32,8 +32,28 @@ export interface IEmpresa {
 }
 
 
-export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
-    console.log("Formulario00000000000000000000000000000000000:");
+interface APIResponse<T> {
+  data: T;
+  success: boolean;
+  message?: string;
+  status?: number;
+}
+
+interface CreateEmpresaResponse {
+  _id: string;
+  identifier: string;
+  name: string;
+  [key: string]: unknown; 
+}
+
+interface UpdateEmpresaResponse {
+  _id: string;
+  updated: boolean;
+  [key: string]: unknown; 
+}
+
+export const postCreateEmpresa = async (empresa: IEmpresa): Promise<APIResponse<CreateEmpresaResponse>> => {
+  console.log("Formulario00000000000000000000000000000000000:");
   try {
     const response = await fetch(`${BASE_API_URL}/company`, {
       method: "POST",
@@ -53,7 +73,7 @@ export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
   }
 };
 
-export const updateEmpresa = async (empresa: IEmpresa): Promise<any> => {
+export const updateEmpresa = async (empresa: IEmpresa): Promise<APIResponse<UpdateEmpresaResponse>> => {
   try {
     const response = await fetch(`${BASE_API_URL}/empresa/${empresa._id}`, {
       method: "PUT",

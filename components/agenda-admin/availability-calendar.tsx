@@ -27,11 +27,31 @@ import {
 import { Label } from "@/components/ui/label";
 import { createSchedule } from "@/app/actions/admin-agenda/schedule";
 import { CleanedSchedule } from "@/types/agenda-admin/schedule";
-import { useRouter } from "next/navigation";
 
 interface AvailabilityCalendarProps {
   practitionerId?: string;
   initialSchedule?: CleanedSchedule[];
+}
+
+// Definir interfaces para tipos específicos
+interface CustomToolbarProps {
+  onNavigate: (action: 'PREV' | 'NEXT' | 'TODAY') => void;
+  label: string;
+  onView: (view: View) => void;
+  view: View;
+}
+
+interface CalendarEvent {
+  start: Date;
+  end: Date;
+  title: string;
+  id: string;
+  active?: boolean;
+}
+
+interface SlotInfo {
+  start: Date;
+  end: Date;
 }
 
 const locales = {
@@ -46,7 +66,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const CustomToolbar = ({ onNavigate, label, onView, view }: any) => {
+const CustomToolbar = ({ onNavigate, label, onView, view }: CustomToolbarProps) => {
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center space-x-2">
@@ -95,14 +115,8 @@ const CustomToolbar = ({ onNavigate, label, onView, view }: any) => {
   );
 };
 
-const EventWrapper = ({ event, view }: any) => {
-  if (view === Views.MONTH) {
-    return <MonthEventWrapper event={event} />;
-  }
-  return <DayEventWrapper event={event} />;
-};
-
-const MonthEventWrapper = ({ event }: any) => {
+// Componentes de eventos
+const MonthEventWrapper = ({ event }: { event: CalendarEvent }) => {
   return (
     <div className="absolute inset-0 bg-green-100">
       <div className="p-2 border-b border-green-200">
@@ -114,7 +128,7 @@ const MonthEventWrapper = ({ event }: any) => {
   );
 };
 
-const DayEventWrapper = ({ event }: any) => {
+const DayEventWrapper = ({ event }: { event: CalendarEvent }) => {
   return (
     <div className="bg-green-500 text-white p-1 rounded h-full">
       <div className="text-xs">
@@ -125,12 +139,11 @@ const DayEventWrapper = ({ event }: any) => {
 };
 
 export function AvailabilityCalendar({ practitionerId, initialSchedule }: AvailabilityCalendarProps) {
-  const router = useRouter();
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null);
   const [formData, setFormData] = useState({
     idServiceCategory: "",
     idServiceType: "",
@@ -212,7 +225,11 @@ export function AvailabilityCalendar({ practitionerId, initialSchedule }: Availa
           onSelectSlot={handleSelectSlot}
           components={{
             toolbar: CustomToolbar,
-            event: EventWrapper
+            event: ({ event }) => (
+              view === Views.MONTH 
+                ? <MonthEventWrapper event={event} /> 
+                : <DayEventWrapper event={event} />
+            )
           }}
           views={{
             month: true,

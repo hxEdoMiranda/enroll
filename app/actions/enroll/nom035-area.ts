@@ -5,7 +5,22 @@ interface IArea {
   status: boolean;
 }
 
-export const getArea = async (area: IArea): Promise<any> => {
+
+interface APIResponse<T> {
+  data: T;
+  success: boolean;
+  message?: string;
+  status?: number;
+}
+
+interface AreaResponse {
+  _id?: string;
+  name_area: string;
+  status: boolean;
+  [key: string]: unknown;
+}
+
+export const getArea = async (area: IArea): Promise<APIResponse<AreaResponse[]>> => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -23,7 +38,8 @@ export const getArea = async (area: IArea): Promise<any> => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const result = await response.text();
+    // Cambiamos a response.json() ya que esperamos una respuesta en formato JSON
+    const result = await response.json();
     console.log(result);
     return result;
   } catch (error) {
@@ -34,7 +50,8 @@ export const getArea = async (area: IArea): Promise<any> => {
     throw new Error(`Error fetching data: ${errorMessage}`);
   }
 };
-export const postArea = async (area: IArea): Promise<any> => {
+
+export const postArea = async (area: IArea): Promise<APIResponse<AreaResponse>> => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
   
@@ -52,7 +69,8 @@ export const postArea = async (area: IArea): Promise<any> => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const result = await response.text();
+      // Cambiamos a response.json() ya que esperamos una respuesta en formato JSON
+      const result = await response.json();
       console.log(result);
       return result;
     } catch (error) {

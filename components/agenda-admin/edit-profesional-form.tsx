@@ -51,7 +51,7 @@ interface ProfesionalData {
   bio?: string;
   prefijoProfesional?: string;
   tituloProfesional?: string;
-  [key: string]: any; // Para otras propiedades posibles
+  [key: string]: any; // Permitir cualquier tipo para compatibilidad
 }
 
 interface EditProfesionalFormProps {
