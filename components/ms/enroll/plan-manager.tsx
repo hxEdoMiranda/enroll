@@ -129,7 +129,7 @@ export function PlanManager({
 
 	const handleSubmit = async (values: UpdatePlan) => {
 		try {
-			setMessage("Editando usuario");
+			setMessage("Editando plan");
 			await updatePlanInfo({
 				...values,
 				service: selectedServices.map((service) => service),
