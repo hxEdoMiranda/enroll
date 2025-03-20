@@ -35,14 +35,14 @@ import {  getTimeZones } from "@/lib/utils";
 import {
   PractitionerCreateData,
   PractitionerUpdateData,
+  PractitionerGetData
 } from "@/types/agenda-admin/agenda-admin";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 
-// Definir un tipo para los datos iniciales del profesional
-interface ProfesionalData {
-  id?: string;
+// Definir la interfaz para compatibilidad con ambos tipos de datos
+interface ProfesionalData extends Partial<PractitionerGetData> {
   nombre?: string;
   apellido?: string;
   email?: string;
@@ -51,7 +51,7 @@ interface ProfesionalData {
   bio?: string;
   prefijoProfesional?: string;
   tituloProfesional?: string;
-  [key: string]: any; // Permitir cualquier tipo para compatibilidad
+  [key: string]: unknown;
 }
 
 interface EditProfesionalFormProps {
@@ -126,25 +126,32 @@ export function EditProfesionalForm({
   const form = useForm<z.infer<typeof profesionalFormSchema>>({
     resolver: zodResolver(profesionalFormSchema),
     defaultValues: {
-      firstName: initialData?.nombre || "",
-      lastName: initialData?.apellido || "",
+      firstName: typeof initialData?.nombre === 'string' ? initialData.nombre : 
+                 typeof initialData?.firstName === 'string' ? initialData.firstName : "",
+      lastName: typeof initialData?.apellido === 'string' ? initialData.apellido : 
+                typeof initialData?.lastName === 'string' ? initialData.lastName : "",
       secondName: "",
       motherLastName: "",
-      document: initialData?.id || "",
+      document: typeof initialData?.id === 'string' ? initialData.id : 
+                typeof initialData?.document === 'string' ? initialData.document : "",
       documentType: "RUT",
       birthDate: "",
       gender: "MALE",
       country_birth: "CL",
       timeZone: "",
-      emailAddress: initialData?.email || "",
-      phoneNumber: initialData?.telefono || "",
+      emailAddress: typeof initialData?.email === 'string' ? initialData.email : 
+                    typeof initialData?.emailAddress === 'string' ? initialData.emailAddress : "",
+      phoneNumber: typeof initialData?.telefono === 'string' ? initialData.telefono : 
+                  typeof initialData?.phoneNumber === 'string' ? initialData.phoneNumber : "",
       addressLine: "",
       addressCity: "Santiago",
       addressState: "RM",
-      prefix: initialData?.prefijoProfesional || "Dr.",
+      prefix: typeof initialData?.prefijoProfesional === 'string' ? initialData.prefijoProfesional : 
+              typeof initialData?.prefix === 'string' ? initialData.prefix : "Dr.",
       certificateNumber: "",
       titleCode: "MD",
-      titleDisplay: initialData?.tituloProfesional || "",
+      titleDisplay: typeof initialData?.tituloProfesional === 'string' ? initialData.tituloProfesional : 
+                    typeof initialData?.titleDisplay === 'string' ? initialData.titleDisplay : "",
       startDate: "",
       endDate: "",
       issuer: "",

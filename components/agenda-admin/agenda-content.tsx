@@ -55,11 +55,6 @@ interface Practitioner {
   phoneNumber?: string;
 }
 
-interface Specialty {
-  code: string;
-  display: string;
-}
-
 interface TimeSlot {
   startTime: string;
   endTime: string;
@@ -76,20 +71,6 @@ interface ScheduleDay {
   isExisting?: boolean;
   disabled?: boolean;
   timeSlots: TimeSlot[];
-}
-
-interface WeekSchedule {
-  weekNumber: number;
-  startDate: Date;
-  endDate: Date;
-  days: ScheduleDay[];
-}
-
-interface DeletingSlot {
-  weekIndex: number;
-  dayIndex: number;
-  slotIndex: number;
-  scheduleId?: string;
 }
 
 const DAYS_OF_WEEK = [
@@ -617,8 +598,6 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() => {
-                                                      const slotIndex =
-                                                        slots.indexOf(slot);
                                                       const actualSlotIndex =
                                                         day.timeSlots.findIndex(
                                                           (s) => s === slot

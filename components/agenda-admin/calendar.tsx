@@ -73,7 +73,8 @@ interface EventWrapperProps {
   events?: CalendarEvent[];
   // Agregamos una propiedad view opcional
   view?: View;
-  [key: string]: any; // Para otras propiedades que pueda pasar react-big-calendar
+  // Usar Record<string, unknown> para permitir propiedades adicionales de manera segura
+  [key: string]: unknown; 
 }
 
 interface SlotInfo {

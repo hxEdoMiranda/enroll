@@ -11,7 +11,7 @@ export default async function EditProfesionalPage({ params }: { params: { id: st
 
   return (
     <div className="space-y-6">
-      <EditProfesionalForm id={id} initialData={infoDoctor.data} />
+      <EditProfesionalForm id={id} initialData={infoDoctor.data as any} />
     </div>
   );
 }

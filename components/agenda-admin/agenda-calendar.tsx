@@ -16,7 +16,7 @@ import { isSameDay } from "date-fns/isSameDay";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { es } from "date-fns/locale";
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Trash2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -107,7 +107,7 @@ interface DateCellWrapperProps {
 interface SlotInfo {
   start: Date;
   end: Date;
-  [key: string]: any; 
+  action?: string;
 }
 
 const locales = {
@@ -353,7 +353,9 @@ const DayEventWrapper = ({ event, onDeleteSlot }: DayEventWrapperProps) => {
             className="absolute top-0 right-0 h-6 w-6 p-1 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600"
             onClick={(e) => {
               e.stopPropagation();
-              onDeleteSlot && onDeleteSlot(event);
+              if (onDeleteSlot) {
+                onDeleteSlot(event);
+              }
             }}
           >
             <Trash2 className="h-4 w-4 text-white" />
@@ -719,7 +721,6 @@ export function AgendaCalendar({
   const [view, setView] = useState<"month" | "day">(Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [slots, setSlots] = useState<SlotEvent[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null);
@@ -760,8 +761,6 @@ export function AgendaCalendar({
           idSchedule: slot.schedule?.reference || ''
         }));
         
-        setSlots(formattedSlots);
-  
         if (initialSchedule && initialSchedule.length > 0) {
           const availabilityEvents = initialSchedule.map((schedule) => {
             const scheduleSlots = availableSlots.filter(
