@@ -40,15 +40,24 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 
-interface EditProfesionalFormProps {
+// Definir un tipo para los datos iniciales del profesional
+interface ProfesionalData {
   id?: string;
-  isNew?: boolean;
-  initialData?: any;
+  nombre?: string;
+  apellido?: string;
+  email?: string;
+  telefono?: string;
+  especialidad?: string;
+  bio?: string;
+  prefijoProfesional?: string;
+  tituloProfesional?: string;
+  [key: string]: any; // Para otras propiedades posibles
 }
 
 interface EditProfesionalFormProps {
   id?: string;
   isNew?: boolean;
+  initialData?: ProfesionalData;
 }
 
 const tituloProfesionalOptions = [
@@ -95,6 +104,7 @@ const timeZones = getTimeZones();
 export function EditProfesionalForm({
   id,
   isNew = false,
+  initialData,
 }: EditProfesionalFormProps) {
   const router = useRouter();
   const { toast } = useToast();

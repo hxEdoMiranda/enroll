@@ -3,7 +3,13 @@ const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 import { CompanyModel as IEmpresa} from "../../modules/configuration/types/Company.type";
 import { CompanyFullModel } from "@/modules/configuration/types/Company.type";
 
-export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
+interface IEmpresaResponse {
+  success: boolean;
+  data?: IEmpresa | IEmpresa[] | CompanyFullModel;
+  message?: string;
+}
+
+export const postCreateEmpresa = async (empresa: IEmpresa): Promise<IEmpresaResponse> => {
   try {
     const response = await fetch(`${BASE_API_URL}/company`, {
       method: "POST",
@@ -24,7 +30,7 @@ export const postCreateEmpresa = async (empresa: IEmpresa): Promise<any> => {
   }
 };
 
-export const updateEmpresa = async (empresa: IEmpresa): Promise<any> => {
+export const updateEmpresa = async (empresa: IEmpresa): Promise<IEmpresaResponse> => {
   console.log("JSON.stringify(empresa):",JSON.stringify(empresa),)
   try {
     const response = await fetch(`${BASE_API_URL}/company`, {

@@ -5,17 +5,12 @@ import {
   ScheduleResponse,
 } from "@/types/agenda-admin/schedule";
 
-// Definir interfaces para las respuestas
 interface ScheduleResponseData {
   id: string;
   [key: string]: unknown;
 }
 
-// Respuesta genérica que se usa en varias funciones
-interface ApiResponse {
-  data?: ScheduleResponseData | ScheduleResponseData[] | null;
-  message?: string;
-}
+
 
 const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
 
@@ -171,7 +166,7 @@ export const deleteSchedule = async (
     try {
       responseData = await response.json();
       console.log("Delete response:", responseData);
-    } catch (_) {
+    } catch {
       console.log("Response is not valid JSON, returning generic success");
       return { message: "Recurso eliminado correctamente" };
     }

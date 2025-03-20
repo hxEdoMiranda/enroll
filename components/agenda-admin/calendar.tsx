@@ -35,7 +35,55 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const mockAppointments = [
+// Definir interfaces para los tipos
+interface CalendarEvent {
+  id: number;
+  start: Date;
+  end: Date;
+  minutosAtencion: number;
+  realizado: boolean;
+  tipoAgenda?: string;
+  modeloAtencion?: string;
+  zonaHoraria?: string;
+  invitarProfesionales?: boolean;
+  title?: string;
+}
+
+// Define un tipo para NavigateAction basado en react-big-calendar
+type NavigateAction = 'PREV' | 'NEXT' | 'TODAY' | 'DATE';
+
+interface CustomToolbarProps {
+  onNavigate: (navigate: NavigateAction, date?: Date) => void;
+  label: string;
+  onView: (view: View) => void;
+  view: View;
+}
+
+interface MonthEventWrapperProps {
+  event: CalendarEvent;
+  events: CalendarEvent[];
+}
+
+interface DayEventWrapperProps {
+  event: CalendarEvent;
+}
+
+// Usar un tipo más genérico para EventWrapperProps que coincida con lo que react-big-calendar necesita
+interface EventWrapperProps {
+  event: CalendarEvent;
+  title?: React.ReactNode;
+  events?: CalendarEvent[];
+  // Agregamos una propiedad view opcional
+  view?: View;
+  [key: string]: any; // Para otras propiedades que pueda pasar react-big-calendar
+}
+
+interface SlotInfo {
+  start: Date;
+  end: Date;
+}
+
+const mockAppointments: CalendarEvent[] = [
   {
     id: 1,
     start: new Date(2024, 1, 15, 9, 0),
@@ -66,7 +114,7 @@ const mockAppointments = [
   }
 ];
 
-const CustomToolbar = ({ onNavigate, label, onView, view }: any) => {
+const CustomToolbar = ({ onNavigate, label, onView, view }: CustomToolbarProps) => {
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center space-x-2">
@@ -115,8 +163,8 @@ const CustomToolbar = ({ onNavigate, label, onView, view }: any) => {
   );
 };
 
-const MonthEventWrapper = ({ event, events }: any) => {
-  const eventsForDay = events.filter((e: any) => 
+const MonthEventWrapper = ({ event, events }: MonthEventWrapperProps) => {
+  const eventsForDay = events.filter((e: CalendarEvent) => 
     isSameDay(e.start, event.start)
   );
   
@@ -124,27 +172,17 @@ const MonthEventWrapper = ({ event, events }: any) => {
   if (eventsForDay[0] !== event) return null;
 
   
-  const earliestStart = eventsForDay.reduce((earliest: Date, e: any) => {
+  const earliestStart = eventsForDay.reduce((earliest: Date, e: CalendarEvent) => {
     return e.start < earliest ? e.start : earliest;
   }, eventsForDay[0].start);
 
   
-  const totalBlocks = eventsForDay.reduce((total: number, e: { end: any; start: any; minutosAtencion: string; }) => {
+  const totalBlocks = eventsForDay.reduce((total: number, e: { end: any; start: any; minutosAtencion: string | number; }) => {
     const duration = differenceInMinutes(e.end, e.start);
-    return total + Math.ceil(duration / parseInt(e.minutosAtencion));
+    return total + Math.ceil(duration / (typeof e.minutosAtencion === 'string' ? parseInt(e.minutosAtencion) : e.minutosAtencion));
   }, 0);
 
-  interface Event {
-    id: number;
-    start: Date;
-    end: Date;
-    minutosAtencion: number;
-    realizado: boolean;
-  }
-
-
-
-  const realizadosBlocks = eventsForDay.reduce((total: number, e: Event) => {
+  const realizadosBlocks = eventsForDay.reduce((total: number, e: CalendarEvent) => {
     if (e.realizado) {
       const duration = differenceInMinutes(e.end, e.start);
       return total + Math.ceil(duration / e.minutosAtencion);
@@ -178,7 +216,7 @@ const MonthEventWrapper = ({ event, events }: any) => {
   );
 };
 
-const DayEventWrapper = ({ event }: any) => {
+const DayEventWrapper = ({ event }: DayEventWrapperProps) => {
   return (
     <div className={`${event.realizado ? 'bg-green-500' : 'bg-blue-500'} text-white p-1 rounded h-full`}>
       <div className="text-xs">
@@ -188,7 +226,13 @@ const DayEventWrapper = ({ event }: any) => {
   );
 };
 
-const EventWrapper = ({ event, view, events }: any) => {
+const EventWrapper = (props: EventWrapperProps) => {
+  const { event } = props;
+  // Extraer la vista y los eventos del contexto de las props
+  const view = props.view || Views.MONTH;
+  // Asegurarse de que events sea siempre un array
+  const events: CalendarEvent[] = Array.isArray(props.events) ? props.events : [];
+  
   if (view === Views.MONTH) {
     return <MonthEventWrapper event={event} events={events} />;
   }
@@ -198,9 +242,9 @@ const EventWrapper = ({ event, view, events }: any) => {
 export function Calendar() {
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
-  const [events, setEvents] = useState(mockAppointments);
+  const [events, setEvents] = useState<CalendarEvent[]>(mockAppointments);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null);
   const [formData, setFormData] = useState({
     tipoAgenda: "Exclusiva",
     modeloAtencion: "Suscripción",
