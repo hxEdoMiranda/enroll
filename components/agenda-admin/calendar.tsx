@@ -177,9 +177,9 @@ const MonthEventWrapper = ({ event, events }: MonthEventWrapperProps) => {
   }, eventsForDay[0].start);
 
   
-  const totalBlocks = eventsForDay.reduce((total: number, e: { end: any; start: any; minutosAtencion: string | number; }) => {
+  const totalBlocks = eventsForDay.reduce((total: number, e: CalendarEvent) => {
     const duration = differenceInMinutes(e.end, e.start);
-    return total + Math.ceil(duration / (typeof e.minutosAtencion === 'string' ? parseInt(e.minutosAtencion) : e.minutosAtencion));
+    return total + Math.ceil(duration / (typeof e.minutosAtencion === 'string' ? parseInt(e.minutosAtencion as string) : e.minutosAtencion));
   }, 0);
 
   const realizadosBlocks = eventsForDay.reduce((total: number, e: CalendarEvent) => {
