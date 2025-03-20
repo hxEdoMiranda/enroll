@@ -7,12 +7,11 @@ import { fetchGetPractitionerById } from "@/app/actions/admin-agenda/practitione
 import { CleanedSchedule } from "@/types/agenda-admin/schedule";
 import Link from "next/link";
 
-type Props = {
-  params: { id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
-export default async function AgendaEditPage({ params }: Props) {
+export default async function AgendaEditPage({ 
+  params, 
+}: { 
+  params: { id: string } 
+}) {
   const { id } = params;
   const startDateTime = new Date().toISOString();
   const [practitionerResponse, scheduleResponse] = await Promise.all([
