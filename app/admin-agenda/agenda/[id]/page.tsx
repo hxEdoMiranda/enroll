@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default async function AgendaEditPage({ params }: Props) {
-  const { id } = await params;
+  const { id } = params;
   const startDateTime = new Date().toISOString();
   const [practitionerResponse, scheduleResponse] = await Promise.all([
     fetchGetPractitionerById(id),
