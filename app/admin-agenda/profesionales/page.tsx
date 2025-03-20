@@ -1,8 +1,6 @@
-// import { fetchIPData } from "@/actions/admin-agenda/ipquery";
+
 import { fetchGetPractitioner } from "@/app/actions/admin-agenda/practitioner";
-import { searchSpecialties } from "@/app/actions/admin-agenda/specialty";
 import { ProfesionalesContent } from "@/components/agenda-admin/profesionales-content";
-import { get } from "http";
 import moment from 'moment-timezone';
 
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Calendar, Users, FileText } from "lucide-react";
+import { Home, Calendar, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -39,7 +39,7 @@ function NavItem({ href, icon, label, active }: NavItemProps) {
   );
 }
 
-export function Sidebar({ className, src }: SidebarProps) {
+export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
 
   return (

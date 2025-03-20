@@ -2,7 +2,13 @@ const BASE_API_URL = "https://api.medibuslive.com/dev/backoffice/enroll/v3";
 
 import { CountryModel as IPais} from "../../modules/configuration/types/Country.type";
 
-export const postCreatePais = async (pais: IPais): Promise<any> => {
+interface IPaisResponse {
+  success: boolean;
+  data?: IPais | IPais[];
+  message?: string;
+}
+
+export const postCreatePais = async (pais: IPais): Promise<IPaisResponse> => {
     console.log("LLegoooooooooooooooooooooooooooooooooooo");
   try {
     const response = await fetch(`${BASE_API_URL}/country`, {
@@ -24,7 +30,7 @@ export const postCreatePais = async (pais: IPais): Promise<any> => {
   }
 };
 
-export const updatePais = async (pais: IPais): Promise<any> => {
+export const updatePais = async (pais: IPais): Promise<IPaisResponse> => {
   try {
     const response = await fetch(`${BASE_API_URL}/country`, {
       method: "POST",
@@ -43,7 +49,7 @@ export const updatePais = async (pais: IPais): Promise<any> => {
     throw new Error(`Error updating data: ${errorMessage}`);
   }
 };
-export const getPais = async (uid: string): Promise<IPais> => {
+export const getPais = async (): Promise<IPais> => {
   try {
     const response = await fetch(`${BASE_API_URL}/country`, {
       method: "GET",

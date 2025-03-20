@@ -1,4 +1,4 @@
-import { fetchGetPractitioner, fetchGetPractitionerById } from "@/app/actions/admin-agenda/practitioner";
+import { fetchGetPractitionerById } from "@/app/actions/admin-agenda/practitioner";
 import { EditProfesionalForm } from "@/components/agenda-admin/edit-profesional-form";
 
 export default async function EditProfesionalPage({ params }: { params: { id: string } }) {

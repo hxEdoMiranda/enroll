@@ -35,7 +35,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { CleanedSchedule } from "@/types/agenda-admin/schedule";
 import { useToast } from "@/hooks/use-toast";
-import { createSchedule } from "@/app/actions/admin-agenda/schedule";
 import { differenceInMinutes } from "date-fns";
 import {
   fetchCreateSlot,
@@ -103,25 +102,19 @@ const SPECIALTY_COLORS: Record<string, { bg: string; light: string; text: string
 };
 
 const CustomToolbar = ({ onNavigate, label, onView, view, date }: any) => {
-  // Formateo diferente según la vista (día o mes)
   let formattedDate = '';
   
   if (view === Views.MONTH) {
-    // Para la vista de mes: solo el nombre del mes y el año
     formattedDate = format(date, "MMMM yyyy", { locale: es });
-    // Capitalizar la primera letra
     formattedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
   } else if (view === Views.DAY) {
-    // Para la vista de día: número del día, nombre del día, mes y año
-    const dayNumber = format(date, "d", { locale: es });
-    const dayName = format(date, "EEEE", { locale: es });
+    // const dayNumber = format(date, "d", { locale: es });
+    // const dayName = format(date, "EEEE", { locale: es });
     const monthYear = format(date, "MMMM yyyy", { locale: es });
     
-    // Capitalizar la primera letra
-    const capitalizedDayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+    // const capitalizedDayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
     const capitalizedMonthYear = monthYear.charAt(0).toUpperCase() + monthYear.slice(1);
     
-    // No mostramos directamente en formattedDate, sino en un formato especial para la vista día
     formattedDate = capitalizedMonthYear;
   }
 
@@ -204,7 +197,6 @@ const MonthEventWrapper = ({ event, onSwitchToDay, allEvents }: any) => {
 
     const colors = getSpecialtyColors(event.specialty);
 
-    // Verificar si el evento tiene más de una disponibilidad
     const hasMultipleAvailabilities = (
       allEvents.filter((e: any) => 
         e.type === "availability" && 
@@ -214,7 +206,7 @@ const MonthEventWrapper = ({ event, onSwitchToDay, allEvents }: any) => {
 
     // Manejador que cambia a la vista día al hacer clic en el evento
     const handleEventClick = (e: React.MouseEvent) => {
-      e.stopPropagation(); // Importante: evita que el evento de clic se propague
+      e.stopPropagation();
       if (onSwitchToDay) {
         onSwitchToDay(event.start);
       }
@@ -267,7 +259,7 @@ const DayEventWrapper = ({ event, onDeleteSlot }: any) => {
     return (
       <div
         className={`${colors.bg} text-white p-2 rounded h-full overflow-y-auto`}
-        style={{ minHeight: "30px" }} // Garantizar altura mínima
+        style={{ minHeight: "30px" }} 
       >
         <div className="text-sm font-medium mb-1">{event.specialty}</div>
         <div className="text-xs">
@@ -319,12 +311,8 @@ const DayEventWrapper = ({ event, onDeleteSlot }: any) => {
   );
 };
 
-// Componente personalizado para el encabezado de los días de la semana
 const CustomHeaderCell = ({ label }: any) => {
-  // Convertir los nombres de días a minúsculas con la primera letra mayúscula
   let formattedLabel = '';
-  
-  // Mapear los días en inglés a español abreviado
   if (label === 'Sun') formattedLabel = 'dom';
   else if (label === 'Mon') formattedLabel = 'lun';
   else if (label === 'Tue') formattedLabel = 'mar';
@@ -337,16 +325,13 @@ const CustomHeaderCell = ({ label }: any) => {
   return <span className="day-header">{formattedLabel}</span>;
 };
 
-// Objeto con formatos personalizados para el calendario
 const calendarFormats = {
   dayHeaderFormat: (date: Date) => {
     return format(date, "d 'de' MMMM", { locale: es });
   }
 };
 
-// Agregar estilos personalizados para el día actual y visualización de eventos
 const injectCustomStyles = () => {
-  // Verificar si los estilos ya existen
   if (!document.getElementById('calendar-custom-styles')) {
     const styleEl = document.createElement('style');
     styleEl.id = 'calendar-custom-styles';
@@ -646,26 +631,23 @@ const customDayPropGetter = (date: Date) => {
 const timeGutterFormat = (date: Date, culture?: string, localizer?: any): string => {
   const hours = date.getHours();
   const minutes = date.getMinutes();
-  
-  // Formato 24 horas: HH:MM
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
 
-// Definir las horas para mostrar en el calendario (todas las horas del día)
-const getDayTimeslots = (): Date[] => {
-  const times = [];
-  const today = new Date();
+// const getDayTimeslots = (): Date[] => {
+//   const times = [];
+//   const today = new Date();
   
-  for (let hour = 0; hour < 24; hour++) {
-    const time = new Date(today);
-    time.setHours(hour);
-    time.setMinutes(0);
-    time.setSeconds(0);
-    times.push(time);
-  }
+//   for (let hour = 0; hour < 24; hour++) {
+//     const time = new Date(today);
+//     time.setHours(hour);
+//     time.setMinutes(0);
+//     time.setSeconds(0);
+//     times.push(time);
+//   }
   
-  return times;
-};
+//   return times;
+// };
 
 export function AgendaCalendar({
   practitionerId,
@@ -705,13 +687,11 @@ export function AgendaCalendar({
       try {
         const slotsResponse = await fetchGetSlotsByidPractitioner(practitionerId);
         
-        // Inicializar slots como array vacío por defecto
         const availableSlots = "data" in slotsResponse ? slotsResponse.data : [];
         setSlots(availableSlots);
   
         if (initialSchedule && initialSchedule.length > 0) {
           const availabilityEvents = initialSchedule.map((schedule) => {
-            // Si hay slots disponibles, filtra los que pertenecen a este schedule
             const scheduleSlots = availableSlots.filter(
               (slot) => slot.schedule.reference === `Schedule/${schedule.id}`
             );
@@ -723,28 +703,23 @@ export function AgendaCalendar({
               id: schedule.id,
               active: schedule.active,
               type: "availability",
-              slots: scheduleSlots, // Puede ser un array vacío si no hay slots
+              slots: scheduleSlots, 
             };
           });
   
-          // Solo procesar slots si hay alguno disponible
           const slotEvents = availableSlots.map((slot) => {
             const scheduleId = slot.schedule.reference?.replace("Schedule/", "") || "";
             
-            // Encontrar la especialidad correspondiente al slot
             const relatedSchedule = initialSchedule.find(
               (s) => s.id === scheduleId
             );
             
-            // Intentar obtener la especialidad del slot primero, si está disponible
             let specialty = "Sin especialidad";
             
-            // Primero intentar extraer de la propiedad specialty del slot
             if (slot.specialty && slot.specialty.length > 0 && 
                 slot.specialty[0].coding && slot.specialty[0].coding.length > 0) {
               specialty = slot.specialty[0].coding[0].display;
             } 
-            // Si no está disponible, usar la del schedule relacionado
             else if (relatedSchedule?.specialty) {
               specialty = relatedSchedule.specialty;
             }
@@ -760,7 +735,6 @@ export function AgendaCalendar({
             };
           });
   
-          // Siempre incluir eventos de disponibilidad, incluso si no hay slots
           setEvents([...availabilityEvents, ...slotEvents]);
           
           console.log("Slots events:", slotEvents);
@@ -769,7 +743,6 @@ export function AgendaCalendar({
       } catch (error) {
         console.error("Error loading data:", error);
         
-        // En caso de excepción, todavía podemos mostrar los eventos de disponibilidad
         if (initialSchedule && initialSchedule.length > 0) {
           const availabilityEvents = initialSchedule.map((schedule) => ({
             start: new Date(schedule.start),
@@ -778,7 +751,7 @@ export function AgendaCalendar({
             id: schedule.id,
             active: schedule.active,
             type: "availability",
-            slots: [], // No hay slots disponibles
+            slots: [], 
           }));
           
           setEvents(availabilityEvents);
@@ -796,7 +769,6 @@ export function AgendaCalendar({
   }, [initialSchedule, practitionerId, toast]);
 
   useEffect(() => {
-    // Inyectar estilos personalizados al montar el componente
     injectCustomStyles();
   }, []);
 
@@ -937,7 +909,6 @@ export function AgendaCalendar({
           break;
         }
   
-        // Crear el slot con la estructura correcta para la API
         const slotData = {
           idSchedule: availabilityEvent.id,
           startDateTime: format(slotStart, "yyyy-MM-dd'T'HH:mm:ss"),
@@ -969,7 +940,6 @@ export function AgendaCalendar({
         id: "data" in results[index] ? results[index].data.id : undefined,
       }));
   
-      // Añadir los nuevos slots a los eventos
       setEvents((prev) => [
         ...prev, 
         ...slotsWithIds.map(slot => ({
@@ -983,7 +953,6 @@ export function AgendaCalendar({
         }))
       ]);
   
-      // Actualizar los slots dentro del evento de disponibilidad
       setEvents((prev) =>
         prev.map((event) =>
           event.id === availabilityEvent.id

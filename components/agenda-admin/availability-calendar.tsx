@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar as BigCalendar, dateFnsLocalizer, Views } from "react-big-calendar";
+import { Calendar as BigCalendar, dateFnsLocalizer, Views, View } from "react-big-calendar";
 import {format} from "date-fns/format";
 import {parse} from "date-fns/parse";
 import {startOfWeek} from "date-fns/startOfWeek";
@@ -126,7 +126,7 @@ const DayEventWrapper = ({ event }: any) => {
 
 export function AvailabilityCalendar({ practitionerId, initialSchedule }: AvailabilityCalendarProps) {
   const router = useRouter();
-  const [view, setView] = useState(Views.MONTH);
+  const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<any[]>([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -135,7 +135,8 @@ export function AvailabilityCalendar({ practitionerId, initialSchedule }: Availa
     idServiceCategory: "",
     idServiceType: "",
     idSpecialty: "",
-    comment: ""
+    comment: "",
+    timeZone: "America/Santiago"
   });
   const [loading, setLoading] = useState(false);
 
@@ -202,7 +203,7 @@ export function AvailabilityCalendar({ practitionerId, initialSchedule }: Availa
           endAccessor="end"
           culture="es"
           view={view}
-          onView={setView}
+          onView={(newView: View) => setView(newView)}
           date={date}
           onNavigate={setDate}
           step={15}

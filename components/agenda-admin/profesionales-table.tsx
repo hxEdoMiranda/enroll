@@ -20,13 +20,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
-import { ProfesionalesContentProps } from "@/types/agenda-admin/agenda-admin";
 import { useProfesionalesStore } from "@/store/agenda-admin/profesionalesStore";
 
 export function ProfesionalesTable() {
   const router = useRouter();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedProfesional, setSelectedProfesional] = useState<any>(null);
   const { filteredData } = useProfesionalesStore();
   
   // Pagination state
@@ -51,14 +49,12 @@ export function ProfesionalesTable() {
     setPaginatedData(filteredData.slice(startIndex, endIndex));
   }, [filteredData, currentPage]);
 
-  const handleStateChange = (profesional: any) => {
-    setSelectedProfesional(profesional);
+  const handleStateChange = (_profesional: any) => {
     setDialogOpen(true);
   };
 
   const confirmStateChange = async () => {
     setDialogOpen(false);
-    setSelectedProfesional(null);
   };
 
   const handlePageChange = (page: number) => {
@@ -67,49 +63,40 @@ export function ProfesionalesTable() {
     }
   };
 
-  // Generate page numbers for pagination
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
     
     if (totalPages <= maxVisiblePages) {
-      // Show all pages if total pages are less than max visible
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
-      // Always show first page
       pageNumbers.push(1);
       
       let startPage = Math.max(2, currentPage - 1);
       let endPage = Math.min(totalPages - 1, currentPage + 1);
       
-      // Adjust if we're near the beginning
       if (currentPage <= 3) {
         endPage = Math.min(totalPages - 1, 4);
       }
       
-      // Adjust if we're near the end
       if (currentPage >= totalPages - 2) {
         startPage = Math.max(2, totalPages - 3);
       }
       
-      // Add ellipsis if needed
       if (startPage > 2) {
         pageNumbers.push('ellipsis-start');
       }
       
-      // Add middle pages
       for (let i = startPage; i <= endPage; i++) {
         pageNumbers.push(i);
       }
       
-      // Add ellipsis if needed
       if (endPage < totalPages - 1) {
         pageNumbers.push('ellipsis-end');
       }
       
-      // Always show last page
       if (totalPages > 1) {
         pageNumbers.push(totalPages);
       }

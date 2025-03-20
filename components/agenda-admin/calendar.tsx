@@ -1,10 +1,10 @@
 "use client";
 
-import { Calendar as BigCalendar, dateFnsLocalizer, Views } from "react-big-calendar";
+import { Calendar as BigCalendar, dateFnsLocalizer, Views, View } from "react-big-calendar";
 import { format , parse , startOfWeek, getDay , differenceInMinutes ,  isSameDay ,  addMinutes } from "date-fns";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { es } from "date-fns/locale";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -142,18 +142,7 @@ const MonthEventWrapper = ({ event, events }: any) => {
     realizado: boolean;
   }
 
-  interface SlotInfo {
-    start: Date;
-    end: Date;
-  }
 
-  interface FormData {
-    tipoAgenda: string;
-    modeloAtencion: string;
-    zonaHoraria: string;
-    minutosAtencion: string;
-    invitarProfesionales: boolean;
-  }
 
   const realizadosBlocks = eventsForDay.reduce((total: number, e: Event) => {
     if (e.realizado) {
@@ -207,7 +196,7 @@ const EventWrapper = ({ event, view, events }: any) => {
 };
 
 export function Calendar() {
-  const [view, setView] = useState(Views.MONTH);
+  const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState(mockAppointments);
   const [showDialog, setShowDialog] = useState(false);
@@ -272,7 +261,7 @@ export function Calendar() {
           endAccessor="end"
           culture="es"
           view={view}
-          onView={setView}
+          onView={(newView: View) => setView(newView)}
           date={date}
           onNavigate={setDate}
           step={15}

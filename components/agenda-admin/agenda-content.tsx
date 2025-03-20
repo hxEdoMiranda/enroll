@@ -1,7 +1,7 @@
 "use client";
 import { format } from "date-fns/format";
 import { Checkbox } from "../ui/checkbox";
-import { addDays, eachDayOfInterval, eachWeekOfInterval, isAfter, parseISO } from "date-fns";
+import { addDays, parseISO } from "date-fns";
 import { useScheduleHandlers } from "@/hooks/use-schedule-handlers";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -87,23 +87,18 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
     handleOpenAvailabilityModal: openAvailabilityModal,
     handleConfirmDelete,
     handleAddTimeSlot,
-    handleSaveEdit,
     handleCreateAvailability: createAvailability,
     initializeWeeklySchedule,
     existingSchedules,
   } = useScheduleHandlers();
 
-  // Filtrado de profesionales basado en la búsqueda
   const filteredProfessionals = useMemo(() => {
     if (!searchQuery.trim()) return data;
     
     const query = searchQuery.toLowerCase().trim();
     return data.filter(profesional => {
-      // Buscar en nombre completo
       const fullName = `${profesional.firstName} ${profesional.lastName}`.toLowerCase();
-      
-      // Buscar en especialidades
-      const hasSpecialty = profesional.specializations?.some(
+            const hasSpecialty = profesional.specializations?.some(
         (spec: any) => spec.display?.toLowerCase().includes(query)
       );
       
@@ -142,11 +137,9 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
   };
 
   useEffect(() => {
-    // Este efecto se ejecuta cuando cambia la fecha de término
     if (selectedPractitioner && startDate && endDate) {
       console.log("Fecha término modificada, actualizando calendario");
       
-      // Reinicializar completamente el calendario con las nuevas fechas
       initializeWeeklySchedule(
         startDate,
         endDate,
@@ -436,7 +429,6 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                 {day.enabled && (
                                   <div className="space-y-2">
                                     {(() => {
-                                      // Agrupar slots por especialidad
                                       const slotsBySpecialty =
                                         day.timeSlots.reduce((groups, slot) => {
                                           const specialty =
@@ -449,7 +441,6 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                           return groups;
                                         }, {} as Record<string, any[]>);
 
-                                      // Renderizar cada grupo de especialidad por separado
                                       return Object.entries(slotsBySpecialty).map(
                                         ([specialty, slots]) => (
                                           <div
@@ -485,8 +476,7 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                                     const updatedSlots = [
                                                       ...day.timeSlots,
                                                     ];
-                                                    const slotIndex =
-                                                      slots.indexOf(slot);
+                                            
                                                     const actualSlotIndex =
                                                       day.timeSlots.findIndex(
                                                         (s) => s === slot
@@ -531,8 +521,6 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                                     const updatedSlots = [
                                                       ...day.timeSlots,
                                                     ];
-                                                    const slotIndex =
-                                                      slots.indexOf(slot);
                                                     const actualSlotIndex =
                                                       day.timeSlots.findIndex(
                                                         (s) => s === slot
@@ -585,7 +573,6 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                                           (s) => s === slot
                                                         );
 
-                                                      // Si es un slot existente, confirmar antes de eliminar
                                                       if (slot.scheduleId) {
                                                         setDeletingSlot({
                                                           weekIndex,
@@ -601,7 +588,6 @@ export function AgendaContent({ data }: ProfesionalesContentProps) {
                                                         return;
                                                       }
 
-                                                      // Si es un slot nuevo, eliminar directamente
                                                       setWeeklySchedule((prev) =>
                                                         prev.map((w, wi) =>
                                                           wi === weekIndex

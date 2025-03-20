@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { PractitionerCreateData, ProfesionalesContentProps } from "@/types/agenda-admin/agenda-admin";
+import { ProfesionalesContentProps } from "@/types/agenda-admin/agenda-admin";
 import { useProfesionalesStore } from "@/store/agenda-admin/profesionalesStore";
 
 export function ProfesionalesContent({ data }: ProfesionalesContentProps) {

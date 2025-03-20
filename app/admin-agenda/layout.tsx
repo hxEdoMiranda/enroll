@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "../globals.css";
 import { Sidebar } from "@/components/agenda-admin/sidebar";
 import { ClerkProvider } from "@clerk/nextjs";
 
-const inter = Inter({ 
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-inter",
-});
+// const inter = Inter({ 
+//   subsets: ["latin"],
+//   weight: ["400", "500", "600", "700"],
+//   display: "swap",
+//   variable: "--font-inter",
+// });
 
 export const metadata: Metadata = {
   title: "Agenda Management App",

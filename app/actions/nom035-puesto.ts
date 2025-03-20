@@ -5,7 +5,13 @@ interface IPuesto {
   status: boolean;
 }
 
-export const getPuesto = async (puesto: IPuesto): Promise<any> => {
+interface IPuestoResponse {
+  success: boolean;
+  data?: IPuesto | IPuesto[];
+  message?: string;
+}
+
+export const getPuesto = async (puesto: IPuesto): Promise<IPuestoResponse> => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -23,7 +29,7 @@ export const getPuesto = async (puesto: IPuesto): Promise<any> => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const result = await response.text();
+    const result = await response.json();
     console.log(result);
     return result;
   } catch (error) {
@@ -35,7 +41,7 @@ export const getPuesto = async (puesto: IPuesto): Promise<any> => {
   }
 };
 
-export const postPuesto = async (puesto: IPuesto): Promise<any> => {
+export const postPuesto = async (puesto: IPuesto): Promise<IPuestoResponse> => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -53,7 +59,7 @@ export const postPuesto = async (puesto: IPuesto): Promise<any> => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const result = await response.text();
+    const result = await response.json();
     console.log(result);
     return result;
   } catch (error) {

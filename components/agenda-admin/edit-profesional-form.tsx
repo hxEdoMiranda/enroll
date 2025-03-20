@@ -12,9 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Check, ChevronsUpDown, Command } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profesionalFormSchema } from "@/schema/profesionales";
 import {
@@ -35,7 +35,6 @@ import { cn, getTimeZones } from "@/lib/utils";
 import {
   PractitionerCreateData,
   PractitionerGetByIdResponse,
-  PractitionerResponseData,
   PractitionerUpdateData,
 } from "@/types/agenda-admin/agenda-admin";
 import { useToast } from "@/hooks/use-toast";
@@ -101,8 +100,6 @@ export function EditProfesionalForm({
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [practitionerData, setPractitionerData] =
-    useState<PractitionerGetByIdResponse>({} as PractitionerGetByIdResponse);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
@@ -162,10 +159,8 @@ export function EditProfesionalForm({
           if ("data" in response) {
             const data = response.data;
 
-            setPractitionerData(data);
-
-            const name = data.firstName || {};
-            const telecom = data.phoneNumber || [];
+            // const name = data.firstName || {};
+            // const telecom = data.phoneNumber || [];
             const address = data.address || {};
             const qualification = data.qualifications?.[0] || {
               titleCode: "",
@@ -175,7 +170,7 @@ export function EditProfesionalForm({
               endDate: "",
               issuer: "",
             };
-            const specialty = data.specializations?.[0];
+            // const specialty = data.specializations?.[0];
             const email = data.emailAddress || "";
             const phone = data.phoneNumber || "";
 
@@ -218,15 +213,10 @@ export function EditProfesionalForm({
               startDate: qualification?.startDate || "",
               endDate: qualification?.endDate || "",
               issuer: qualification?.issuer || "",
-              // specialtyCode: specialty?.code || "",
-              // specialtyDisplay: specialty?.display || "",
               specialtyCode: data.specializations?.map((s) => s.code) || [],
               specialtyDisplay:
                 data.specializations?.map((s) => s.display) || [],
-              // estado: data.mongo?.state ? "active" : "inactive",
               duracionAtencion: "30",
-              // valorTotal: "",
-              // valorConvenio: "",
               biografia: "",
               modalidad: "",
             });
@@ -311,12 +301,6 @@ export function EditProfesionalForm({
               issuer: values.issuer || "",
             },
           ],
-          // specializations: [
-          //   {
-          //     code: values.specialtyCode || "",
-          //     display: values.specialtyDisplay,
-          //   },
-          // ],
           specializations,
         };
 
@@ -352,12 +336,6 @@ export function EditProfesionalForm({
             issuer: values.issuer || "",
           },
         ],
-        // specializations: [
-        //   {
-        //     code: values.specialtyCode || "",
-        //     display: values.specialtyDisplay,
-        //   },
-        // ],
       };
 
       // Add password for new practitioners
