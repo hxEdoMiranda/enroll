@@ -1,5 +1,5 @@
-
 export interface ServiceModel {
+  _id?: string;  // El campo _id es opcional, ya que se genera automáticamente en MongoDB
   uid: string;  // Si necesitas mantener el uid
   code: string;
   name: string;
@@ -12,6 +12,10 @@ export interface ServiceModel {
   responsible_name: string;  // Nombre de la persona responsable
   responsible_mail: string;  // Correo electrónico de la persona responsable
   state: boolean;
-}
-
   
+  limit?: {  // El campo limit es opcional
+    period: string;  // El periodo (por ejemplo, "SEMANAL")
+    period_days: number;  // La cantidad de días para el periodo
+    limit_quantity: number;  // La cantidad límite
+  };
+}

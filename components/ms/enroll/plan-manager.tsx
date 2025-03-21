@@ -122,9 +122,43 @@ export function PlanManager({
 			if (isSelected) {
 				return prev.filter((s) => s.code !== service.code);
 			} else {
-				return [...prev, service];
+				// When adding a new service, copy all its properties
+				return [...prev, { ...service }];
 			}
 		});
+	};
+
+	const getServiceValue = (service: ServiceModel, field: string): string => {
+		const selectedService = selectedServices.find(s => s.code === service.code);
+		if (!selectedService) return String(service[field as keyof ServiceModel] || '');
+		
+		if (field.startsWith('limit_')) {
+			const limitField = field.replace('limit_', '') as keyof typeof service.limit;
+			return String(selectedService.limit?.[limitField] || '');
+		}
+		return String(selectedService[field as keyof ServiceModel] || '');
+	};
+
+	const handleServiceUpdate = (serviceCode: string, field: string, value: string | number) => {
+		setSelectedServices(prev => prev.map(service => {
+			if (service.code === serviceCode) {
+				if (field.startsWith('limit_')) {
+					const limitField = field.replace('limit_', '') as keyof typeof service.limit;
+					return {
+						...service,
+						limit: {
+							...service.limit,
+							[limitField]: value
+						}
+					} as ServiceModel;
+				}
+				return {
+					...service,
+					[field]: value
+				} as ServiceModel;
+			}
+			return service;
+		}));
 	};
 
 	const handleSubmit = async (values: UpdatePlan) => {
@@ -415,49 +449,115 @@ export function PlanManager({
 								<TabsTrigger value="all">Todo</TabsTrigger>
 							</TabsList>
 							<TabsContent value="all">
-								<Accordion
-									type="single"
-									collapsible
-									className="w-full"
-								>
-									<AccordionItem value="item-1">
-										<AccordionTrigger
-											arrowPosition="left"
-											className="justify-start"
-										>
-											Macroservicio 1
-										</AccordionTrigger>
-										<AccordionContent className="flex flex-col">
-											{servicesData.map((service) => (
-												<div
-													className="flex items-center space-x-3 px-8 py-4"
-													key={service.uid}
-												>
-													<Checkbox
-														id={`${service.uid}`}
-														checked={selectedServices.some(
-															(s) =>
-																s.code ===
-																service.code
-														)}
-														onCheckedChange={() =>
-															handleServiceToggle(
-																service
-															)
-														}
-														className="data-[state=checked]:bg-primary"
-													/>
-													<label
-														htmlFor={`${service.uid}`}
-														className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-													>
-														{service.name}
-													</label>
-												</div>
-											))}
-										</AccordionContent>
-									</AccordionItem>
-								</Accordion>
+							<Accordion type="single" collapsible className="w-full">
+      {servicesData.map((service) => (
+        <AccordionItem key={service.uid} value={service.uid}>
+          <AccordionTrigger
+            arrowPosition="left"
+            className="justify-start"
+          >
+            {service.name} {/* Título del acordeón es el nombre del servicio */}
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col">
+            <div className="px-8 py-4 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Código:</label>
+                  <Input
+                    value={service.code}
+                    readOnly
+                    className="bg-gray-50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Descripción:</label>
+                  <Input
+                    value={service.description}
+                    readOnly
+                    className="bg-gray-50"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Precio 2B:</label>
+                  <Input
+                    value={typeof getServiceValue(service, 'price_2b') === 'string' ? getServiceValue(service, 'price_2b') : ''}
+                    onChange={(e) => handleServiceUpdate(service.code, 'price_2b', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Descuento 2B:</label>
+                  <Input
+                    value={getServiceValue(service, 'discount_2b')}
+                    onChange={(e) => handleServiceUpdate(service.code, 'discount_2b', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Precio 2C:</label>
+                  <Input
+                    value={getServiceValue(service, 'price_2c')}
+                    onChange={(e) => handleServiceUpdate(service.code, 'price_2c', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Descuento 2C:</label>
+                  <Input
+                    value={getServiceValue(service, 'discount_2c')}
+                    onChange={(e) => handleServiceUpdate(service.code, 'discount_2c', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Límite:</label>
+                  <Input
+                    type="number"
+                    value={getServiceValue(service, 'limit_limit_quantity')}
+                    onChange={(e) => handleServiceUpdate(service.code, 'limit_limit_quantity', Number(e.target.value))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Periodo:</label>
+                  <Input
+                    value={getServiceValue(service, 'limit_period')}
+                    onChange={(e) => handleServiceUpdate(service.code, 'limit_period', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Periodo en días:</label>
+                  <Input
+                    type="number"
+                    value={getServiceValue(service, 'limit_period_days')}
+                    onChange={(e) => handleServiceUpdate(service.code, 'limit_period_days', Number(e.target.value))}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2 mt-4">
+                <Checkbox
+                  id={`${service.uid}`}
+                  checked={selectedServices.some((s) => s.code === service.code)}
+                  onCheckedChange={() => handleServiceToggle(service)}
+                  className="data-[state=checked]:bg-primary"
+                />
+                <label
+                  htmlFor={`${service.uid}`}
+                  className="text-sm font-medium leading-none"
+                >
+                  Seleccionar servicio
+                </label>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
 							</TabsContent>
 						</Tabs>
 					</div>
