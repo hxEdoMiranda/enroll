@@ -45,7 +45,7 @@ export function PatientForm({ onSuccess }: PatientFormProps) {
 			address: "",
 			gender: "MALE",
 			maritalStatus: "S",
-			plans: ["67570b2f2c29920a4107a919"],
+			plans: ["67e2dae31e823173e977bd26"],
 			roles: ["patient"],
 			country: "CL",
 			countryResidence: "CL",
