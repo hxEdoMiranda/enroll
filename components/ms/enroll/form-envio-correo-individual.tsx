@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,12 +27,27 @@ import {
 } from "@/components/ui/select";
 import { createMailUser } from "@/modules/configuration/actions/mail-user";
 import { toast } from "sonner";
+import { getPlans } from "@/app/actions/planes";
+import {
+	PlanSchema,
+	type Plan,
+} from "@/modules/configuration/schemas/plan.model";
 
 interface PatientFormProps {
 	onSuccess?: () => void;
 }
 
 export function PatientMailForm({ onSuccess }: PatientFormProps) {
+	const [planes, setPlanes] = useState<Plan[]>([]);
+
+	useEffect(() => {
+		const fetchPlanes = async () => {
+			const plansData = await getPlans();
+			setPlanes(plansData);
+		};
+		fetchPlanes();
+	}, []);
+
 	const form = useForm<UserData>({
 		resolver: zodResolver(UserDataSchema),
 		defaultValues: {
@@ -43,8 +59,11 @@ export function PatientMailForm({ onSuccess }: PatientFormProps) {
 			plans: [],
 		},
 	});
-
+	
 	const handleSubmit = async (data: UserData) => {
+		console.log("Datos del formulario:", data);
+
+		
 		try {
 			const response = await createMailUser(data);
 			if (response.ok) {
@@ -67,6 +86,35 @@ export function PatientMailForm({ onSuccess }: PatientFormProps) {
 			</h2>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} className="grid grid-cols-12 gap-4">
+				<FormField 
+    control={form.control} 
+    name="plans" 
+    render={({ field }) => (
+        <FormItem className="col-span-12">
+            <FormLabel>Seleccionar Plan *</FormLabel>
+            <Select 
+                onValueChange={(value) => field.onChange([value])} 
+                defaultValue={field.value?.[0]}
+            >
+                <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un plan" />
+                    </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                    {planes.map((plan) => (
+                        <SelectItem key={plan.uid || ''} value={plan.uid || ''}>
+                            {plan.name}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            <FormMessage />
+        </FormItem>
+    )}
+/>
+
+
 					<FormField control={form.control} name="firstName" render={({ field }) => (
 						<FormItem className="col-span-6">
 							<FormLabel>Nombre *</FormLabel>

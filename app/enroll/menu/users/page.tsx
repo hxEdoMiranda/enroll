@@ -9,10 +9,18 @@ import UserTable from "@/modules/users/users-table";
 import { getAllUsers } from "@/modules/configuration/actions/fetch-user";
 import { PatientMailForm } from "@/components/ms/enroll/form-envio-correo-individual";
 import { ListButtonBanner } from "@/components/ms/list-button-banner";
+import { getEmpresasFull } from "@/app/actions/empresa";
+import { getPlans } from "@/app/actions/planes";
+
 
 export default async function EmpresasPage() {
 	const users = await getAllUsers();
-
+	const empresas = await getEmpresasFull();
+	const planes = await getPlans();
+ 
+    //	const planes = await getPlans(); Imprime los datos en la consola
+    console.log("Datos de empresas:", empresas);
+	console.log("Datos de planes:", planes);
 	const actionsButtons = [
 		{
 			trigger: (
@@ -27,7 +35,7 @@ export default async function EmpresasPage() {
 
 			content: <PatientMailForm />,
 			title: "Carga Individual",
-			description: "Carga un usuario individualmente",
+			description: "Carga un usuario individualmenteeeeeeeeeeeeeeeeee",
 			className: "w-[1010px] p-8",
 		},
 		{
