@@ -24,8 +24,7 @@ import {
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import {
-	Service,
-	ServiceSchema,
+	ServiceSchemaSinlimit,ServiceWithoutLimit
 } from "@/modules/configuration/schemas/service.model";
 import { useState } from "react";
 
@@ -35,7 +34,7 @@ import { CountryModel as Country } from "@/modules/configuration/types/Country.t
 
 interface ServiceFormProps {
 	id:string;
-	servicio: Service;
+	servicio: ServiceWithoutLimit;
 	paises:Country[];
 }
 
@@ -47,8 +46,8 @@ export function ServiceUpdateForm({ id, servicio, paises }: ServiceFormProps) {
 	const loading = false; 
 	const [selectedCountries, setSelectedCountries] = useState<string[]>(servicio.country);
 
-	const form = useForm<Service>({
-		resolver: zodResolver(ServiceSchema),
+	const form = useForm<ServiceWithoutLimit>({
+		resolver: zodResolver(ServiceSchemaSinlimit),
 		defaultValues: {
 			code: servicio.code,
 			name: servicio.name,
@@ -64,7 +63,7 @@ export function ServiceUpdateForm({ id, servicio, paises }: ServiceFormProps) {
 		}
 	});
 
-	const handleSubmit = async (data: Service) => {
+	const handleSubmit = async (data: ServiceWithoutLimit) => {
 		try {
 			//console.log("handleSubmit::::::::::::::::::::::::::",data);
 			//console.log("handleSubmit-id::::::::::::::::::::::::::",id);

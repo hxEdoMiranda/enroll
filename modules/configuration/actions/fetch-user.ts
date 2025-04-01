@@ -1,5 +1,5 @@
 "use server";
-
+import { auth } from '@clerk/nextjs/server'
 import { UpdateDataUserFormatted, UserDataFormatted } from "../schemas/user-data.schema";
 
 const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
@@ -7,8 +7,16 @@ const BASE_API_URL_LAMBDA = process.env.BASE_API_URL_LAMBDA;
 export const getAllUsers = async () => {
   try {
     //const response = await fetch(`${BASE_API_URL_LAMBDA}/backoffice/enroll/v3/patient`);
-    const response = await fetch(`${BASE_API_URL_LAMBDA}/patient/holder`);
+    const { getToken } = await auth()
+    const token = await getToken()
+    const response = await fetch(`${BASE_API_URL_LAMBDA}/patient/holder`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     const result = await response.json();
+
+
     if (response.status === 200) {
 
       return {

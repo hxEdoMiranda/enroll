@@ -35,7 +35,7 @@ export default async function EmpresasPage() {
 
 			content: <PatientMailForm />,
 			title: "Carga Individual",
-			description: "Carga un usuario individualmenteeeeeeeeeeeeeeeeee",
+			description: "Carga un usuario individualmente",
 			className: "w-[1010px] p-8",
 		},
 		{

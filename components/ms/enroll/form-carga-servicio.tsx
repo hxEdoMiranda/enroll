@@ -22,12 +22,13 @@ import {
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import {
-	Service,
-	ServiceSchema,
+	ServiceWithoutLimit,
+	ServiceSchemaSinlimit,
 } from "@/modules/configuration/schemas/service.model";
 import { useEffect, useState } from "react";
 import { getPaises } from "@/app/actions/pais";
 import { createService } from "@/modules/configuration/actions/services";
+
 
 interface Country {
 	code: string;
@@ -47,8 +48,8 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
 	const [loading, setLoading] = useState(true);
 	const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
 
-	const form = useForm<Service>({
-		resolver: zodResolver(ServiceSchema),
+	const form = useForm<ServiceWithoutLimit>({
+		resolver: zodResolver(ServiceSchemaSinlimit),
 		defaultValues: {
 			code: "",
 			name: "",
@@ -81,7 +82,7 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
 		fetchCountries();
 	}, []);
 
-	const handleSubmit = async (data: Service) => {
+	const handleSubmit = async (data: ServiceWithoutLimit) => {
 		try {
 			console.log(data);
 			const response = await createService(data);
@@ -90,6 +91,7 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
 				toast.success("Servicio creado exitosamente");
 				form.reset();
 				onSuccess?.();
+				window.location.reload(); // Refresca la página
 			} else {
 				toast.error(response.message);
 			}
@@ -319,116 +321,38 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
 							</FormItem>
 						)}
 					/>
+			<div className="grid w-full items-center col-span-6">
+  <Select
+    onValueChange={(value) => form.setValue("country", [value])}
+    disabled={loading || countries.length === 0}
+  >
+    <Label htmlFor="country">País *</Label>
+    <SelectTrigger className="w-full">
+      <SelectValue
+        placeholder={loading ? "Cargando países..." : "Seleccionar País"}
+      />
+    </SelectTrigger>
+    <SelectContent>
+      {loading ? (
+        <SelectItem disabled value="loading">
+          Cargando países...
+        </SelectItem>
+      ) : countries.length > 0 ? (
+        countries.map((country) => (
+          <SelectItem key={country.code} value={country.uid}>
+            {country.name}
+          </SelectItem>
+        ))
+      ) : (
+        <SelectItem disabled value="no-countries-available">
+          No hay países disponibles
+        </SelectItem>
+      )}
+    </SelectContent>
+  </Select>
+</div>
 
-					<div className="grid w-full items-center col-span-6">
-						<Select
-							onValueChange={(value) => {
-								setSelectedCountries([
-									...selectedCountries,
-									value,
-								]);
-								const currentCountries =
-									form.getValues("country") || [];
-								form.setValue("country", [
-									...currentCountries,
-									value,
-								]);
-							}}
-							disabled={loading || countries.length === 0}
-						>
-							<Label htmlFor="country">País *</Label>
-							<SelectTrigger className="w-full">
-								<SelectValue
-									placeholder={
-										loading
-											? "Cargando países..."
-											: "Seleccionar País"
-									}
-								/>
-							</SelectTrigger>
-							<SelectContent>
-								{loading ? (
-									<SelectItem disabled value="loading">
-										Cargando países...
-									</SelectItem>
-								) : countries.length > 0 ? (
-									countries
-										.filter(
-											(country) =>
-												!selectedCountries.includes(
-													country.uid
-												)
-										)
-										.map((country) => (
-											<SelectItem
-												key={country.code}
-												value={country.uid}
-											>
-												{country.name}
-											</SelectItem>
-										))
-								) : (
-									<SelectItem
-										disabled
-										value="no-countries-available"
-									>
-										No hay países disponibles
-									</SelectItem>
-								)}
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div className="grid w-full items-center col-span-6">
-						<h3 className="text-sm font-medium mb-2">
-							Países seleccionados:
-						</h3>
-						{selectedCountries.length > 0 ? (
-							<div className="flex flex-wrap gap-2">
-								{selectedCountries.map((countryId, index) => {
-									const country = countries.find(
-										(c) => c.uid === countryId
-									);
-									return (
-										<div
-											key={index}
-											className="flex items-center bg-muted rounded-md p-2"
-										>
-											<span className="text-sm">
-												{country?.name || countryId}
-											</span>
-											<Button
-												type="button"
-												variant="ghost"
-												className="h-6 w-6 p-0 ml-2"
-												onClick={() => {
-													const newSelectedCountries =
-														[...selectedCountries];
-													newSelectedCountries.splice(
-														index,
-														1
-													);
-													setSelectedCountries(
-														newSelectedCountries
-													);
-													form.setValue(
-														"country",
-														newSelectedCountries
-													);
-												}}
-											>
-												✕
-											</Button>
-										</div>
-									);
-								})}
-							</div>
-						) : (
-							<p className="text-sm text-muted-foreground">
-								No hay países seleccionados
-							</p>
-						)}
-					</div>
+					
 				</form>
 			</Form>
 
