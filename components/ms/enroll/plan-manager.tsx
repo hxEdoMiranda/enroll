@@ -180,6 +180,18 @@ export function PlanManager({
       })
     );
   };
+ const [searchTerm, setSearchTerm] = useState("");
+ const [currentPage, setCurrentPage] = useState(1);
+ const itemsPerPage = 10;
+
+const filteredServices = servicesData.filter((service) =>
+  service.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+const totalPages = Math.ceil(filteredServices.length / itemsPerPage);
+const paginatedServices = filteredServices.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
 
   const handleSubmit = async (values: UpdatePlan) => {
     try {
@@ -415,189 +427,152 @@ export function PlanManager({
             </div>
           </div>
           <div className="col-span-1 border border-primary rounded-md p-4">
-            <h3 className="text-xl font-medium">Servicios</h3>
-            <Tabs defaultValue="all" className="w-full">
-              <TabsList>
-                <TabsTrigger value="all">Todo</TabsTrigger>
-              </TabsList>
-              <TabsContent value="all">
-                <Accordion type="single" collapsible className="w-full">
-                  {servicesData.map((service) => (
-                    <AccordionItem key={service.uid} value={service.uid}>
-                      <AccordionTrigger
-                        arrowPosition="left"
-                        className="justify-start"
-                      >
-                        {service.name}{" "}
-                        {/* Título del acordeón es el nombre del servicio */}
-                      </AccordionTrigger>
-                      <AccordionContent className="flex flex-col">
-                        <div className="px-8 py-4 space-y-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">
-                                Código:
-                              </label>
-                              <Input
-                                value={service.code}
-                                readOnly
-                                className="bg-gray-50"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">
-                                Descripción:
-                              </label>
-                              <Input
-                                value={service.description}
-                                readOnly
-                                className="bg-gray-50"
-                              />
-                            </div>
-                          </div>
+  <h3 className="text-xl font-medium">Servicios</h3>
+  <input
+    type="text"
+    placeholder="Buscar servicio..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="w-full p-2 border rounded mb-4"
+  />
+  <Tabs defaultValue="all" className="w-full">
+    <TabsList>
+      <TabsTrigger value="all">Todo</TabsTrigger>
+    </TabsList>
+    <TabsContent value="all">
+      <Accordion type="single" collapsible className="w-full">
+        {paginatedServices.map((service) => (
+          <AccordionItem key={service.uid} value={service.uid}>
+            <AccordionTrigger arrowPosition="left" className="justify-start">
+              {service.name}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col">
+              <div className="px-8 py-4 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Código:</label>
+                    <Input value={service.code} readOnly className="bg-gray-50" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Descripción:</label>
+                    <Input value={service.description} readOnly className="bg-gray-50" />
+                  </div>
+                </div>
 
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">
-                                Precio 2B:
-                              </label>
-                              <Input
-                                value={
-                                  typeof getServiceValue(
-                                    service,
-                                    "price_2b"
-                                  ) === "string"
-                                    ? getServiceValue(service, "price_2b")
-                                    : ""
-                                }
-                                onChange={(e) =>
-                                  handleServiceUpdate(
-                                    service.code,
-                                    "price_2b",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">
-                                Descuento 2B:
-                              </label>
-                              <Input
-                                value={getServiceValue(service, "discount_2b")}
-                                onChange={(e) =>
-                                  handleServiceUpdate(
-                                    service.code,
-                                    "discount_2b",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-                          </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Precio 2B:</label>
+                    <Input
+                      value={
+                        typeof getServiceValue(service, "price_2b") === "string"
+                          ? getServiceValue(service, "price_2b")
+                          : ""
+                      }
+                      onChange={(e) =>
+                        handleServiceUpdate(service.code, "price_2b", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Descuento 2B:</label>
+                    <Input
+                      value={getServiceValue(service, "discount_2b")}
+                      onChange={(e) =>
+                        handleServiceUpdate(service.code, "discount_2b", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
 
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">
-                                Precio 2C:
-                              </label>
-                              <Input
-                                value={getServiceValue(service, "price_2c")}
-                                onChange={(e) =>
-                                  handleServiceUpdate(
-                                    service.code,
-                                    "price_2c",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">
-                                Descuento 2C:
-                              </label>
-                              <Input
-                                value={getServiceValue(service, "discount_2c")}
-                                onChange={(e) =>
-                                  handleServiceUpdate(
-                                    service.code,
-                                    "discount_2c",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-                          </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Precio 2C:</label>
+                    <Input
+                      value={getServiceValue(service, "price_2c")}
+                      onChange={(e) =>
+                        handleServiceUpdate(service.code, "price_2c", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Descuento 2C:</label>
+                    <Input
+                      value={getServiceValue(service, "discount_2c")}
+                      onChange={(e) =>
+                        handleServiceUpdate(service.code, "discount_2c", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
 
-                          <div className="grid grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">
-                                Límite:
-                              </label>
-                              <Input
-                                type="number"
-                                value={getServiceValue(
-                                  service,
-                                  "limit_limit_quantity"
-                                )}
-                                onChange={(e) =>
-                                  handleServiceUpdate(
-                                    service.code,
-                                    "limit_limit_quantity",
-                                    Number(e.target.value)
-                                  )
-                                }
-                              />
-                            </div>
-							<div className="space-y-2">
-    <label className="text-sm font-medium">Periodo:</label>
-    <select
-      className="border rounded p-2 w-full"
-      value={getServiceValue(service, "limit_period")}
-      onChange={(e) => {
-        const periodValue = e.target.value;
-        handleServiceUpdate(service.code, "limit_period", periodValue);
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Límite:</label>
+                    <Input
+                      type="number"
+                      value={getServiceValue(service, "limit_limit_quantity")}
+                      onChange={(e) =>
+                        handleServiceUpdate(service.code, "limit_limit_quantity", Number(e.target.value))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Periodo:</label>
+                    <select
+                      className="border rounded p-2 w-full"
+                      value={getServiceValue(service, "limit_period")}
+                      onChange={(e) => {
+                        const periodValue = e.target.value;
+                        handleServiceUpdate(service.code, "limit_period", periodValue);
+                        const periodDays = periodValue === "Semanal" ? 7 : periodValue === "Mensual" ? 30 : 182;
+                        handleServiceUpdate(service.code, "limit_period_days", periodDays);
+                      }}
+                    >
+                      <option value="Semanal">Semanal</option>
+                      <option value="Mensual">Mensual</option>
+                      <option value="Semestral">Semestral</option>
+                    </select>
+                  </div>
+                </div>
 
-        // Asigna automáticamente los días correspondientes
-        const periodDays = periodValue === "Semanal" ? 7 
-                        : periodValue === "Mensual" ? 30 
-                        : 182; // Semestral
-        handleServiceUpdate(service.code, "limit_period_days", periodDays);
-      }}
+                <div className="flex items-center space-x-2 mt-4">
+                  <Checkbox
+                    id={`${service.uid}`}
+                    checked={selectedServices.some((s) => s.code === service.code)}
+                    onCheckedChange={() => handleServiceToggle(service)}
+                    className="data-[state=checked]:bg-primary"
+                  />
+                  <label htmlFor={`${service.uid}`} className="text-sm font-medium leading-none">
+                    Seleccionar servicio
+                  </label>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </TabsContent>
+  </Tabs>
+  <div className="flex justify-between mt-4">
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="px-4 py-2 border rounded disabled:opacity-50"
     >
-      <option value="Semanal">Semanal</option>
-      <option value="Mensual">Mensual</option>
-      <option value="Semestral">Semestral</option>
-    </select>
+      Anterior
+    </button>
+    <span>
+      Página {currentPage} de {totalPages}
+    </span>
+    <button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="px-4 py-2 border rounded disabled:opacity-50"
+    >
+      Siguiente
+    </button>
   </div>
-                          </div>
-
-                          <div className="flex items-center space-x-2 mt-4">
-                            <Checkbox
-                              id={`${service.uid}`}
-                              checked={selectedServices.some(
-                                (s) => s.code === service.code
-                              )}
-                              onCheckedChange={() =>
-                                handleServiceToggle(service)
-                              }
-                              className="data-[state=checked]:bg-primary"
-                            />
-                            <label
-                              htmlFor={`${service.uid}`}
-                              className="text-sm font-medium leading-none"
-                            >
-                              Seleccionar servicio
-                            </label>
-                          </div>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </TabsContent>
-            </Tabs>
-          </div>
+</div>
         </div>
       </div>
       <Separator className="my-8" />
