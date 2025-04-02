@@ -184,6 +184,10 @@ export function PlanManager({
  const [currentPage, setCurrentPage] = useState(1);
  const itemsPerPage = 10;
 
+ useEffect(() => {
+  setCurrentPage(1);
+}, [searchTerm]);
+
 const filteredServices = servicesData.filter((service) =>
   service.name.toLowerCase().includes(searchTerm.toLowerCase())
 );
